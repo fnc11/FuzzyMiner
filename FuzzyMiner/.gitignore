@@ -1,3 +1,4 @@
 /.idea
 **/settings.py
 /templates
+/venv
