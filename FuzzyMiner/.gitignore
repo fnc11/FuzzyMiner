@@ -1,4 +1,4 @@
 /.idea
-**/settings.py
+FuzzyMiner/settings.py.example
 /templates
 /venv
