@@ -1,0 +1,5 @@
+asgiref==3.2.7
+Django==2.2.9
+django-cors-headers==3.2.1
+pytz==2020.1
+sqlparse==0.3.1
