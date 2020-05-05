@@ -3,7 +3,12 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from fuzzyminerpk import FuzzyMiner
 from django.shortcuts import render
+from django.conf import settings
+import os
+
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
+
+import os
 
 # Create your views here.
 @csrf_exempt
@@ -18,7 +23,8 @@ def upload(request):
 
 def launch_filter(logs_file):
     # log = xes_import_factory.apply('<path_to_xes_file>')
-    log = xes_import_factory.apply(logs_file)
+    file_path = os.path.join(settings.STATIC_ROOT, 'Road50.xes')
+    log = xes_import_factory.apply(file_path)
     return log[0]
 
 
