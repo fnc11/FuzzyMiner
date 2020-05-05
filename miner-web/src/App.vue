@@ -2,16 +2,28 @@
     <div id="app">
         <el-container>
             <el-header>
-                <label>Fuzzy Miner Web</label>
-                <el-button-group>
-                    <el-button :disabled="$route.name === 'Home'" @click="$router.push({path: '/'})">Home</el-button>
-                    <el-button :disabled="$route.name === 'Help'" @click="$router.push({path: '/help'})">Help</el-button>
-                </el-button-group>
+                <el-row class="row-bg">
+                    <el-col :span="20">
+                        <div class="grid-content bg-purple-dark">
+                            <label>FuzzyMinerWeb</label>
+                        </div>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-button-group>
+                            <el-button :disabled="$route.name === 'Home'" @click="$router.push({path: '/'})">Home
+                            </el-button>
+                            <el-button :disabled="$route.name === 'Help'" @click="$router.push({path: '/help'})">
+                                Help
+                            </el-button>
+                        </el-button-group>
+                    </el-col>
+                </el-row>
             </el-header>
+
             <el-main>
-                <router-view />
+                <router-view/>
             </el-main>
-            <el-footer>
+            <el-footer class="fluid-container footer">
                 <p>@Copy right: 2020</p>
             </el-footer>
         </el-container>
@@ -27,4 +39,21 @@
 </script>
 
 <style scoped>
+    .grid-content{
+        font-family: "Sitka Heading";
+        font-size: x-large;
+        color: midnightblue;
+        font-weight: bold;
+
+    }
+    .fluid-container.footer {
+        bottom: 0;
+        position: absolute;
+        width: 100%;
+        height: 60px;
+    }
+
+    .fluid-container.footer > *:last-child {
+        text-align: center;
+    }
 </style>
