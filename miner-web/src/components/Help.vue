@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="help-content">
         <div>
             <h3>Demo Video</h3>
         </div>
@@ -16,5 +16,11 @@
 </script>
 
 <style scoped>
+    .help-content{
+        line-height: 160px;
+
+
+
+    }
 
 </style>
