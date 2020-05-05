@@ -5,7 +5,7 @@
                 <h1>One step to Mine the Fuzzy Model!</h1>
             </el-row>
             <el-row type="flex" justify="center">
-                <el-col span="2.5">
+                <el-col :span="2.5">
                     <el-upload
                             ref="upload"
                             action=""
@@ -13,12 +13,11 @@
                             accept=".xes"
                             :http-request="upload"
                             :auto-upload="true">
-
                         <el-button type="primary">Upload Logs</el-button>
                         <div slot="tip" class="el-upload__tip">Accepted file format is .xes.</div>
                     </el-upload>
                 </el-col>
-                <el-col span="2.5">
+                <el-col :span="2.5">
                     <el-button type="success" @click="generate" disabled>Generate</el-button>
                 </el-col>
             </el-row>
