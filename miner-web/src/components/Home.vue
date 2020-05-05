@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
         <div>
             <el-row class="banner-content">
                 <h1>One step to Mine the Fuzzy Model!</h1>
@@ -53,6 +53,12 @@
 </script>
 
 <style scoped>
+    .main {
+        height: 83vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     .banner-content{
         text-align: center;
     }
