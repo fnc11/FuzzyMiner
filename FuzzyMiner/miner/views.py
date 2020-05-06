@@ -43,35 +43,6 @@ def get_default_configuration():
     return fuzzy_config
 
 
-def weighted_configuration(fuzzy_config):
-    # aggregating configuration weights for metrics
-    node_sig_weights_freq = 0.5
-    node_sig_weights_routing = 0.5
-    sig_weights_freq = 0.5
-    sig_weights_dist = 0.5
-    corr_weights_prox = 0.5
-    corr_weights_endpoint = 0.5
-    corr_weights_originator = 0.5
-    corr_weights_datatype = 0.5
-    corr_weights_datavalue = 0.5
-    edge_sig_to_corr_ratio = 0.75
-
-    # calculating aggregate node significance values
-    agg_node_sig = (fuzzy_config.metric_configs[0] * node_sig_weights_freq) + (fuzzy_config.metric_configs[1] * node_sig_weights_routing)
-    # calculating aggregate edge significance values
-    agg_edge_sig = (fuzzy_config.metric_configs[2] * sig_weights_freq) + (fuzzy_config.metric_configs[3] * sig_weights_dist)
-    # calculating aggregate edge correlation values
-    agg_edge_corr = (fuzzy_config.metric_configs[4] * corr_weights_prox) + (fuzzy_config.metric_configs[5] * corr_weights_endpoint) + \
-                    (fuzzy_config.metric_configs[6] * corr_weights_datatype) + (fuzzy_config.metric_configs[7] * corr_weights_datavalue) + \
-                    (fuzzy_config.metric_configs[8] * corr_weights_originator)
-    # Taking weighted average of agg_edge_sig and agg_edge_corr
-    agg_edge_values = (agg_edge_sig * edge_sig_to_corr_ratio) + agg_edge_corr * (1 - edge_sig_to_corr_ratio)
-    aggregate_weights = [agg_node_sig, agg_edge_sig, agg_edge_corr, agg_edge_values]
-
-    fuzzy_config_weighted = Configuration(fuzzy_config.filter_configs, aggregate_weights)
-    return fuzzy_config_weighted
-
-
 def launch_filter(logs_file):
     # log = xes_import_factory.apply('<path_to_xes_file>')
     file_path = os.path.join(settings.STATIC_ROOT, 'Road50.xes')
