@@ -21,8 +21,8 @@ class EdgeFilter(Filter):
 
 
 class ConcurrencyFilter(Filter):
-    def __init__(self, name="concurrency_filter", filter_concurrency=True, preserve=0.5, balance=0.5):
+    def __init__(self, name="concurrency_filter", filter_concurrency=True, preserve=0.5, offset=0.5):
         super().__init__(name)
         self.filter_concurrency = filter_concurrency
         self.preserve = preserve
-        self.balance = balance
+        self.offset = offset

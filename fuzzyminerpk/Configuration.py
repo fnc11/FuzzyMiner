@@ -13,9 +13,15 @@ class FilterConfig:
 
 
 class MetricConfig:
-    def __init__(self, name, metric_type, include=True, invert=False, weight=0.5):
+    def __init__(self, name, metric_type, include=True, invert=False):
         self.name = name
         self.metric_type = metric_type
         self.include = include
         self.invert = invert
-        self.weight = weight
+
+
+class MetricWeight:
+    def __init__(self, name, include=True, invert=False):
+        self.name = name
+        self.include = include
+        self.invert = invert
