@@ -10,8 +10,8 @@ class NodeFilter(Filter):
 
 
 class EdgeFilter(Filter):
-    def __init__(self, name="edge_filter", edge_transform=True, sc_ratio=0.5, cut_off=0.5
-                 , ignore_self_loops=False, interpret_abs=False):
+    def __init__(self, name="edge_filter", edge_transform=True, sc_ratio=0.5, cut_off=0.5,
+                 ignore_self_loops=False, interpret_abs=False):
         super().__init__(name)
         self.edge_transform = edge_transform
         self.sc_ratio = sc_ratio

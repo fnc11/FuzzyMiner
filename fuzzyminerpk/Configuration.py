@@ -48,7 +48,7 @@ class Configuration:
         agg_edge_values = agg_edge_values / max_agg_edge_value
         aggregate_weights = [agg_node_sig, agg_edge_sig, agg_edge_corr, agg_edge_values]
 
-        fuzzy_config_weighted = Configuration(fuzzy_config.filter_configs, aggregate_weights)
+        fuzzy_config_weighted = MetricWeight(aggregate_weights, True, False)
         return fuzzy_config_weighted
 
 
@@ -68,7 +68,8 @@ class MetricConfig:
 
 
 class MetricWeight:
-    def __init__(self, name, include=True, invert=False):
+    def __init__(self, name, aggregate_weights, include=True, invert=False):
         self.name = name
+        self.aggregate_weights = aggregate_weights
         self.include = include
         self.invert = invert
