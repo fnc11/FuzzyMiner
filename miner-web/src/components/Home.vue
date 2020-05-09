@@ -18,7 +18,7 @@
                     </el-upload>
                 </el-col>
                 <el-col :span="2.5">
-                    <el-button type="success" class="button-success" @click="generate" disabled>Generate</el-button>
+                    <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate</el-button>
                 </el-col>
             </el-row>
         </div>
@@ -38,12 +38,18 @@
 
     export default {
         name: "Home",
+        data() {
+            return {
+                generated: true
+            }
+        },
         methods: {
             async upload(param) {
                 let form = new FormData();
                 form.append('file', param.file);
                 const data = await upload(form);
                 console.log(data);
+                this.generated = false;
             },
             generate() {
 
@@ -58,7 +64,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        
+
     }
 
     .banner-content {
