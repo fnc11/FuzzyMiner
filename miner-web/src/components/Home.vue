@@ -35,13 +35,12 @@
 
 <script>
     import {upload} from "@/api/home";
-    import * as router from "vue-router";
 
     export default {
         name: "Home",
-        data:function(){
-            return{
-                generated:true
+        data() {
+            return {
+                generated: true
             }
         },
         methods: {
@@ -52,8 +51,7 @@
                 console.log(data);
                 this.generated = false;
             },
-            generate(){
-                this.$router.push({path: '/filter'});
+            generate() {
 
             }
         }
@@ -66,7 +64,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        
+
     }
 
     .banner-content {

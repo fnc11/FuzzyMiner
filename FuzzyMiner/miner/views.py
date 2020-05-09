@@ -10,6 +10,5 @@ def upload(request):
     file = request.FILES.get('file')
     print(file.name)
     # read data, it is binary data
-    #print(file.read())
-
+    # print(file.read())
     return HttpResponse()
