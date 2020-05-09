@@ -1,10 +1,13 @@
 <template>
     <div>
         <el-row :gutter="10">
-            <el-col :span="16">
+            <el-col :span="16" class="video">
                 <div>
                     <h3>Fuzzy Model</h3>
-                    <!-- here should be canvas -->
+                    <div>
+                        <label>Here should be canvas</label>
+                        <!-- here should be canvas -->
+                    </div>
                     <el-button>Save Snapshot</el-button>
                 </div>
             </el-col>
@@ -78,5 +81,8 @@
 </script>
 
 <style scoped>
-
+    .video {
+        position: relative;
+        top: 20px;
+    }
 </style>

@@ -18,9 +18,5 @@
 <style scoped>
     .help-content{
         line-height: 160px;
-
-
-
     }
-
 </style>
