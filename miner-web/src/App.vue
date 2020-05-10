@@ -44,12 +44,19 @@
 
 <style>
     html, body {
+        position: relative;
         width: 100%;
         height: 100%;
     }
 </style>
 
 <style scoped>
+    #app {
+        height: 100%;
+    }
+    .el-container {
+        height: 100%;
+    }
     .header-bg {
         top: 0;
         position: absolute;

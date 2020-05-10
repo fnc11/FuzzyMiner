@@ -5,9 +5,8 @@
                 <div class="model-view">
                     <h3 align="center"> Fuzzy Model</h3>
                     <div class="el-tabs--border-card" >
-
+                        <!-- here should be canvas -->
                     </div>
-                    <!-- here should be canvas -->
                     <el-button>Save Snapshot</el-button>
                 </div>
             </el-col>
@@ -61,14 +60,16 @@
 
                         </el-col>
                     </el-row>
-                    <div>
+                    <div align="center">
                         <el-checkbox v-model="staticMethod">Static</el-checkbox>
                         <el-button-group>
                             <el-button>Apply</el-button>
                             <el-button>Undo</el-button>
                         </el-button-group>
                     </div>
-                    <el-button>Metrics Configuration</el-button>
+                    <div align="center">
+                        <el-button>Metrics Configuration</el-button>
+                    </div>
                 </div>
             </el-col>
         </el-row>
