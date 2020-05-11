@@ -68,7 +68,7 @@
                         </el-button-group>
                     </div>
                     <div align="center">
-                        <el-button>Metrics Configuration</el-button>
+                        <el-button @click="dialog = true">Metrics Configuration</el-button>
                     </div>
                 </div>
             </el-col>
