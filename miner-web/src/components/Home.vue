@@ -12,7 +12,8 @@
                             :limit="1"
                             accept=".xes"
                             :http-request="upload"
-                            :auto-upload="true">
+                            :auto-upload="true"
+                            :show-file-list="false">
                         <el-button type="primary" class="button-primary">Upload Logs</el-button>
                         <div slot="tip" class="el-upload__tip">Accepted file format is .xes.</div>
                     </el-upload>
