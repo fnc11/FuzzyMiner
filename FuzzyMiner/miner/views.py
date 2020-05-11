@@ -6,6 +6,8 @@ from django.conf import settings
 import os
 
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
+from pm4py.algo.filtering.log.variants import variants_filter
+from pm4py.statistics.traces.log import case_statistics
 
 from fuzzyminerpk.FuzzyMiner import Graph
 from fuzzyminerpk.Filter import NodeFilter, EdgeFilter, ConcurrencyFilter
@@ -42,7 +44,9 @@ def launch_filter(logs_file):
     log = xes_import_factory.apply(file_path)
     default_fuzzy_config = get_default_configuration()
     graph = Graph(log, default_fuzzy_config)
-    return graph.nodes_dict
+    variants_count = case_statistics.get_variant_statistics(log)
+    variants_count = sorted(variants_count, key=lambda x: x['count'], reverse=True)
+    return graph.edges_list
 
 
 def handle_file(request):
