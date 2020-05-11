@@ -13,7 +13,10 @@
                             accept=".xes"
                             :http-request="upload"
                             :auto-upload="true"
-                            :show-file-list="false">
+                            :show-file-list="false"
+                            :before-upload="checkType"
+                            :on-success="uploadSuccess"
+                            :on-error="uploadError">
                         <el-button type="primary" class="button-primary">Upload Logs</el-button>
                         <div slot="tip" class="el-upload__tip">Accepted file format is .xes.</div>
                     </el-upload>
@@ -54,6 +57,35 @@
             },
             generate() {
 
+            },
+            uploadSuccess(response, file) {
+                this.$message({
+                    message: 'Success to upload the file, ' + file.name,
+                    type: 'success',
+                    duration: 3000,
+                    showClose: true
+                });
+            },
+            uploadError(error) {
+                console.log(error.message);
+                this.message({
+                    message: error.message,
+                    type: 'error',
+                    duration: 3000,
+                    showClose: true
+                });
+            },
+            checkType(file) {
+                if (!file.name.endsWith('.xes')) {
+                    this.$message({
+                        message: 'Wrong file format, xes file only',
+                        type: 'error',
+                        duration: 3000,
+                        showClose: true
+                    });
+                    return false;
+                }
+                return true;
             }
         }
     }
