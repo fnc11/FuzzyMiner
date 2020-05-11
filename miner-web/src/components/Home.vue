@@ -51,7 +51,6 @@
                 const data = await upload(form);
                 console.log(data);
                 this.generated = false;
-                await this.$router.push({path: '/filter'});
             },
             generate() {
 
