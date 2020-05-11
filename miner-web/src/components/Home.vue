@@ -10,7 +10,6 @@
                             ref="upload"
                             action=""
                             :limit="1"
-                            accept=".xes"
                             :http-request="upload"
                             :auto-upload="true"
                             :show-file-list="false"
@@ -24,6 +23,20 @@
                 <el-col :span="2.5">
                     <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate</el-button>
                 </el-col>
+            </el-row>
+            <br><br><br>
+            <el-row class="file-list" justify="center" type="flex">
+                <ul>
+                    <li v-for="(elem, index) in fileList" :key="index">
+                        <a>
+                            <i class="el-icon-document"></i>
+                            {{ elem }}
+                        </a>
+                        <label>
+                            <i class="el-icon-upload-success el-icon-circle-check"></i>
+                        </label>
+                    </li>
+                </ul>
             </el-row>
         </div>
         <!--
@@ -44,7 +57,8 @@
         name: "Home",
         data() {
             return {
-                generated: true
+                generated: true,
+                fileList: []
             }
         },
         methods: {
@@ -65,6 +79,7 @@
                     duration: 3000,
                     showClose: true
                 });
+                this.fileList.push(file.name);
             },
             uploadError(error) {
                 console.log(error.message);
@@ -113,5 +128,11 @@
     .button-primary {
         background-color: cornflowerblue;
 
+    }
+
+    .file-list {
+        text-align: center;
+        position: inherit;
+        bottom: 5vh;
     }
 </style>
