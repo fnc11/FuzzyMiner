@@ -73,6 +73,44 @@
                 </div>
             </el-col>
         </el-row>
+        <el-dialog
+                title="Metrics"
+                :visible.sync="dialog"
+                width="40%">
+            <div>
+                <div>
+                    <label>Metrics Type</label>
+                    <el-dropdown>
+                        <el-button type="text">Select Type<i class="el-icon-arrow-down el-icon--right" /></el-button>
+                    </el-dropdown>
+                </div>
+                <div>
+                    <label>Unary Metrics</label>
+                    <div>
+                        <el-checkbox v-model="incFrequency">Include</el-checkbox>
+                        <div>
+                            <label>Frequency Significance</label>
+                            <label>Weight</label>
+                            <el-slider v-model="frequencyWeight"></el-slider>
+                            <el-checkbox v-model="invertFrequency">Invert the Significance</el-checkbox>
+                        </div>
+                    </div>
+                    <div>
+                        <el-checkbox v-model="incRouting">Include</el-checkbox>
+                        <div>
+                            <label>Routing Significance</label>
+                            <label>Weight</label>
+                            <el-slider v-model="routingWeight"></el-slider>
+                            <el-checkbox v-model="invertRouting">Invert the Significance</el-checkbox>
+                        </div>
+                    </div>
+                    <p>Note: One of them has to be selected or the model will include one implicitly.</p>
+                </div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialog = false">Save</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -90,7 +128,56 @@
                 loops: false,
                 absolute: false,
                 concurrency: false,
-                staticMethod: false
+                staticMethod: false,
+                dialog: false,
+                incFrequency: true,
+                frequencyWeight: 50,
+                invertFrequency: true,
+                incRouting: true,
+                routingWeight: 50,
+                invertRouting: true
+            }
+        },
+        watch: {
+            node(now, old) {
+                console.log('Significance cutoff change');
+                console.log(now);
+                console.log(old);
+            },
+            edge(now, old) {
+                console.log('Edge filter change');
+                console.log(now);
+                console.log(old);
+            },
+            sc(now, old) {
+                console.log('S/C Ratio change');
+                console.log(now);
+                console.log(old);
+            },
+            cutoff(now, old) {
+                console.log('Cutoff change');
+                console.log(now);
+                console.log(old);
+            },
+            preserve(now, old) {
+                console.log('Preserve change');
+                console.log(now);
+                console.log(old);
+            },
+            balance(old, now) {
+                console.log('Balance change');
+                console.log(now);
+                console.log(old);
+            },
+            frequencyWeight(now, old) {
+                console.log("Frequency Significance Weight change");
+                console.log(now);
+                console.log(old);
+            },
+            routingWeight(now, old) {
+                console.log("Routing Significance Weight change");
+                console.log(now);
+                console.log(old);
             }
         }
     }
