@@ -12,16 +12,16 @@ class Graph:
         #uniary
         self.node_routing_values = dict()
         self.unary_sig_values = dict()
-        self.cal_uniary_metrics()
+        # TODO self.cal_uniary_metrics()
         #binary
         self.edge_distance_values = list()
         self.binary_sig_values = list()
-        self.cal_binary_metrics()
+        # TODO self.cal_binary_metrics()
         #binary correlation
         self.time_diff_values = list()
         self.resource_corr_values = list()
         self.activity_corr_values = list()
-        self.cal_binary_corr_metrics()
+        # TODO self.cal_binary_corr_metrics()
 
 
         self.clusters = list()

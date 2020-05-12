@@ -2,3 +2,4 @@
 FuzzyMiner/settings.py.example
 /templates
 /venv
+/logs
