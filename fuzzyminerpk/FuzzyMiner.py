@@ -31,11 +31,18 @@ class Graph:
         self.node_routing_values = dict()
         self.unary_sig_values = dict()
         self.cal_unary_metrics()
-
-        # binary
+    
+        #binary
         self.edge_distance_values = list()
         self.binary_sig_values = list()
         self.cal_binary_metrics()
+        
+        #binary correlation
+        self.time_diff_values = list()
+        self.resource_corr_values = list()
+        self.activity_corr_values = list()
+        self.cal_binary_corr_metrics()
+
 
         # binary correlation
         self.time_diff_values = [[0 for x in range(20)] for y in range(20)]
