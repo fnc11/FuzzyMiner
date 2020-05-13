@@ -19,3 +19,11 @@ class MetricConfig:
         self.include = include
         self.invert = invert
         self.weight = weight
+
+
+class MetricWeight:
+    def __init__(self, name, aggregate_weights, include=True, invert=False):
+        self.name = name
+        self.aggregate_weights = aggregate_weights
+        self.include = include
+        self.invert = invert
