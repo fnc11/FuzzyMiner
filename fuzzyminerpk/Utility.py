@@ -19,11 +19,16 @@ class FMLogUtils:
                 temp_set.add(event['concept:name']+"@"+event['lifecycle:transition'])
         return list(temp_set)
 
+def is_standard_key(key):
+    if key == "concept" or key == "lifecycle" or key == "org" or key == "time" or key == "semantic":
+        return True
+    else:
+        return False
+
 
 def cal_proximity(evt1, evt2):
     # time stamp diff
     pass
-
 
 
 def cal_endpoint(evt1, evt2):
@@ -31,14 +36,31 @@ def cal_endpoint(evt1, evt2):
 
 
 def cal_originator(evt1, evt2):
-    # first_resource = evt1['org:resource'] if 'org:resource' in evt1:"<no resource>"
-    # second_resource = ev2
-    # return Levenshtein.ratio(first_resource, second_resource)
-    pass
+    first_resource = evt1['org:resource'] if 'org:resource' in evt1 else "<no resource>"
+    second_resource = evt2['org:resource'] if 'org:resource' in evt2 else "<no resource>"
+    return Levenshtein.ratio(first_resource, second_resource)
 
 
 def cal_datatype(evt1, evt2):
-    pass
+    ref_data_key_set = list()
+    fol_data_key_set = list()
+    for key in evt1:
+        if not is_standard_key(key):
+            ref_data_key_set.append(key)
+
+    for key in evt2:
+        if not is_standard_key(key):
+            fol_data_key_set.append(key)
+
+    if (len(ref_data_key_set) == 0) or (len(fol_data_key_set) == 0):
+        return 0
+    overlap = 0
+    for i in ref_data_key_set:
+        for j in fol_data_key_set:
+            if ref_data_key_set[i] == fol_data_key_set[j]:
+                overlap += 1
+
+    return overlap / len(ref_data_key_set)
 
 
 def cal_datavalue(evt1, evt2):
