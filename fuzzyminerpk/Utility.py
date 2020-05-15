@@ -112,21 +112,45 @@ def is_valid_matrix1D(lst):
 
 # To check if values are correct
 def is_valid_matrix2D(lst):
-    maxFound = 0.0
-    for col in range(len(lst), 0, -1):
-        for row in (len(lst), 0, -1):
-            current = lst[col][row]
-            if current > maxFound:
-                maxFound = current
-    if maxFound > 0:
+    max_found = 0.0
+    for i in range(0, len(lst[0])):
+        for j in range(0, len(lst[0])):
+            if lst[i][j] > max_found:
+                max_found = lst[i][j]
+    if max_found > 0:
         return True
     else:
         return False
 
 
 def normalize_matrix1D(lst):
-    pass
+    max_val = 0
+    for val in lst:
+        if val > max_val:
+            max_val = val
+    if max_val == 0:
+        return lst
+    else:
+        norm_list = list()
+        for val in lst:
+            norm_list.append(val / max_val)
+        return norm_list
 
 
 def normalize_matrix2D(lst):
-    pass
+    max_val = 0
+    sz = len(lst[0])
+    for i in range(0, sz):
+        for j in range(0, sz):
+            if lst[i][j] > max_val:
+                max_val = lst[i][j]
+    if max_val == 0:
+        return lst
+    else:
+        norm_list = list()
+        for i in range(0, sz):
+            temp_list = list()
+            for j in range(0, sz):
+                temp_list.append(lst[i][j] / max_val)
+            norm_list.append(temp_list)
+        return norm_list
