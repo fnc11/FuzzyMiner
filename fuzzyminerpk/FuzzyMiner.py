@@ -1,6 +1,7 @@
 import Levenshtein
 
-from fuzzyminerpk.Utility import FMLogUtils, cal_proximity, cal_endpoint, cal_originator, cal_datatype, cal_datavalue
+from fuzzyminerpk.Utility import FMLogUtils, cal_proximity, cal_endpoint, cal_originator, cal_datatype, cal_datavalue, \
+    is_valid_matrix1D, is_valid_matrix2D
 
 
 class Graph:
@@ -51,17 +52,40 @@ class Graph:
         self.binary_corr_datavalue_normalized_values = [[1.0 for x in range(self.num_of_nodes)] for y in
                                                         range(self.num_of_nodes)]
 
+        self.extract_dicts()
+        
+        self.nomalize_primary_metrics()
 
+
+        ###########Aggregate(simple sum)########
+        # unary aggregate computation - used frequency significance, will be used in cal distance
+        self.unary_simple_aggregate_values = [0.0 for x in range(self.num_of_nodes)]
+        self.unary_simple_aggregate_normalized_values = [0.0 for x in range(self.num_of_nodes)]
+
+        self.cal_unary_simple_aggregate()
+
+        # binary aggregate computation - used frequency significance, will be used in cal routing_significance and distance
+        self.binary_simple_aggregate_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.binary_simple_aggregate_normalized_values = [[1.0 for x in range(self.num_of_nodes)] for y in
+                                                       range(self.num_of_nodes)]
+        self.cal_binary_simple_aggregate()
+
+        # binary aggregate multiple computation - used all binary corr metrics, will be used in cal routing_significance
+        self.binary_simple_multi_aggregate_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.binary_simple_multi_aggregate_normalized_values = [[1.0 for x in range(self.num_of_nodes)] for y in
+                                                       range(self.num_of_nodes)]
+        self.cal_binary_simple_multi_aggregate()
+
+        ###########Derivative metrices######
         self.unary_derivative_routing_values = [0 for x in range(self.num_of_nodes)]
         self.unary_derivative_routing_normalized_values = [0 for x in range(self.num_of_nodes)]
+
+        self.cal_unary_derivate()
 
         self.binary_derivative_distance_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
         self.binary_derivative_distance_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
                                                        range(self.num_of_nodes)]
-        self.binary_derivative_distance_normalized_values = [[1.0 for x in range(self.num_of_nodes)] for y in
-                                                        range(self.num_of_nodes)]
-
-        self.extract_dicts()
+        self.cal_binary_derivative()
 
         # data to show on the canvas
         # intermediate data after applying concurrency filter
@@ -182,43 +206,6 @@ class Graph:
         #             self.edges_list[self.nodes_index[trace[i - 1]['concept:name']]][
         #                 self.nodes_index[trace[i]['concept:name']]] += 1
 
-    # def cal_unary_metrics(self):
-    #     in_arcs = 0
-    #     out_arcs = 0
-    #     self.extract_dicts()
-    #     for row in range(len(self.edges_list)):
-    #         for col in range(len(self.edges_list[row])):
-    #             out_arcs += self.edges_list[row][col]
-    #             in_arcs += self.edges_list[col][row]
-    #             self.node_routing_values[row][col] = abs(in_arcs - out_arcs)
-
-    # def cal_binary_metrics(self):
-    #     self.extract_dicts()
-    #     for row in range(len(self.edges_list)):
-    #         for col in range(len(self.edges_list[row])):
-    #             a = self.edges_list[row][col]
-    #             n1 = self.nodes_dict[row]
-    #             n2 = self.nodes_dict[col]
-    #             self.edge_distance_values = abs((n1 + n2) - a)
-
-    # def cal_binary_corr_metrics(self):
-    #     for trace in self.log:
-    #         num = len(trace)
-    #         for i in range(0, num):
-    #             if i > 0:
-    #                 event = trace[i]
-    #                 prev_event = trace[i - 1]
-    #                 self.time_diff_values[self.nodes_index[prev_event['concept:name']]][
-    #                     self.nodes_index[event['concept:name']]] = \
-    #                     event['time:timestamp'] - prev_event['time:timestamp']
-    #                 # since all logs don't have resources
-    #                 if 'org:resource' in event and 'org:resource' in prev_event:
-    #                     self.resource_corr_values[self.nodes_index[prev_event['concept:name']]][
-    #                         self.nodes_index[event['concept:name']]] = \
-    #                         Levenshtein.ratio(event['org:resource'], prev_event['org:resource'])
-    #                 self.activity_corr_values[self.nodes_index[prev_event['concept:name']]][
-    #                     self.nodes_index[event['concept:name']]] = \
-    #                     Levenshtein.ratio(event['concept:name'], prev_event['concept:name'])
 
     def update_unary_sig_values(self):
         # Hard-coding the weights
@@ -331,6 +318,105 @@ class Graph:
         for node in self.nodes:
             self.node_indices[node] = idx
             idx += 1
+
+    def cal_unary_simple_aggregate(self):
+        ## Caution Use normalized value of all the metrics
+        if is_valid_matrix1D(self.unary_node_frequency_values):
+            ##Caution for this zero value
+            temp_max = 0.0
+            for i in range(0, len(self.unary_node_frequency_values)):
+                self.unary_simple_aggregate_values[i] = self.unary_node_frequency_values[i]
+                if self.unary_node_frequency_values[i] > temp_max:
+                    temp_max = self.unary_node_frequency_values[i]
+            for i in range(0, len(self.unary_node_frequency_values)):
+                # Note: Could also fill normalized list self.binary_edge_frequency_normalized_values
+                self.unary_simple_aggregate_normalized_values[i] *= (1/temp_max)
+        else:
+            ##Caution: Check if we need to return or do somthing else
+            return
+
+    def cal_binary_simple_aggregate(self):
+        ## Caution Use normalized value of all the metrics
+        if is_valid_matrix2D(self.binary_edge_frequency_values):
+            ##Caution for this zero value
+            temp_max = 0.0
+            sz = len(self.binary_edge_frequency_values)
+            for i in range(0, sz):
+                for j in range(0, sz):
+                    self.binary_simple_aggregate_values[i][j] = self.binary_edge_frequency_values[i][j]
+                    if self.binary_edge_frequency_values[i][j] > temp_max:
+                        temp_max = self.binary_edge_frequency_values[i][j]
+            for i in range(0, sz):
+                for j in range(0, sz):
+                    # Note: Could also fill normalized list self.binary_edge_frequency_normalized_values
+                    self.binary_simple_aggregate_values[i][j] *= (1/temp_max)
+        else:
+            ##Caution: Check if we need to return or do somthing else
+            return
+
+
+    def cal_binary_simple_multi_aggregate(self):
+        #Will be used for correlating related metric aggregation
+        ##Reminder Check if these metrics were normalized
+        valid_metrics = list()
+        if is_valid_matrix2D(self.binary_corr_proximity_normalized_values):
+            valid_metrics.append(self.binary_corr_proximity_normalized_values)
+        if is_valid_matrix2D(self.binary_corr_endpoint_normalized_values):
+            valid_metrics.append(self.binary_corr_endpoint_normalized_values)
+        if is_valid_matrix2D(self.binary_corr_originator_normalized_values):
+            valid_metrics.append(self.binary_corr_originator_normalized_values)
+        if is_valid_matrix2D(self.binary_corr_datatype_normalized_values):
+            valid_metrics.append(self.binary_corr_datatype_normalized_values)
+        if is_valid_matrix2D(self.binary_corr_datavalue_normalized_values):
+            valid_metrics.append(self.binary_corr_datavalue_normalized_values)
+        ##Caution for this zero value
+        temp_max = 0.0
+        if len(valid_metrics) > 0:
+            sz = self.num_of_nodes
+            for i in range(0, sz):
+                for j in range(0, sz):
+                    aggregated = 0.0
+                    for k in range(0, len(valid_metrics)):
+                        # Check if this below code is accessing values correctly
+                        aggregated += valid_metrics[k][i][j]
+
+                    self.binary_simple_multi_aggregate_values[i][j] = aggregated
+                    if aggregated > temp_max:
+                        temp_max = aggregated
+            for i in range(0, sz):
+                for j in range(0, sz):
+                    self.binary_simple_multi_aggregate_normalized_values[i][j] *= (1/temp_max)
+        else:
+            ##Caution: Check if we need to return or do somthing else
+            return
+
+    def cal_unary_derivate(self):
+        sz = self.num_of_nodes
+        for i in range(0, sz):
+            in_value, out_value, quotient = 0.0
+            for x in range(0, sz):
+                if x == i:
+                    continue
+                in_value += self.binary_simple_aggregate_normalized_values[x][i]*self.binary_simple_multi_aggregate_normalized_values[x][i]
+                out_value += self.binary_simple_aggregate_normalized_values[i][x] * \
+                           self.binary_simple_multi_aggregate_normalized_values[i][x]
+            if in_value == 0.0 and out_value == 0.0:
+                quotient = 0.0
+            else:
+                quotient = abs((in_value - out_value)/(in_value + out_value))
+            self.unary_derivative_routing_values[i] = quotient
+
+    def cal_binary_derivative(self):
+        sz = self.num_of_nodes
+        for i in range(0, sz):
+            sig_source = self.unary_simple_aggregate_normalized_values[i]
+            for j in range(0, sz):
+                sig_target = self.unary_simple_aggregate_normalized_values[j]
+                sig_link = self.binary_simple_aggregate_normalized_values[i][j]
+                self.binary_derivative_distance_values[i][j] = 1.0 - ((sig_source - sig_link) + (sig_target - sig_link)) / (sig_source + sig_target)
+
+    def nomalize_primary_metrics(self):
+        pass
 
 
 class Cluster:

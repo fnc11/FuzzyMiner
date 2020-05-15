@@ -27,12 +27,23 @@ def is_standard_key(key):
 
 
 def cal_proximity(evt1, evt2):
-    # time stamp diff
-    pass
+    time1 = evt1['time:timestamp']
+    time2 = evt2['time:timestamp']
+    if time1 is not None and time2 is not None:
+        time1 = time1.timestamp()
+        time2 = time2.timestamp()
+        if time1 != time2:
+            return 1.0/(time2-time1)
+        else:
+            return 1.0
+    else:
+        return 0.0
 
 
 def cal_endpoint(evt1, evt2):
-    return Levenshtein.ratio(evt1['concept:name'], evt2['concept:name'])
+    first_name = evt1['concept:name'] if 'concept:name' in evt1 else "<no name>"
+    second_name = evt2['concept:name'] if 'concept:name' in evt2 else "<no name>"
+    return Levenshtein.ratio(first_name, second_name)
 
 
 def cal_originator(evt1, evt2):
@@ -64,4 +75,35 @@ def cal_datatype(evt1, evt2):
 
 
 def cal_datavalue(evt1, evt2):
+    ref_data_key_set = list()
+    fol_data_key_set = list()
+    for key in evt1:
+        if not is_standard_key(key):
+            ref_data_key_set.append(key)
+
+    for key in evt2:
+        if not is_standard_key(key):
+            fol_data_key_set.append(key)
+
+    if (len(ref_data_key_set) == 0) or (len(fol_data_key_set) == 0):
+        return 0
+    key_overlap = 0
+    val_overlap = 0
+    for key in ref_data_key_set:
+        if key in fol_data_key_set:
+            key_overlap += 1
+            val_overlap += Levenshtein.ratio(evt1[key], evt2[key])
+
+    if key_overlap == 0:
+        return 0.0
+    else:
+        return val_overlap/key_overlap
+
+
+#To check if values are correct
+def is_valid_matrix1D(lst):
+    pass
+
+#To check if values are correct
+def is_valid_matrix2D(lst):
     pass
