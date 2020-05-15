@@ -471,6 +471,8 @@ class DataRepository:
 
     def debug_print_primary_metric_values(self):
         print("unary frequency_normalized_values")
+        print("this is valid 1D matrix", end=" ")
+        print(is_valid_matrix1D(self.unary_node_frequency_normalized_values))
         for val in self.unary_node_frequency_normalized_values:
             print(str(val), end=" ")
 
@@ -533,9 +535,9 @@ class DataRepository:
 
     def debug_print_aggregate_values(self):
         print("Unary simple aggregate values")
-        print("this is valid 2D matrix", end=" ")
-        print(is_valid_matrix2D(self.unary_node_frequency_values))
-        sze = self.unary_node_frequency_values
+        print("this is valid 1D matrix", end=" ")
+        print(is_valid_matrix1D(self.unary_node_frequency_values))
+        sze = self.num_of_nodes
         for i in range(0, sze):
             print(str(self.unary_simple_aggregate_normalized_values[i]), end=" ")
         print()
@@ -563,21 +565,16 @@ class DataRepository:
         print()
 
     def debug_print_derivative_metric_values(self):
-        print("unary_derivative_values")
+        print("unary_derivative_routing_normalized_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
-            in_value = 0.0
-            out_value = 0.0
-            for j in range(0, sze):
-                print(str(in_value), end=" ")
-                print(str(out_value), end=" ")
-            print(str(self.binary_edge_frequency_normalized_values[i][j]), end=" ")
+                print(str(self.unary_derivative_routing_normalized_values[i]), end=" ")
         print()
-        print("binary_derivative_values")
+        print("binary_derivative_distance_normalized_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
             for j in range(0, sze):
-                print(str(self.binary_derivative_distance_values[i][j]), end=" ")
+                print(str(self.binary_derivative_distance_normalized_values[i][j]), end=" ")
             print()
         print()
 
@@ -586,19 +583,19 @@ class DataRepository:
         print("weighted_unary_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
-            print(str(self.unary_weighted_values), end=" ")
+            print(str(self.unary_weighted_values[i]), end=" ")
         print("\n\n")
         print("weighted_binary_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
             for j in range(0, sze):
-                print(str(self.binary_weighted_values), end=" ")
+                print(str(self.binary_weighted_values[i][j]), end=" ")
             print()
         print()
         print("weighted_binary_corr_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
             for j in range(0, sze):
-                print(str(self.binary_corr_weighted_values), end=" ")
+                print(str(self.binary_corr_weighted_values[i][j]), end=" ")
             print()
         print()

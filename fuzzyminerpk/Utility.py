@@ -45,12 +45,14 @@ def cal_proximity(evt1, evt2):
 def cal_endpoint(evt1, evt2):
     first_name = evt1['concept:name'] if 'concept:name' in evt1 else "<no name>"
     second_name = evt2['concept:name'] if 'concept:name' in evt2 else "<no name>"
+    # Note this implementation is not same as fuzzy_miner plugin String Similarity mechanism
     return Levenshtein.ratio(str(first_name), str(second_name))
 
 
 def cal_originator(evt1, evt2):
     first_resource = evt1['org:resource'] if 'org:resource' in evt1 else "<no resource>"
     second_resource = evt2['org:resource'] if 'org:resource' in evt2 else "<no resource>"
+    # Note this implementation is not same as fuzzy_miner plugin String Similarity mechanism
     return Levenshtein.ratio(str(first_resource), str(second_resource))
 
 
@@ -95,6 +97,7 @@ def cal_datavalue(evt1, evt2):
         if key in fol_data_keys:
             key_overlap += 1
             val_overlap += Levenshtein.ratio(str(evt1[key]), str(evt2[key]))
+            # Note this implementation is not same as fuzzy_miner plugin String Similarity mechanism
 
     if key_overlap == 0:
         return 0.0
