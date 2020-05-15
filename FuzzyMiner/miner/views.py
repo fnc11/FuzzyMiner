@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from pm4py.statistics.traces.log import case_statistics
 
+from fuzzyminerpk.Attenuation import LinearAttenuation
 from fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
 from fuzzyminerpk.Filter import NodeFilter, EdgeFilter, ConcurrencyFilter
 from fuzzyminerpk.FuzzyMiner import Graph
@@ -32,18 +33,19 @@ def get_default_configuration():
     edge_filter = EdgeFilter()
     concurrency_filter = ConcurrencyFilter()
     filter_config = FilterConfig(node_filter, edge_filter, concurrency_filter)
-    metric_config1 = MetricConfig("frequency_significance", "unary")
-    metric_config2 = MetricConfig("routing_significance", "unary")
-    metric_config3 = MetricConfig("frequency_significance", "binary")
-    metric_config4 = MetricConfig("distance_significance", "binary")
-    metric_config5 = MetricConfig("proximity_correlation", "binary")
-    metric_config6 = MetricConfig("originator_correlation", "binary")
-    metric_config7 = MetricConfig("endpoint_correlation", "binary")
-    metric_config8 = MetricConfig("datatype_correlation", "binary")
-    metric_config9 = MetricConfig("datavalue_correlation", "binary")
+    metric_config1 = MetricConfig("frequency_significance_unary", "unary")
+    metric_config2 = MetricConfig("routing_significance_unary", "unary")
+    metric_config3 = MetricConfig("frequency_significance_binary", "binary")
+    metric_config4 = MetricConfig("distance_significance_binary", "binary")
+    metric_config5 = MetricConfig("proximity_correlation_binary", "binary")
+    metric_config6 = MetricConfig("originator_correlation_binary", "binary")
+    metric_config7 = MetricConfig("endpoint_correlation_binary", "binary")
+    metric_config8 = MetricConfig("datatype_correlation_binary", "binary")
+    metric_config9 = MetricConfig("datavalue_correlation_binary", "binary")
     metric_configs = [metric_config1, metric_config2, metric_config3, metric_config4, metric_config5, metric_config6
                       , metric_config7, metric_config8, metric_config9]
-    fuzzy_config = Configuration(filter_config, metric_configs)
+    attenuation = LinearAttenuation(7, 7)
+    fuzzy_config = Configuration(filter_config, metric_configs, attenuation, 7)
     return fuzzy_config
 
 
@@ -53,7 +55,7 @@ def launch_filter(log_file_path):
     graph = Graph(log, default_fuzzy_config)
     variants_count = case_statistics.get_variant_statistics(log)
     variants_count = sorted(variants_count, key=lambda x: x['count'], reverse=True)
-    return graph.edges_list
+    return graph.data_repository.unary_weighted_values
 
 
 def handle_file(request):

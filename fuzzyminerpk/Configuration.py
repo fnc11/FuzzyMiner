@@ -1,8 +1,10 @@
 
 class Configuration:
-    def __init__(self, filter_config, metric_configs):
+    def __init__(self, filter_config, metric_configs, attenuation, chunk_size):
         self.filter_config = filter_config
         self.metric_configs = metric_configs
+        self.attenuation = attenuation
+        self.chunk_size = chunk_size
 
 
 class FilterConfig:
@@ -13,6 +15,13 @@ class FilterConfig:
 
 
 class MetricConfig:
+    """
+    name: Metric name
+    metric_type: 0 - Unary, 1 - Binary, 2 - Binary Correlation
+    include: To include in computation
+    invert: Invert the meaning
+    weight: Weight of this Metric
+    """
     def __init__(self, name, metric_type, include=True, invert=False, weight=0.5):
         self.name = name
         self.metric_type = metric_type
@@ -21,9 +30,6 @@ class MetricConfig:
         self.weight = weight
 
 
-class MetricWeight:
-    def __init__(self, name, aggregate_weights, include=True, invert=False):
+class AggregateMetric:
+    def __init__(self, name):
         self.name = name
-        self.aggregate_weights = aggregate_weights
-        self.include = include
-        self.invert = invert

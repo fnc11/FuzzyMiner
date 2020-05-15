@@ -38,7 +38,7 @@ class Attenuation(ABC):
 class LinearAttenuation(Attenuation):
 
     def __init__(self, buffer_size, num_of_echelons):
-        super.__init__(buffer_size)
+        super().__init__(buffer_size)
         self.echelons = num_of_echelons
 
     def create_attenuation_factor(self, distance):
@@ -58,7 +58,7 @@ class NRootAttenuation(Attenuation):
 
     # Keep in mind the order in java code for buffer_size and num_of_echelon is reverse
     def __init__(self, buffer_size, num_of_echelons):
-        super.__init__(buffer_size)
+        super().__init__(buffer_size)
         self.echelons = num_of_echelons
 
     def create_attenuation_factor(self, distance):
