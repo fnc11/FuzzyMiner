@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from pm4py.statistics.traces.log import case_statistics
 
+from fuzzyminerpk.Attenuation import LinearAttenuation
 from fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
 from fuzzyminerpk.Filter import NodeFilter, EdgeFilter, ConcurrencyFilter
 from fuzzyminerpk.FuzzyMiner import Graph
@@ -43,7 +44,8 @@ def get_default_configuration():
     metric_config9 = MetricConfig("datavalue_correlation", "binary")
     metric_configs = [metric_config1, metric_config2, metric_config3, metric_config4, metric_config5, metric_config6
                       , metric_config7, metric_config8, metric_config9]
-    fuzzy_config = Configuration(filter_config, metric_configs)
+    attenuation = LinearAttenuation(7, 7)
+    fuzzy_config = Configuration(filter_config, metric_configs, attenuation, 7)
     return fuzzy_config
 
 

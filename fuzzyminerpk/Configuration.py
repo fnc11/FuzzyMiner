@@ -28,12 +28,8 @@ class MetricConfig:
         self.include = include
         self.invert = invert
         self.weight = weight
-        self.values = list()
-        self.normalized_values = list()
 
 
 class AggregateMetric:
     def __init__(self, name):
         self.name = name
-        self.values = list()
-        self.normalized_values = list()
