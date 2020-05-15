@@ -16,8 +16,9 @@ class FMLogUtils:
         temp_set = set()
         for trace in self.log:
             for event in trace:
-                temp_set.add(event['concept:name']+"@"+event['lifecycle:transition'])
+                temp_set.add(event['concept:name'] + "@" + event['lifecycle:transition'])
         return list(temp_set)
+
 
 def is_standard_key(key):
     if key == "concept" or key == "lifecycle" or key == "org" or key == "time" or key == "semantic":
@@ -33,7 +34,7 @@ def cal_proximity(evt1, evt2):
         time1 = time1.timestamp()
         time2 = time2.timestamp()
         if time1 != time2:
-            return 1.0/(time2-time1)
+            return 1.0 / (time2 - time1)
         else:
             return 1.0
     else:
@@ -97,13 +98,26 @@ def cal_datavalue(evt1, evt2):
     if key_overlap == 0:
         return 0.0
     else:
-        return val_overlap/key_overlap
+        return val_overlap / key_overlap
 
 
-#To check if values are correct
+# To check if values are correct
 def is_valid_matrix1D(lst):
-    pass
+    for i in range(0, len(lst)):
+        if lst[i] > 0.0:
+            return True
+    return False
 
-#To check if values are correct
+
+# To check if values are correct
 def is_valid_matrix2D(lst):
-    pass
+    maxFound = 0.0
+    for col in range(len(lst), 0, -1):
+        for row in (len(lst), 0, -1):
+            current = lst[col][row]
+            if current > maxFound:
+                maxFound = current
+    if maxFound > 0:
+        return True
+    else:
+        return False
