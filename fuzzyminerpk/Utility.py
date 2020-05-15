@@ -104,12 +104,24 @@ def cal_datavalue(evt1, evt2):
 
 # To check if values are correct
 def is_valid_matrix1D(lst):
-    pass
+    for i in range(0, len(lst)):
+        if lst[i] > 0.0:
+            return True
+    return False
 
 
 # To check if values are correct
 def is_valid_matrix2D(lst):
-    pass
+    maxFound = 0.0
+    for col in range(len(lst), 0, -1):
+        for row in (len(lst), 0, -1):
+            current = lst[col][row]
+            if current > maxFound:
+                maxFound = current
+    if maxFound > 0:
+        return True
+    else:
+        return False
 
 
 def normalize_matrix1D(lst):
