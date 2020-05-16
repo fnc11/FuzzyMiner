@@ -1,80 +1,82 @@
 <template>
-    <div>
+    <div class="page-layout">
         <el-row :gutter="10">
-            <el-col :span="16">
+            <el-col :span="16" align="middle">
                 <div class="model-view">
-                    <h3 align="center"> Fuzzy Model</h3>
-                    <div class="el-tabs--border-card" >
+                    <h3 class="text-center-align">Fuzzy Model</h3>
+                    <div class="el-tabs--border-card grid-content process-graph-view">
+                        <canvas></canvas>
+
+
                         <!-- here should be canvas -->
                     </div>
+
                     <el-button>Save Snapshot</el-button>
+
                 </div>
             </el-col>
             <el-col :span="8">
                 <div class="model-view">
-                    <h3 align="center">Configurations</h3>
-                    <el-row :gutter="10" class="el-tabs--border-card">
-                        <el-col :span="8" class="el-table--border">
-                            <label>Node Filter</label>
-                            <label>Significance Cutoff</label>
+                    <h3 class="text-center-align">Configurations</h3>
+                    <el-row :gutter="10" class="el-tabs--border-card filter-container">
+                        <el-col :span="8" class="grid-content el-table--border">
+                            <h4>Node Filter</h4>
+                            <br>
                             <div align="center">
-                                <el-slider vertical v-model="node" height="200px" @change="nodeChanged" />
+                            <label>Significance Cutoff</label>
+                                <el-slider vertical v-model="node" height="320px" @change="nodeChanged" />
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
-                        <el-col :span="8" class="el-table--border">
-                            <label>Edge Filter</label>
+                        <el-col :span="8" class="grid-content el-table--border">
+                            <h4>Edge Filter</h4>
+                            <br>
                             <label>Edge Transformer</label>
                             <el-radio-group>
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
                             <el-row :gutter="20">
-                                <el-col :span="10" align="center">
-                                    <label>S/C Ratio</label>
-                                    <el-slider vertical v-model="sc" height="200px" @change="scChanged" />
-                                    <label>{{ sc / 100 }}</label>
-                                </el-col>
+                            <el-col :span="10">
+                                <label>S/C Ratio</label>
 
-                                <el-col :span="10" align="center">
-                                    <label>Cutoff</label>
-                                    <el-slider vertical v-model="cutoff" height="200px" @change="cutoffChanged" />
-                                    <label>{{ cutoff / 100 }}</label>
-                                </el-col>
+                                <el-slider vertical v-model="sc" height="320px" @change="scChanged" />
+                                <label>{{ sc / 100 }}</label>
+                            </el-col>
+                               <el-col :span="10">
+                                   <label>Cutoff</label>
+                                   <el-slider vertical v-model="cutoff" height="320px" @change="cutoffChanged" />
+                                   <label>{{ sc / 100 }}</label>
+                               </el-col>
                             </el-row>
                             <el-checkbox v-model="loops">Ignore Self-Loops</el-checkbox>
                             <el-checkbox v-model="absolute">Interpret Absolute</el-checkbox>
                         </el-col>
-                        <el-col :span="8" class="el-table--border">
+                        <el-col :span="8" class="grid-content el-table--border">
+                            <div class="">
 
-                            <label>Concurrency Filter</label>
+                            <h4>Concurrency Filter</h4>
                             <el-checkbox v-model="concurrency">Filter Concurrency</el-checkbox>
 
-                            <el-row :gutter="20">
-                                <el-col :span="10" align="center">
+                            <el-row :gutter="20" class="slider-position">
+
+                                <el-col :span="10" align="left">
                                     <label>Preserve</label>
-                                    <el-slider vertical v-model="preserve" height="200px" @change="preserveChanged" />
+                                    <el-slider vertical v-model="preserve" height="320px" @change="preserveChanged" />
                                     <label>{{ preserve / 100 }}</label>
                                 </el-col>
 
-                                <el-col :span="10" align="center">
+                                <el-col :span="10" align="right">
                                     <label>Balance</label>
-
-                                    <el-slider vertical v-model="balance" height="200px" @change="balanceChanged" />
+                                    <el-slider vertical v-model="balance" height="320px" @change="balanceChanged" />
                                     <label>{{ balance / 100 }}</label>
                                 </el-col>
-                            </el-row>
 
+                            </el-row>
+                        </div>
                         </el-col>
                     </el-row>
-<!--                    <div align="center">-->
-<!--                        <el-checkbox v-model="staticMethod">Static</el-checkbox>-->
-<!--                        <el-button-group>-->
-<!--                            <el-button>Apply</el-button>-->
-<!--                            <el-button>Undo</el-button>-->
-<!--                        </el-button-group>-->
-<!--                    </div>-->
-                    <div align="center">
+                    <div class="text-center-align metrics">
                         <el-button @click="dialog = true">Metrics Configuration</el-button>
                     </div>
                 </div>
@@ -172,53 +174,6 @@
                 await metrics();
             },
         },
-        // watch: {
-        //     node(now, old) {
-        //         console.log('Significance cutoff change');
-        //         console.log(now);
-        //         console.log(old);
-        //         // nodeFilter
-        //     },
-        //     edge(now, old) {
-        //         console.log('Edge filter change');
-        //         console.log(now);
-        //         console.log(old);
-        //     },
-        //     sc(now, old) {
-        //         console.log('S/C Ratio change');
-        //         console.log(now);
-        //         console.log(old);
-        //         // scRatio
-        //     },
-        //     cutoff(now, old) {
-        //         console.log('Cutoff change');
-        //         console.log(now);
-        //         console.log(old);
-        //         // cutoff
-        //     },
-        //     preserve(now, old) {
-        //         console.log('Preserve change');
-        //         console.log(now);
-        //         console.log(old);
-        //         // preserve
-        //     },
-        //     balance(old, now) {
-        //         console.log('Balance change');
-        //         console.log(now);
-        //         console.log(old);
-        //         // balance
-        //     },
-        //     frequencyWeight(now, old) {
-        //         console.log("Frequency Significance Weight change");
-        //         console.log(now);
-        //         console.log(old);
-        //     },
-        //     routingWeight(now, old) {
-        //         console.log("Routing Significance Weight change");
-        //         console.log(now);
-        //         console.log(old);
-        //     }
-        // }
     }
 </script>
 
@@ -226,6 +181,39 @@
     .model-view {
         width: 90%;
         position: relative;
-        top: 40px;
+        top: 20px;
+        display: block;
     }
+    .text-center-align{
+        text-align:center;
+    }
+    .page-layout{
+        position:relative;
+        top:40px;
+        height:720px;
+    }
+    .filter-container{
+        height:560px;
+       border-color: #f0f0f0;
+
+    }
+    .slider-position{
+        top:30px;
+    }
+    .grid-content{
+        height: inherit;
+
+    }
+    .process-graph-view{
+        height: 560px;
+        border-color: #f0f0f0;
+        overflow: scroll;
+    }
+    .button-height{
+
+        height: inherit;
+        top:5px;
+    }
+
+
 </style>

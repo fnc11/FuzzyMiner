@@ -20,13 +20,11 @@
                             </el-button-group>
                         </div>
                     </el-col>
-
                 </el-row>
             </el-header>
-
-            <el-main>
+            <el-maincd>
                 <router-view/>
-            </el-main>
+            </el-maincd>
             <el-footer class="fluid-container footer" height="5%">
                 <p>@Copy right: 2020</p>
             </el-footer>
@@ -52,6 +50,7 @@
 
 <style scoped>
     #app {
+
         height: 100%;
     }
     .el-container {
@@ -95,11 +94,6 @@
 
     }
 
-    .el-button {
 
-        border-radius: 0.2px;
-
-
-    }
 
 </style>
