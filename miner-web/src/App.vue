@@ -20,10 +20,8 @@
                             </el-button-group>
                         </div>
                     </el-col>
-
                 </el-row>
             </el-header>
-
             <el-main>
                 <router-view/>
             </el-main>
@@ -96,10 +94,7 @@
     }
 
     .el-button {
-
         border-radius: 0.2px;
-
-
     }
 
 </style>

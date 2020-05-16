@@ -1,73 +1,93 @@
 <template>
-    <div>
+    <div class="page-layout">
         <el-row :gutter="10">
             <el-col :span="16">
                 <div class="model-view">
-                    <h3 align="center"> Fuzzy Model</h3>
-                    <div class="el-tabs--border-card" >
+                    <h3 class="text-center-align"> Fuzzy Model</h3>
+                    <div class="el-tabs--border-card grid-content process-graph-view">
+                        <canvas></canvas>
+
+
+
                         <!-- here should be canvas -->
                     </div>
-                    <el-button>Save Snapshot</el-button>
+                    <div class="text-center-align">
+                    <el-button style="top:6px;">Save Snapshot</el-button>
+                    </div>
                 </div>
             </el-col>
             <el-col :span="8">
                 <div class="model-view">
-                    <h3 align="center">Configurations</h3>
-                    <el-row :gutter="10" class="el-tabs--border-card">
-                        <el-col :span="8" class="el-table--border">
+                    <h3 class="text-center-align">Configurations</h3>
+                    <el-row :gutter="10" class="el-tabs--border-card filter-container">
+                        <el-col :span="8" class="grid-content el-table--border">
                             <label>Node Filter</label>
-                            <label>Significance Cutoff</label>
+                            <br>
                             <div align="center">
+                            <label>Significance Cutoff</label>
+
                                 <el-slider vertical v-model="node" height="200px"/>
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
-                        <el-col :span="8" class="el-table--border">
+                        <el-col :span="8" class="grid-content el-table--border">
                             <label>Edge Filter</label>
+                            <br>
                             <label>Edge Transformer</label>
                             <el-radio-group>
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
-                            <label>S/C Ratio</label>
-                            <div align="center">
+                            <el-row :gutter="20">
+                            <el-col :span="10">
+                                <label>S/C Ratio</label>
+
                                 <el-slider vertical v-model="sc" height="200px"/>
                                 <label>{{ sc / 100 }}</label>
-                            </div>
-                            <label>Cutoff</label>
+                            </el-col>
+                               <el-col :span="10">
+                                     <label>Cutoff</label>
+                                   <el-slider vertical v-model="sc" height="200px"/>
+                                    <label>{{ sc / 100 }}</label>
+                               </el-col>
+                            </el-row>
+
                             <el-checkbox v-model="loops">Ignore Self-Loops</el-checkbox>
                             <el-checkbox v-model="absolute">Interpret Absolute</el-checkbox>
                         </el-col>
-                        <el-col :span="8" class="el-table--border">
+                        <el-col :span="8" class="grid-content el-table--border">
+                            <div class="">
 
                             <label>Concurrency Filter</label>
                             <el-checkbox v-model="concurrency">Filter Concurrency</el-checkbox>
 
-                            <el-row :gutter="20">
-                                <el-col :span="10" align="center">
+                            <el-row :gutter="20" class="slider-position">
+
+                                <el-col :span="10" align="left">
                                     <label>Preserve</label>
                                     <el-slider vertical v-model="preserve" height="200px"/>
                                     <label>{{ preserve / 100 }}</label>
                                 </el-col>
 
-                                <el-col :span="10" align="center">
+                                <el-col :span="10" align="right">
                                     <label>Balance</label>
 
                                     <el-slider vertical v-model="balance" height="200px"/>
                                     <label>{{ balance / 100 }}</label>
                                 </el-col>
-                            </el-row>
 
+                            </el-row>
+                        </div>
                         </el-col>
                     </el-row>
-                    <div align="center">
+                    <div class="element-align-center">
                         <el-checkbox v-model="staticMethod">Static</el-checkbox>
                         <el-button-group>
                             <el-button>Apply</el-button>
                             <el-button>Undo</el-button>
                         </el-button-group>
                     </div>
-                    <div align="center">
+                    <div class="text-center-align" >
                         <el-button @click="dialog = true">Metrics Configuration</el-button>
                     </div>
                 </div>
@@ -187,6 +207,33 @@
     .model-view {
         width: 90%;
         position: relative;
-        top: 40px;
+        top: 20px;
+        display: block;
     }
+    .text-center-align{
+        text-align:center;
+    }
+    .page-layout{
+        position:relative;
+        top:40px;
+        height:720px;
+    }
+    .filter-container{
+        height:500px;
+       border-color: #f0f0f0;
+
+    }
+    .slider-position{
+        top:30px;
+    }
+    .grid-content{
+        height: inherit;
+
+    }
+    .process-graph-view{
+        height: 560px;
+        border-color: #f0f0f0;
+        overflow: scroll;
+    }
+
 </style>
