@@ -3,7 +3,7 @@ import { Message } from 'element-ui';
 
 // Create axios instance
 const service = axios.create({
-    baseURL: '/api',
+    baseURL: '/miner',
     // withCredentials: true,
     timeout: 20000 // Request timeout
 });

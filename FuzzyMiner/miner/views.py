@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
@@ -17,14 +18,14 @@ from fuzzyminerpk.FuzzyMiner import Graph
 def upload(request):
     if request.method == 'POST':
         # get file from form data
-        uploaded_file = request.FILES.get('logs_file')
+        uploaded_file = request.FILES.get('file')
         if settings.DEBUG:
             print(uploaded_file.name)
             print(uploaded_file.size)
         fs = FileSystemStorage()
         saved_file_name = fs.save(uploaded_file.name, uploaded_file)
         saved_file_url = fs.url(saved_file_name)
-        return saved_file_url
+        return HttpResponse(saved_file_url)
 
 
 def get_default_configuration():
