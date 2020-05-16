@@ -1,4 +1,5 @@
 /.idea
-FuzzyMiner/settings.py.example
+FuzzyMiner/settings.py
 /templates
 /venv
+/logs

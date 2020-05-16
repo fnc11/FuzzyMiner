@@ -1,5 +1,4 @@
 """FuzzyMiner URL Configuration
-
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
@@ -13,19 +12,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import TemplateView
-from miner import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name="index.html")),
-    path('api/upload', views.upload, name='upload'),
-    path('api/node_filter', views.node_filter, name='node_filter'),
-    path('api/sc_ratio', views.sc_ratio, name='sc_ratio'),
-    path('api/cutoff', views.cutoff, name='cutoff'),
-    path('api/preserve', views.preserve, name='preserve'),
-    path('api/balance', views.balance, name='balance'),
-    path('api/metrics', views.metrics, name='metrics')
+    path('miner/', include('miner.urls'))
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
