@@ -7,10 +7,9 @@ class DataRepository:
         self.log = log
         self.config = config
         self.fm_log_util = FMLogUtils(log)
-        self.node_indices = dict()
-        self.nodes = self.fm_log_util.get_event_classes()
-        self.num_of_nodes = len(self.nodes)
-        self.update_node_index()
+        self.nodes = self.fm_log_util.nodes
+        self.num_of_nodes = self.fm_log_util.num_of_nodes
+        self.node_indices = self.fm_log_util.node_indices
 
         # declare lists to store data
         self.unary_node_frequency_values = list()
@@ -67,15 +66,6 @@ class DataRepository:
         self.metric_settings = dict()
         self.fill_dicts()
 
-    """
-    This populates the node_indices dictionary from the event classes;
-    """
-
-    def update_node_index(self):
-        idx = 0
-        for node in self.nodes:
-            self.node_indices[node] = idx
-            idx += 1
 
     """
     This initializes all the lists which are required to store data to 0 or 0.0, in special cases to 1.0
@@ -153,7 +143,6 @@ class DataRepository:
     This method extract metric config settings like include, invert and weight, and then stores them
     in a dictionary with their name as key.
     """
-
     def fill_dicts(self):
         metric_configs = self.config.metric_configs
         for conf in metric_configs:
@@ -162,7 +151,6 @@ class DataRepository:
     """
     This extracts all the primary metrics values from the log object
     """
-
     def extract_primary_metrics(self):
         max_look_back = self.config.chunk_size
         for trace in self.log:
@@ -232,7 +220,7 @@ class DataRepository:
     """
 
     def extract_derivative_metrics(self):
-        self.cal_unary_derivate()
+        self.cal_unary_derivative()
         self.cal_binary_derivative()
 
     """
@@ -338,7 +326,7 @@ class DataRepository:
     This calculates routing significance metric.
     """
 
-    def cal_unary_derivate(self):
+    def cal_unary_derivative(self):
         sz = self.num_of_nodes
         for i in range(0, sz):
             in_value = 0.0
@@ -465,7 +453,7 @@ class DataRepository:
                                       self.binary_corr_endpoint_normalized_values[i][j] * w3 +
                                       self.binary_corr_datatype_normalized_values[i][j] * w4 +
                                       self.binary_corr_datavalue_normalized_values[i][j] * w5) / (
-                                                 w1 + w2 + w3 + w4 + w5))
+                                             w1 + w2 + w3 + w4 + w5))
                 binary_corr_weight_values.append(temp_list)
             self.binary_corr_weighted_values = binary_corr_weight_values
 
@@ -568,7 +556,7 @@ class DataRepository:
         print("unary_derivative_routing_normalized_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
-                print(str(self.unary_derivative_routing_normalized_values[i]), end=" ")
+            print(str(self.unary_derivative_routing_normalized_values[i]), end=" ")
         print()
         print("binary_derivative_distance_normalized_values")
         sze = self.num_of_nodes
@@ -577,7 +565,6 @@ class DataRepository:
                 print(str(self.binary_derivative_distance_normalized_values[i][j]), end=" ")
             print()
         print()
-
 
     def debug_print_weighted_values(self):
         print("weighted_unary_values")
@@ -599,3 +586,9 @@ class DataRepository:
                 print(str(self.binary_corr_weighted_values[i][j]), end=" ")
             print()
         print()
+
+
+class FilteredDataRepository:
+    def __init__(self, filter_config):
+        self.filter_config = filter_config
+
