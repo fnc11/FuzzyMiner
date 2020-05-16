@@ -7,10 +7,9 @@ class DataRepository:
         self.log = log
         self.config = config
         self.fm_log_util = FMLogUtils(log)
-        self.node_indices = dict()
-        self.nodes = self.fm_log_util.get_event_classes()
-        self.num_of_nodes = len(self.nodes)
-        self.update_node_index()
+        self.nodes = self.fm_log_util.nodes
+        self.num_of_nodes = self.fm_log_util.num_of_nodes
+        self.node_indices = self.fm_log_util.node_indices
 
         # declare lists to store data
         self.unary_node_frequency_values = list()
@@ -66,16 +65,6 @@ class DataRepository:
         # dictionary to save weights, invert, include
         self.metric_settings = dict()
         self.fill_dicts()
-
-    """
-    This populates the node_indices dictionary from the event classes;
-    """
-
-    def update_node_index(self):
-        idx = 0
-        for node in self.nodes:
-            self.node_indices[node] = idx
-            idx += 1
 
     """
     This initializes all the lists which are required to store data to 0 or 0.0, in special cases to 1.0
@@ -232,7 +221,7 @@ class DataRepository:
     """
 
     def extract_derivative_metrics(self):
-        self.cal_unary_derivate()
+        self.cal_unary_derivative()
         self.cal_binary_derivative()
 
     """
@@ -338,7 +327,7 @@ class DataRepository:
     This calculates routing significance metric.
     """
 
-    def cal_unary_derivate(self):
+    def cal_unary_derivative(self):
         sz = self.num_of_nodes
         for i in range(0, sz):
             in_value = 0.0
@@ -598,3 +587,39 @@ class DataRepository:
                 print(str(self.binary_corr_weighted_values[i][j]), end=" ")
             print()
         print()
+
+
+class FilteredDataRepository:
+    def __init__(self, log, data_repository, filter_config):
+        self.filter_config = filter_config
+        self.data_repository = data_repository
+        self.fm_log_util = FMLogUtils(log)
+        self.log = log
+        self.nodes = self.fm_log_util.nodes
+        self.num_of_nodes = self.fm_log_util.num_of_nodes
+        self.node_indices = self.fm_log_util.node_indices
+        self.concurrency_filter_resultant_binary_values = list()
+        self.concurrency_filter_resultant_binary_corr_values = list()
+        self.edge_filter_resultant_binary_values = list()
+        self.edge_filter_resultant_binary_corr_values = list()
+
+        self.init_lists()
+
+        self.apply_concurrency_filter(self.filter_config.concurrency_filter)
+        self.apply_edge_filter(self.filter_config.edge_filter)
+        self.apply_node_filer(self.filter_config.node_filter)
+
+    def init_lists(self):
+        self.concurrency_filter_resultant_binary_values = [[0 for x in range(self.num_of_nodes)] for y in
+                                                           range(self.num_of_nodes)]
+        self.concurrency_filter_resultant_binary_corr_values = [[0 for x in range(self.num_of_nodes)] for y in
+                                                                range(self.num_of_nodes)]
+
+    def apply_concurrency_filter(self, concurrency_filter):
+        pass
+
+    def apply_edge_filter(self, edge_filter):
+        pass
+
+    def apply_node_filer(self, node_filter):
+        pass

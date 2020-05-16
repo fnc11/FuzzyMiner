@@ -9,10 +9,9 @@ class Graph:
         self.config = default_config
         self.fm_log_util = FMLogUtils(log)
         self.log = log
-        self.nodes = self.fm_log_util.get_event_classes()
-        self.num_of_nodes = len(self.nodes)
-        self.node_indices = dict()
-        self.update_node_index()
+        self.nodes = self.fm_log_util.nodes
+        self.num_of_nodes = self.fm_log_util.num_of_nodes
+        self.node_indices = self.fm_log_util.node_indices
         # extract data from logs
         self.change_config(self.config)
 
@@ -79,12 +78,6 @@ class Graph:
         self.data_repository.debug_print_derivative_metric_values()
         self.data_repository.debug_print_weighted_values()
         self.data_repository.debug_edge_filter_values()
-
-    def update_node_index(self):
-        idx = 0
-        for node in self.nodes:
-            self.node_indices[node] = idx
-            idx += 1
 
 
 class Cluster:
