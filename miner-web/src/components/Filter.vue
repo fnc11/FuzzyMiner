@@ -18,7 +18,7 @@
                             <label>Node Filter</label>
                             <label>Significance Cutoff</label>
                             <div align="center">
-                                <el-slider vertical v-model="node" height="200px"/>
+                                <el-slider vertical v-model="node" height="200px" @change="nodeChanged" />
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
@@ -29,12 +29,19 @@
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
-                            <label>S/C Ratio</label>
-                            <div align="center">
-                                <el-slider vertical v-model="sc" height="200px"/>
-                                <label>{{ sc / 100 }}</label>
-                            </div>
-                            <label>Cutoff</label>
+                            <el-row :gutter="20">
+                                <el-col :span="10" align="center">
+                                    <label>S/C Ratio</label>
+                                    <el-slider vertical v-model="sc" height="200px" @change="scChanged" />
+                                    <label>{{ sc / 100 }}</label>
+                                </el-col>
+
+                                <el-col :span="10" align="center">
+                                    <label>Cutoff</label>
+                                    <el-slider vertical v-model="cutoff" height="200px" @change="cutoffChanged" />
+                                    <label>{{ cutoff / 100 }}</label>
+                                </el-col>
+                            </el-row>
                             <el-checkbox v-model="loops">Ignore Self-Loops</el-checkbox>
                             <el-checkbox v-model="absolute">Interpret Absolute</el-checkbox>
                         </el-col>
@@ -46,27 +53,27 @@
                             <el-row :gutter="20">
                                 <el-col :span="10" align="center">
                                     <label>Preserve</label>
-                                    <el-slider vertical v-model="preserve" height="200px"/>
+                                    <el-slider vertical v-model="preserve" height="200px" @change="preserveChanged" />
                                     <label>{{ preserve / 100 }}</label>
                                 </el-col>
 
                                 <el-col :span="10" align="center">
                                     <label>Balance</label>
 
-                                    <el-slider vertical v-model="balance" height="200px"/>
+                                    <el-slider vertical v-model="balance" height="200px" @change="balanceChanged" />
                                     <label>{{ balance / 100 }}</label>
                                 </el-col>
                             </el-row>
 
                         </el-col>
                     </el-row>
-                    <div align="center">
-                        <el-checkbox v-model="staticMethod">Static</el-checkbox>
-                        <el-button-group>
-                            <el-button>Apply</el-button>
-                            <el-button>Undo</el-button>
-                        </el-button-group>
-                    </div>
+<!--                    <div align="center">-->
+<!--                        <el-checkbox v-model="staticMethod">Static</el-checkbox>-->
+<!--                        <el-button-group>-->
+<!--                            <el-button>Apply</el-button>-->
+<!--                            <el-button>Undo</el-button>-->
+<!--                        </el-button-group>-->
+<!--                    </div>-->
                     <div align="center">
                         <el-button @click="dialog = true">Metrics Configuration</el-button>
                     </div>
@@ -115,6 +122,8 @@
 </template>
 
 <script>
+    import { nodeFilter, scRatio, cutoff, preserve, balance, metrics } from '@/api/filter';
+
     export default {
         name: "Filter",
         data() {
@@ -128,7 +137,7 @@
                 loops: false,
                 absolute: false,
                 concurrency: false,
-                staticMethod: false,
+                // staticMethod: false,
                 dialog: false,
                 incFrequency: true,
                 frequencyWeight: 50,
@@ -138,48 +147,78 @@
                 invertRouting: true
             }
         },
-        watch: {
-            node(now, old) {
-                console.log('Significance cutoff change');
-                console.log(now);
-                console.log(old);
+        methods: {
+            async nodeChanged(value) {
+                await nodeFilter();
+                console.log(value);
             },
-            edge(now, old) {
-                console.log('Edge filter change');
-                console.log(now);
-                console.log(old);
+            async scChanged(value) {
+                await scRatio();
+                console.log(value);
             },
-            sc(now, old) {
-                console.log('S/C Ratio change');
-                console.log(now);
-                console.log(old);
+            async cutoffChanged(value) {
+                await cutoff();
+                console.log(value);
             },
-            cutoff(now, old) {
-                console.log('Cutoff change');
-                console.log(now);
-                console.log(old);
+            async preserveChanged(value) {
+                await preserve();
+                console.log(value);
             },
-            preserve(now, old) {
-                console.log('Preserve change');
-                console.log(now);
-                console.log(old);
+            async balanceChanged(value) {
+                await balance();
+                console.log(value);
             },
-            balance(old, now) {
-                console.log('Balance change');
-                console.log(now);
-                console.log(old);
+            async saveConfig() {
+                await metrics();
             },
-            frequencyWeight(now, old) {
-                console.log("Frequency Significance Weight change");
-                console.log(now);
-                console.log(old);
-            },
-            routingWeight(now, old) {
-                console.log("Routing Significance Weight change");
-                console.log(now);
-                console.log(old);
-            }
-        }
+        },
+        // watch: {
+        //     node(now, old) {
+        //         console.log('Significance cutoff change');
+        //         console.log(now);
+        //         console.log(old);
+        //         // nodeFilter
+        //     },
+        //     edge(now, old) {
+        //         console.log('Edge filter change');
+        //         console.log(now);
+        //         console.log(old);
+        //     },
+        //     sc(now, old) {
+        //         console.log('S/C Ratio change');
+        //         console.log(now);
+        //         console.log(old);
+        //         // scRatio
+        //     },
+        //     cutoff(now, old) {
+        //         console.log('Cutoff change');
+        //         console.log(now);
+        //         console.log(old);
+        //         // cutoff
+        //     },
+        //     preserve(now, old) {
+        //         console.log('Preserve change');
+        //         console.log(now);
+        //         console.log(old);
+        //         // preserve
+        //     },
+        //     balance(old, now) {
+        //         console.log('Balance change');
+        //         console.log(now);
+        //         console.log(old);
+        //         // balance
+        //     },
+        //     frequencyWeight(now, old) {
+        //         console.log("Frequency Significance Weight change");
+        //         console.log(now);
+        //         console.log(old);
+        //     },
+        //     routingWeight(now, old) {
+        //         console.log("Routing Significance Weight change");
+        //         console.log(now);
+        //         console.log(old);
+        //     }
+        // }
     }
 </script>
 

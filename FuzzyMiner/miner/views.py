@@ -12,3 +12,27 @@ def upload(request):
     # read data, it is binary data
     # print(file.read())
     return HttpResponse()
+
+def node_filter(request):
+    print('node filter')
+    return HttpResponse()
+
+def sc_ratio(request):
+    print('sc ratio')
+    return HttpResponse()
+
+def cutoff(request):
+    print('cutoff')
+    return HttpResponse()
+
+def preserve(request):
+    print('preserve')
+    return HttpResponse()
+
+def balance(request):
+    print('balance')
+    return HttpResponse()
+
+def metrics(request):
+    print('metrics')
+    return HttpResponse()
