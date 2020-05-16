@@ -1,19 +1,18 @@
 <template>
     <div class="page-layout">
         <el-row :gutter="10">
-            <el-col :span="16">
+            <el-col :span="16" align="middle">
                 <div class="model-view">
-                    <h3 class="text-center-align"> Fuzzy Model</h3>
+                    <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
                         <canvas></canvas>
 
 
-
                         <!-- here should be canvas -->
                     </div>
-                    <div class="text-center-align">
-                    <el-button style="top:6px;">Save Snapshot</el-button>
-                    </div>
+
+                    <el-button>Save Snapshot</el-button>
+
                 </div>
             </el-col>
             <el-col :span="8">
@@ -21,17 +20,17 @@
                     <h3 class="text-center-align">Configurations</h3>
                     <el-row :gutter="10" class="el-tabs--border-card filter-container">
                         <el-col :span="8" class="grid-content el-table--border">
-                            <label>Node Filter</label>
+                            <h4>Node Filter</h4>
                             <br>
                             <div align="center">
                             <label>Significance Cutoff</label>
 
-                                <el-slider vertical v-model="node" height="200px"/>
+                                <el-slider vertical v-model="node" height="320px"/>
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
                         <el-col :span="8" class="grid-content el-table--border">
-                            <label>Edge Filter</label>
+                            <h4>Edge Filter</h4>
                             <br>
                             <label>Edge Transformer</label>
                             <el-radio-group>
@@ -42,12 +41,12 @@
                             <el-col :span="10">
                                 <label>S/C Ratio</label>
 
-                                <el-slider vertical v-model="sc" height="200px"/>
+                                <el-slider vertical v-model="sc" height="320px"/>
                                 <label>{{ sc / 100 }}</label>
                             </el-col>
                                <el-col :span="10">
                                      <label>Cutoff</label>
-                                   <el-slider vertical v-model="sc" height="200px"/>
+                                   <el-slider vertical v-model="sc" height="320px"/>
                                     <label>{{ sc / 100 }}</label>
                                </el-col>
                             </el-row>
@@ -58,21 +57,21 @@
                         <el-col :span="8" class="grid-content el-table--border">
                             <div class="">
 
-                            <label>Concurrency Filter</label>
+                            <h4>Concurrency Filter</h4>
                             <el-checkbox v-model="concurrency">Filter Concurrency</el-checkbox>
 
                             <el-row :gutter="20" class="slider-position">
 
                                 <el-col :span="10" align="left">
                                     <label>Preserve</label>
-                                    <el-slider vertical v-model="preserve" height="200px"/>
+                                    <el-slider vertical v-model="preserve" height="320px"/>
                                     <label>{{ preserve / 100 }}</label>
                                 </el-col>
 
                                 <el-col :span="10" align="right">
                                     <label>Balance</label>
 
-                                    <el-slider vertical v-model="balance" height="200px"/>
+                                    <el-slider vertical v-model="balance" height="320px"/>
                                     <label>{{ balance / 100 }}</label>
                                 </el-col>
 
@@ -80,14 +79,8 @@
                         </div>
                         </el-col>
                     </el-row>
-                    <div class="element-align-center">
-                        <el-checkbox v-model="staticMethod">Static</el-checkbox>
-                        <el-button-group>
-                            <el-button>Apply</el-button>
-                            <el-button>Undo</el-button>
-                        </el-button-group>
-                    </div>
-                    <div class="text-center-align" >
+
+                    <div class="text-center-align metrics">
                         <el-button @click="dialog = true">Metrics Configuration</el-button>
                     </div>
                 </div>
@@ -219,7 +212,7 @@
         height:720px;
     }
     .filter-container{
-        height:500px;
+        height:560px;
        border-color: #f0f0f0;
 
     }
@@ -235,5 +228,11 @@
         border-color: #f0f0f0;
         overflow: scroll;
     }
+    .button-height{
+
+        height: inherit;
+        top:5px;
+    }
+
 
 </style>
