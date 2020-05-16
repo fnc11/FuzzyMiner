@@ -600,8 +600,10 @@ class FilteredDataRepository:
         self.node_indices = self.fm_log_util.node_indices
         self.concurrency_filter_resultant_binary_values = list()
         self.concurrency_filter_resultant_binary_corr_values = list()
-        self.edge_filter_resultant_binary_values = list()
-        self.edge_filter_resultant_binary_corr_values = list()
+        self.edge_filter_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.aggregate_edge_filtered_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.relative_concurrency_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.aggregate_edge_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
 
         self.init_lists()
 
@@ -616,10 +618,69 @@ class FilteredDataRepository:
                                                                 range(self.num_of_nodes)]
 
     def apply_concurrency_filter(self, concurrency_filter):
-        pass
+        self.filter_config(concurrency_filter)
+        sz = self.num_of_nodes
+        for i in range(0, sz):
+            for j in range(0, sz):
+                self.aggregate_edge_values[i][j] = self.data_repository.binary_weighted_values[i][j] + \
+                                                   self.data_repository.binary_corr_weighted_values[i][j]
+                self.concurrency_filter_resultant_binary_values[i][j] = self.data_repository.binary_weighted_values[i][
+                    j]
+                self.concurrency_filter_resultant_binary_values[i][j] = \
+                    self.data_repository.binary_corr_weighted_values[i][j]
+        for i in range(1, sz):
+            for j in range(0, i-1):
+                if self.aggregate_edge_values[i][j] > 0 and self.aggregate_edge_values[j][i] > 0:
+                    self.relative_concurrency_values[i][j] = 0.5 * ((self.aggregate_edge_values[i][j] / sum(self.aggregate_edge_values[i])) + (
+                            self.aggregate_edge_values[i][j] / sum(self.aggregate_edge_values[j])))
+                    self.relative_concurrency_values[j][i] = 0.5 * ((self.aggregate_edge_values[j][i] / sum(self.aggregate_edge_values[j])) + (
+                            self.aggregate_edge_values[j][i] / sum(self.aggregate_edge_values[i])))
+                    if (self.relative_concurrency_values[i][j] < self.filter_config.concurrency_filter.preserve < self.relative_concurrency_values[j][i]) or (
+                            self.relative_concurrency_values[i][j] > self.filter_config.concurrency_filter.preserve > self.relative_concurrency_values[j][
+                        i]) or (
+                            self.relative_concurrency_values[i][j] < self.filter_config.concurrency_filter.preserve and self.relative_concurrency_values[j][
+                        i] < self.filter_config.concurrency_filter.preserve):
+                        if abs(self.relative_concurrency_values[i][j] - self.relative_concurrency_values[j][i]) > self.filter_config.concurrency_filter.offset:
+                            if self.relative_concurrency_values[i][j] > self.relative_concurrency_values[j][i]:
+                                self.aggregate_edge_values[j][i] = 0
+                            else:
+                                self.aggregate_edge_values[i][j] = 0
+                        else:
+                            self.aggregate_edge_values[i][j] = 0
+                            self.aggregate_edge_values[j][i] = 0
 
     def apply_edge_filter(self, edge_filter):
-        pass
+        self.filter_config(edge_filter)
+        # out_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # in_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        sz = self.num_of_nodes
+        for i in range(0, sz):
+            for j in range(0, sz):
+                self.aggregate_edge_filtered_values[i][j] = (self.concurrency_filter_resultant_binary_values[i][j] * self.filter_config.edge_filter.sc_ratio) + \
+                                                            (self.concurrency_filter_resultant_binary_corr_values[i][
+                                                                 j] * (1 - self.filter_config.edge_filter.sc_ratio))
+                self.edge_filter_values[i][j] = 0.0 if self.aggregate_edge_filtered_values[i][j] < self.filter_config.edge_filter.cut_off else self.aggregate_edge_filtered_values[i][j]
 
     def apply_node_filer(self, node_filter):
+        pass
+
+    def debug_concurrency_filter_values(self):
+        print("concurrency filtered values")
+        sze = self.num_of_nodes
+        for i in range(0, sze):
+            for j in range(0, sze):
+                print(str(self.aggregate_edge_values[i][j]), end=" ")
+            print()
+        print()
+
+    def debug_edge_filter_values(self):
+        print("edge filtered values")
+        sze = self.num_of_nodes
+        for i in range(0, sze):
+            for j in range(0, sze):
+                print(str(self.edge_filter_values[i][j]), end=" ")
+            print()
+        print()
+
+    def debug_node_filter_values(self):
         pass
