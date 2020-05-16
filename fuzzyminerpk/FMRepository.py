@@ -465,7 +465,7 @@ class DataRepository:
                                       self.binary_corr_endpoint_normalized_values[i][j] * w3 +
                                       self.binary_corr_datatype_normalized_values[i][j] * w4 +
                                       self.binary_corr_datavalue_normalized_values[i][j] * w5) / (
-                                                 w1 + w2 + w3 + w4 + w5))
+                                             w1 + w2 + w3 + w4 + w5))
                 binary_corr_weight_values.append(temp_list)
             self.binary_corr_weighted_values = binary_corr_weight_values
 
@@ -568,7 +568,7 @@ class DataRepository:
         print("unary_derivative_routing_normalized_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
-                print(str(self.unary_derivative_routing_normalized_values[i]), end=" ")
+            print(str(self.unary_derivative_routing_normalized_values[i]), end=" ")
         print()
         print("binary_derivative_distance_normalized_values")
         sze = self.num_of_nodes
@@ -577,7 +577,6 @@ class DataRepository:
                 print(str(self.binary_derivative_distance_normalized_values[i][j]), end=" ")
             print()
         print()
-
 
     def debug_print_weighted_values(self):
         print("weighted_unary_values")

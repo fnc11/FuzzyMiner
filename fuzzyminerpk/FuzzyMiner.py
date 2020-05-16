@@ -78,6 +78,7 @@ class Graph:
         self.data_repository.debug_print_aggregate_values()
         self.data_repository.debug_print_derivative_metric_values()
         self.data_repository.debug_print_weighted_values()
+        self.data_repository.debug_edge_filter_values()
 
     def update_node_index(self):
         idx = 0
