@@ -51,14 +51,15 @@
 </template>
 
 <script>
-    import {upload} from "@/api/home";
+    import { upload, generate } from "@/api/home";
 
     export default {
         name: "Home",
         data() {
             return {
                 generated: true,
-                fileList: []
+                fileList: [],
+                path: ''
             }
         },
         methods: {
@@ -66,10 +67,14 @@
                 let form = new FormData();
                 form.append('file', param.file);
                 const data = await upload(form);
-                console.log(data);
+                this.path = data;
+                console.log(this.path);
                 this.generated = false;
             },
-            generate() {
+            async generate() {
+                const data = await generate({
+                    'path': this.path
+                });
                 this.$router.push({path: '/filter'});
             },
             uploadSuccess(response, file) {
