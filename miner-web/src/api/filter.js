@@ -1,43 +1,49 @@
 import request from '@/utils/request'
 
-export function nodeFilter() {
+export function nodeFilter(data) {
     return request({
         url: 'node_filter',
-        method: 'get'
+        method: 'post',
+        data: data
     });
 }
 
-export function scRatio() {
+export function scRatio(data) {
     return request({
         url: 'sc_ratio',
-        method: 'get'
+        method: 'data',
+        data: data
     });
 }
 
-export function cutoff() {
+export function cutoff(data) {
     return request({
         url: 'cutoff',
-        method: 'get'
+        method: 'data',
+        data: data
     });
 }
 
-export function preserve() {
+export function preserve(data) {
     return request({
         url: 'preserve',
-        method: 'get'
+        method: 'post',
+        data: data
     });
 }
 
-export function balance() {
+export function balance(data) {
     return request({
         url: 'balance',
-        method: 'get'
+        method: 'post',
+        data: data
     });
 }
 
-export function metrics() {
+export function metrics(data) {
     return request({
         url: 'metrics',
-        method: 'get'
+        method: 'post',
+        data: data
     });
 }

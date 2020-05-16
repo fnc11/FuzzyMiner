@@ -9,7 +9,7 @@
                     <el-upload
                             ref="upload"
                             action=""
-                            :limit="1"
+                            accept=".xes"
                             :http-request="upload"
                             :auto-upload="true"
                             :show-file-list="false"
@@ -70,7 +70,7 @@
                 this.generated = false;
             },
             generate() {
-
+                this.$router.push({path: '/filter'});
             },
             uploadSuccess(response, file) {
                 this.$message({
@@ -79,6 +79,7 @@
                     duration: 3000,
                     showClose: true
                 });
+                this.fileList.splice(0, this.fileList.length);
                 this.fileList.push(file.name);
             },
             uploadError(error) {

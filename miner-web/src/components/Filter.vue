@@ -151,27 +151,39 @@
         },
         methods: {
             async nodeChanged(value) {
-                await nodeFilter();
+                await nodeFilter({
+                    value: value
+                });
                 console.log(value);
             },
             async scChanged(value) {
-                await scRatio();
+                await scRatio({
+                    value: value
+                });
                 console.log(value);
             },
             async cutoffChanged(value) {
-                await cutoff();
+                await cutoff({
+                    value: value
+                });
                 console.log(value);
             },
             async preserveChanged(value) {
-                await preserve();
+                await preserve({
+                    value: value
+                });
                 console.log(value);
             },
             async balanceChanged(value) {
-                await balance();
+                await balance({
+                    value: value
+                });
                 console.log(value);
             },
             async saveConfig() {
-                await metrics();
+                await metrics({
+                    value: value
+                });
             },
         },
     }
