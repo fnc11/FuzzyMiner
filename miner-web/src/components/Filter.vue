@@ -24,8 +24,7 @@
                             <br>
                             <div align="center">
                             <label>Significance Cutoff</label>
-
-                                <el-slider vertical v-model="node" height="320px"/>
+                                <el-slider vertical v-model="node" height="320px" @change="nodeChanged" />
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
@@ -41,16 +40,15 @@
                             <el-col :span="10">
                                 <label>S/C Ratio</label>
 
-                                <el-slider vertical v-model="sc" height="320px"/>
+                                <el-slider vertical v-model="sc" height="320px" @change="scChanged" />
                                 <label>{{ sc / 100 }}</label>
                             </el-col>
                                <el-col :span="10">
-                                     <label>Cutoff</label>
-                                   <el-slider vertical v-model="sc" height="320px"/>
-                                    <label>{{ sc / 100 }}</label>
+                                   <label>Cutoff</label>
+                                   <el-slider vertical v-model="cutoff" height="320px" @change="cutoffChanged" />
+                                   <label>{{ sc / 100 }}</label>
                                </el-col>
                             </el-row>
-
                             <el-checkbox v-model="loops">Ignore Self-Loops</el-checkbox>
                             <el-checkbox v-model="absolute">Interpret Absolute</el-checkbox>
                         </el-col>
@@ -64,14 +62,13 @@
 
                                 <el-col :span="10" align="left">
                                     <label>Preserve</label>
-                                    <el-slider vertical v-model="preserve" height="320px"/>
+                                    <el-slider vertical v-model="preserve" height="320px" @change="preserveChanged" />
                                     <label>{{ preserve / 100 }}</label>
                                 </el-col>
 
                                 <el-col :span="10" align="right">
                                     <label>Balance</label>
-
-                                    <el-slider vertical v-model="balance" height="320px"/>
+                                    <el-slider vertical v-model="balance" height="320px" @change="balanceChanged" />
                                     <label>{{ balance / 100 }}</label>
                                 </el-col>
 
@@ -79,7 +76,6 @@
                         </div>
                         </el-col>
                     </el-row>
-
                     <div class="text-center-align metrics">
                         <el-button @click="dialog = true">Metrics Configuration</el-button>
                     </div>
@@ -128,6 +124,8 @@
 </template>
 
 <script>
+    import { nodeFilter, scRatio, cutoff, preserve, balance, metrics } from '@/api/filter';
+
     export default {
         name: "Filter",
         data() {
@@ -141,7 +139,7 @@
                 loops: false,
                 absolute: false,
                 concurrency: false,
-                staticMethod: false,
+                // staticMethod: false,
                 dialog: false,
                 incFrequency: true,
                 frequencyWeight: 50,
@@ -151,48 +149,43 @@
                 invertRouting: true
             }
         },
-        watch: {
-            node(now, old) {
-                console.log('Significance cutoff change');
-                console.log(now);
-                console.log(old);
+        methods: {
+            async nodeChanged(value) {
+                await nodeFilter({
+                    value: value
+                });
+                console.log(value);
             },
-            edge(now, old) {
-                console.log('Edge filter change');
-                console.log(now);
-                console.log(old);
+            async scChanged(value) {
+                await scRatio({
+                    value: value
+                });
+                console.log(value);
             },
-            sc(now, old) {
-                console.log('S/C Ratio change');
-                console.log(now);
-                console.log(old);
+            async cutoffChanged(value) {
+                await cutoff({
+                    value: value
+                });
+                console.log(value);
             },
-            cutoff(now, old) {
-                console.log('Cutoff change');
-                console.log(now);
-                console.log(old);
+            async preserveChanged(value) {
+                await preserve({
+                    value: value
+                });
+                console.log(value);
             },
-            preserve(now, old) {
-                console.log('Preserve change');
-                console.log(now);
-                console.log(old);
+            async balanceChanged(value) {
+                await balance({
+                    value: value
+                });
+                console.log(value);
             },
-            balance(old, now) {
-                console.log('Balance change');
-                console.log(now);
-                console.log(old);
+            async saveConfig() {
+                await metrics({
+                    value: value
+                });
             },
-            frequencyWeight(now, old) {
-                console.log("Frequency Significance Weight change");
-                console.log(now);
-                console.log(old);
-            },
-            routingWeight(now, old) {
-                console.log("Routing Significance Weight change");
-                console.log(now);
-                console.log(old);
-            }
-        }
+        },
     }
 </script>
 

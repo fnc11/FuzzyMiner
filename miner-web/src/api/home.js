@@ -10,3 +10,11 @@ export function upload(form) {
         }
     });
 }
+
+export function generate(data) {
+    return request({
+        url: '/generate',
+        method: 'post',
+        data: data
+    });
+}

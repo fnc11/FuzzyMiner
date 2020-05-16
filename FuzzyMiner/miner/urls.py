@@ -3,6 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.handle_file, name="handle_file"),
-    path('result', views.show_result, name="show_result")
+    # path('', views.handle_file, name="handle_file"),
+    path('upload', views.upload, name="upload"),
+    path('generate', views.show_result, name="generate")
 ]
