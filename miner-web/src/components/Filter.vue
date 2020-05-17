@@ -11,7 +11,8 @@
                         <!-- here should be canvas -->
                     </div>
 
-                    <el-button>Save Snapshot</el-button>
+                    <el-button class="button-position el-button--default">Save Snapshot</el-button>
+
 
                 </div>
             </el-col>
@@ -77,7 +78,7 @@
                         </el-col>
                     </el-row>
                     <div class="text-center-align metrics">
-                        <el-button @click="dialog = true">Metrics Configuration</el-button>
+                        <el-button class="button-position el-button--default" @click="dialog = true">Metrics Configuration</el-button>
                     </div>
                 </div>
             </el-col>
@@ -87,7 +88,7 @@
                 :visible.sync="dialog"
                 width="40%" style="font-family: 'Segoe UI Semibold';">
                 <div>
-                <el-tabs type="boder-card">
+                <el-tabs type="border-card">
                     <el-tab-pane label="Metrics">
                         <el-dropdown  type="primary" @command="selectTypes">
                             <span class="el-dropdown-link">
@@ -313,17 +314,21 @@
     }
     .grid-content{
         height: inherit;
+        background-color: #d9d9d9;
 
     }
     .process-graph-view{
         height: 560px;
-        border-color: #f0f0f0;
+        border-color: #dcdfe6;
         overflow: scroll;
     }
-    .button-height{
+    .button-position{
 
-        height: inherit;
-        top:5px;
+        position: relative;
+        top:20px;
+        border-radius: 2px;
+        border-color: #606266;
+        color: #606266;;
     }
 
 
