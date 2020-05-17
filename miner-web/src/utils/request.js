@@ -5,7 +5,7 @@ import { Message } from 'element-ui';
 const service = axios.create({
     baseURL: '/miner',
     // withCredentials: true,
-    timeout: 20000 // Request timeout
+    timeout: 200000 // Request timeout
 });
 
 // Request intercepter
