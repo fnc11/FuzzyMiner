@@ -604,12 +604,6 @@ class FilteredDataRepository:
         self.edge_filter_resultant_binary_values = list()
         self.edge_filter_resultant_binary_corr_values = list()
 
-        # in each method we first initialize corresponding lists to default values depending upon the context
-        self.apply_concurrency_filter(self.filter_config.concurrency_filter)
-        # no need to call them separately as they will be applied in succession
-        # self.apply_edge_filter(self.filter_config.edge_filter)
-        # self.apply_node_filer(self.filter_config.node_filter)
-
     """
     Applies concurrency_filter and then calls implicitly edge_filter to apply
     """
