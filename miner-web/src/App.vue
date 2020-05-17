@@ -22,9 +22,9 @@
                     </el-col>
                 </el-row>
             </el-header>
-            <el-maincd>
+            <el-main>
                 <router-view/>
-            </el-maincd>
+            </el-main>
             <el-footer class="fluid-container footer" height="5%">
                 <p>@Copy right: 2020</p>
             </el-footer>

@@ -32,7 +32,7 @@
                             <h4>Edge Filter</h4>
                             <br>
                             <label>Edge Transformer</label>
-                            <el-radio-group>
+                            <el-radio-group v-model="edge">
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
@@ -87,34 +87,85 @@
                 :visible.sync="dialog"
                 width="40%">
             <div>
-                <div>
-                    <label>Metrics Type</label>
-                    <el-dropdown>
-                        <el-button type="text">Select Type<i class="el-icon-arrow-down el-icon--right" /></el-button>
-                    </el-dropdown>
-                </div>
-                <div>
-                    <label>Unary Metrics</label>
-                    <div>
-                        <el-checkbox v-model="incFrequency">Include</el-checkbox>
-                        <div>
-                            <label>Frequency Significance</label>
-                            <label>Weight</label>
-                            <el-slider v-model="frequencyWeight"></el-slider>
-                            <el-checkbox v-model="invertFrequency">Invert the Significance</el-checkbox>
+                <el-tabs type="boder-card">
+                    <el-tab-pane label="Metrics">
+                        <el-dropdown @command="selectTypes">
+                            <span class="el-dropdown-link">
+                                Select Metrics<i class="el-icon-arrow-down el-icon--right"></i>
+                            </span>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item command="unary">Unary Metrics</el-dropdown-item>
+                                <el-dropdown-item command="significance">Binary Significance</el-dropdown-item>
+                                <el-dropdown-item command="correlation">Binary Correlation</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                        <div v-if="selectedType === 'unary'">
+                            <div>
+                                <label>Frequency Significance Metric</label>
+                                <el-radio-group v-model="unaryFrequencySignificance">
+                                    <el-radio :label="1">active</el-radio>
+                                    <el-radio :label="2">significance</el-radio>
+                                </el-radio-group>
+                                <label>Weight</label>
+                                <el-slider v-model="unaryFrequencyWeight" />
+                            </div>
+                            <div>
+                                <label>Routing Significance</label>
+                                <el-radio-group v-model="routingSignificance">
+                                    <el-radio :label="1">Active</el-radio>
+                                    <el-radio :label="2">en</el-radio>
+                                </el-radio-group>
+                                <label>Weight</label>
+                                <el-slider v-model="routingWeight" />
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <el-checkbox v-model="incRouting">Include</el-checkbox>
-                        <div>
-                            <label>Routing Significance</label>
-                            <label>Weight</label>
-                            <el-slider v-model="routingWeight"></el-slider>
-                            <el-checkbox v-model="invertRouting">Invert the Significance</el-checkbox>
+                        <div v-else-if="selectedType === 'significance'">
+                            <div>
+                                <label>Frequency Significance Metric</label>
+                                <el-radio-group v-model="binaryFrequencySignificance">
+                                    <el-radio :label="1">active</el-radio>
+                                    <el-radio :label="2">significance</el-radio>
+                                </el-radio-group>
+                                <label>Weight</label>
+                                <el-slider v-model="binaryFrequencyWeight" />
+                            </div>
+                            <div>
+                                <label>Distance Significance</label>
+                                <el-radio-group v-model="distanceSignificance">
+                                    <el-radio :label="1">active</el-radio>
+                                    <el-radio :label="2">significance</el-radio>
+                                </el-radio-group>
+                                <label>Weight</label>
+                                <el-slider v-model="distanceWeight" />
+                            </div>
                         </div>
-                    </div>
-                    <p>Note: One of them has to be selected or the model will include one implicitly.</p>
-                </div>
+                        <div v-else>
+                            <div v-for="(item, index) in binaryCorrelation" :key="index">
+                                <label>{{ item.name }}</label>
+                                <el-radio-group v-model="item.selected">
+                                    <el-radio :label="1">active</el-radio>
+                                    <el-radio :label="2">significance</el-radio>
+                                </el-radio-group>
+                                <label>Weight</label>
+                                <el-slider v-model="item.weight" />
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="Atlenation">
+                        <div>
+                            <label>Maximum distance</label>
+                            <el-slider v-model="maximumDistance" :min="1" :max="20" />
+                        </div>
+                        <div>
+                            <label>S</label>
+                            <el-radio-group>
+                                <el-radio :label="1">1 Alten</el-radio>
+                                <el-radio :label="2">2 Alten</el-radio>
+                            </el-radio-group>
+                            <el-slider />
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
             </div>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialog = false">Save</el-button>
@@ -139,14 +190,38 @@
                 loops: false,
                 absolute: false,
                 concurrency: false,
-                // staticMethod: false,
                 dialog: false,
-                incFrequency: true,
-                frequencyWeight: 50,
-                invertFrequency: true,
-                incRouting: true,
+                selectedType: 'unary',
+                unaryFrequencySignificance: 1,
+                unaryFrequencyWeight: 50,
+                routingSignificance: 1,
                 routingWeight: 50,
-                invertRouting: true
+                binaryFrequencySignificance: 1,
+                binaryFrequencyWeight: 50,
+                distanceSignificance: 1,
+                distanceWeight: 50,
+                binaryCorrelation: [{
+                    name: 'Pro',
+                    selected: 1,
+                    weight: 50
+                }, {
+                    name: 'Endpoint',
+                    selected: 1,
+                    weight: 50
+                }, {
+                    name: 'Or',
+                    selected: 1,
+                    weight: 50
+                }, {
+                    name: 'Data Type Correlation',
+                    selected: 1,
+                    weight: 50
+                }, {
+                    name: 'Data Value Correlation',
+                    selected: 1,
+                    weight: 50
+                }],
+                maximumDistance: 10,
             }
         },
         methods: {
@@ -180,9 +255,12 @@
                 });
                 console.log(value);
             },
+            selectTypes(type) {
+                this.selectedType = type;
+            },
             async saveConfig() {
                 await metrics({
-                    value: value
+                    value: '1'
                 });
             },
         },
