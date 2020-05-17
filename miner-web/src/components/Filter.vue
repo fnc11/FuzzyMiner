@@ -294,6 +294,37 @@
                 });
             },
         },
+        watch: {
+            edge: function(now, old) {
+                if (now === 1) {
+                    console.log('Best Edges');
+                } else if (now === 2) {
+                    console.log('Fuzzy Edges');
+                }
+            },
+            loop: function (now, old) {
+                if (now === true) {
+                    console.log(now);
+                } else {
+                    console.log(old);
+                }
+            },
+            absolute: function(now, old) {
+                if (now === true) {
+                    console.log(now);
+                } else {
+                    console.log(now);
+                }
+            },
+            concurrency: function (now, old) {
+                if (now === true) {
+                    console.log(now);
+                } else {
+                    console.log(now);
+                }
+
+            }
+        }
     }
 </script>
 
