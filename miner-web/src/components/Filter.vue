@@ -56,20 +56,16 @@
                         </el-col>
                         <el-col :span="8" class="grid-content-configuration el-table--border">
                             <div class="">
-
                             <h4 class="text-center-align">Concurrency Filter</h4>
                                   <el-divider></el-divider>
                             <el-checkbox v-model="concurrency">Filter Concurrency</el-checkbox>
-
                                 <el-row :gutter="20" class="slider-adjustment3">
-
                                     <el-col :span="10" align="middle">
                                         <label>Preserve</label>
                                         <el-slider vertical v-model="preserve" height="280px"
                                                    @change="preserveChanged"/>
                                         <label>{{ preserve / 100 }}</label>
                                     </el-col>
-
                                     <el-col :span="10" align="middle">
                                         <label>Balance</label>
                                         <el-slider vertical v-model="balance" height="280px" @change="balanceChanged"/>
@@ -95,7 +91,7 @@
                     <el-tab-pane label="Metrics">
                         <el-dropdown @command="selectTypes">
                             <span class="el-dropdown-link">
-                                Select Metrics<i class="el-icon-arrow-down el-icon--right"></i>
+                                Select Metrics<i class="el-icon-arrow-down el-icon--left"></i>
                             </span>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item command="unary">Unary Metrics</el-dropdown-item>
@@ -103,7 +99,7 @@
                                 <el-dropdown-item command="correlation" divided>Binary Correlation</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                        <span>{{ typeLabels[selectedType] }}</span>
+                        <span>{{ " Metrics Selected : "+typeLabels[selectedType] }}</span>
                         <div v-if="selectedType === 'unary'">
                             <el-divider></el-divider>
                             <div>
@@ -123,6 +119,7 @@
                                     <el-checkbox v-model="routingSignificance">Invert the significance</el-checkbox>
                                 </div>
                                 <div style="vertical-align: middle">
+                                    <div></div>
                                 <label>Weight </label>
                                 <el-slider v-model="routingWeight" />
                                 </div>
@@ -133,7 +130,7 @@
                             <div>
                                 <h4>Frequency Significance Metric</h4>
                                 <div style="display: flex">
-                                    <el-checkbox v-model="binaryFrequencyActive">active</el-checkbox>
+                                    <el-checkbox v-model="binaryFrequencyActive">Include</el-checkbox>
                                     <el-checkbox v-model="binaryFrequencySignificance">Invert the significance</el-checkbox>
                                 </div>
                                 <label>Weight</label>
@@ -161,7 +158,6 @@
                                 <label>Weight</label>
                                 <el-slider v-model="item.weight" />
                             </div>
-
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="Attenuation">
@@ -176,9 +172,9 @@
                             <el-radio-group v-model="attenuationSelected">
                                 <el-radio :label="1">Linear Attenuation</el-radio>
                                 <br>
-                                <el-radio :label="2">N(th) root with radical</el-radio>
+                                <el-radio :label="2" v-model="Nroot">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="nrootradical" :min="2.7" :max="4" disabled/>
+                            <el-slider v-model="radical" :min="1.0" :max="4"/>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -254,7 +250,9 @@
                 }],
                 maximumEventDistance: 5,
                 attenuationSelected: 1,
-                nrootradical: 2.7,
+                Nroot:true,
+
+
             }
         },
         methods: {
@@ -347,7 +345,7 @@
         height:720px;
     }
     .filter-container{
-        height:620px;
+        height:570px;
        border-color: #f0f0f0;
 
     }
@@ -362,7 +360,7 @@
         border-color: #d9d9d9;
     }
     .process-graph-view{
-        height: 620px;
+        height: 570px;
         border-color: #dcdfe6;
         overflow: scroll;
     }
@@ -395,10 +393,13 @@
     .el-dropdown-link {
         cursor: pointer;
         color: #409EFF;
+        margin-bottom: 20px;
+
     }
 
     .el-icon-arrow-down {
         font-size: 12px;
+
     }
 
 
