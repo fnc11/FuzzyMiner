@@ -8,6 +8,14 @@ export function nodeFilter(data) {
     });
 }
 
+export function edgeFilter(data) {
+    return request({
+        url: 'edge_filter',
+        method: 'post',
+        data: data
+    });
+}
+
 export function scRatio(data) {
     return request({
         url: 'sc_ratio',
