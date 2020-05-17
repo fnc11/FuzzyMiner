@@ -30,25 +30,24 @@
                             </div>
                         </el-col>
                         <el-col :span="8" class="grid-content-configuration el-table--border">
-
                             <h4 class="text-center-align">Edge Filter</h4>
                             <el-divider></el-divider>
                             <label>Edge Transformer</label>
-                            <el-radio-group v-model="edge">
+                            <el-radio-group v-model="edge" style="position: relative; top:10px;">
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
                             <el-row :gutter="2" class="slider-adjustment2">
-                            <el-col :span="14" align="middle">
-                                <label>S/C Ratio</label>
-                                <el-slider vertical v-model="sc" height="280px" @change="scChanged" />
-                                <label>{{ sc / 100 }}</label>
-                            </el-col>
-                               <el-col :span="4" align="middle">
-                                   <label>Cutoff</label>
-                                   <el-slider vertical v-model="cutoff" height="280px" @change="cutoffChanged" />
-                                   <label>{{ cutoff / 100 }}</label>
-                               </el-col>
+                                <el-col :span="14" align="middle">
+                                    <label>S/C Ratio</label>
+                                    <el-slider vertical v-model="sc" height="280px" @change="scChanged"/>
+                                    <label>{{ sc / 100 }}</label>
+                                </el-col>
+                                <el-col :span="4" align="middle">
+                                    <label>Cutoff</label>
+                                    <el-slider vertical v-model="cutoff" height="280px" @change="cutoffChanged"/>
+                                    <label>{{ cutoff / 100 }}</label>
+                                </el-col>
                             </el-row>
                             <div style="position: relative;top:60px;">
                             <el-checkbox v-model="loops">Ignore Self-Loops</el-checkbox>
@@ -62,21 +61,22 @@
                                   <el-divider></el-divider>
                             <el-checkbox v-model="concurrency">Filter Concurrency</el-checkbox>
 
-                            <el-row :gutter="5" class="slider-adjustment3">
+                                <el-row :gutter="20" class="slider-adjustment3">
 
-                                <el-col :span="10">
-                                    <label>Preserve</label>
-                                    <el-slider vertical v-model="preserve" height="280px" @change="preserveChanged" />
-                                    <label>{{ preserve / 100 }}</label>
-                                </el-col>
+                                    <el-col :span="10" align="middle">
+                                        <label>Preserve</label>
+                                        <el-slider vertical v-model="preserve" height="280px"
+                                                   @change="preserveChanged"/>
+                                        <label>{{ preserve / 100 }}</label>
+                                    </el-col>
 
-                                <el-col :span="10">
-                                    <label>Balance</label>
-                                    <el-slider vertical v-model="balance" height="280px" @change="balanceChanged" />
-                                    <label>{{ balance / 100 }}</label>
-                                </el-col>
+                                    <el-col :span="10" align="middle">
+                                        <label>Balance</label>
+                                        <el-slider vertical v-model="balance" height="280px" @change="balanceChanged"/>
+                                        <label>{{ balance / 100 }}</label>
+                                    </el-col>
 
-                            </el-row>
+                                </el-row>
                         </div>
                         </el-col>
                     </el-row>
@@ -89,11 +89,11 @@
         <el-dialog
                 title="Configure"
                 :visible.sync="dialog"
-                width="40%" style="font-family: 'Helvetica Neue'">
-                <div>
+                width="40%" style="font-family: Arial, Helvetica, sans-serif">
+            <div>
                 <el-tabs type="border-card">
                     <el-tab-pane label="Metrics">
-                        <el-dropdown  type="primary" @command="selectTypes">
+                        <el-dropdown @command="selectTypes">
                             <span class="el-dropdown-link">
                                 Select Metrics<i class="el-icon-arrow-down el-icon--right"></i>
                             </span>
@@ -105,10 +105,11 @@
                         </el-dropdown>
                         <span>{{ typeLabels[selectedType] }}</span>
                         <div v-if="selectedType === 'unary'">
+                            <el-divider></el-divider>
                             <div>
-                                <label>Frequency Significance Metric</label>
+                                <h4>Frequency Significance Metric</h4>
                                 <div style="display: flex">
-                                    <el-checkbox v-model="unaryFrequencyActive">active</el-checkbox>
+                                    <el-checkbox v-model="unaryFrequencyActive">Include</el-checkbox>
                                     <el-checkbox v-model="unaryFrequencySignificance" >Invert the significance</el-checkbox>
                                 </div>
                                 <label>Weight</label>
@@ -116,9 +117,9 @@
                             </div>
                             <el-divider></el-divider>
                             <div>
-                                <label>Routing Significance</label>
+                                <h4>Routing Significance</h4>
                                 <div style="display: table-cell">
-                                    <el-checkbox v-model="routingActive">Active</el-checkbox>
+                                    <el-checkbox v-model="routingActive">Include</el-checkbox>
                                     <el-checkbox v-model="routingSignificance">Invert the significance</el-checkbox>
                                 </div>
                                 <div style="vertical-align: middle">
@@ -128,8 +129,9 @@
                             </div>
                         </div>
                         <div v-else-if="selectedType === 'significance'">
+                            <el-divider></el-divider>
                             <div>
-                                <label>Frequency Significance Metric</label>
+                                <h4>Frequency Significance Metric</h4>
                                 <div style="display: flex">
                                     <el-checkbox v-model="binaryFrequencyActive">active</el-checkbox>
                                     <el-checkbox v-model="binaryFrequencySignificance">Invert the significance</el-checkbox>
@@ -139,10 +141,10 @@
                             </div>
                             <el-divider></el-divider>
                             <div>
-                                <label>Distance Significance</label>
+                                <h4>Distance Significance</h4>
                                 <div style="display: flex">
-                                    <el-checkbox v-model="distanceActive">active</el-checkbox>
-                                    <el-checkbox v-model="distanceSignificance">significance</el-checkbox>
+                                    <el-checkbox v-model="distanceActive">Include</el-checkbox>
+                                    <el-checkbox v-model="distanceSignificance">Invert the significance</el-checkbox>
                                 </div>
                                 <label>Weight</label>
                                 <el-slider v-model="distanceWeight" />
@@ -151,14 +153,15 @@
                         <div v-else>
                             <div v-for="(item, index) in binaryCorrelation" :key="index">
                                  <el-divider></el-divider>
-                                <label>{{ item.name }}</label>
+                                <h4>{{ item.name }}</h4>
                                 <div style="display: flex">
-                                    <el-checkbox v-model="item.active">active</el-checkbox>
+                                    <el-checkbox v-model="item.active">Include</el-checkbox>
                                     <el-checkbox v-model="item.significance">Invert the significance</el-checkbox>
                                 </div>
                                 <label>Weight</label>
                                 <el-slider v-model="item.weight" />
                             </div>
+
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="Attenuation">
@@ -175,7 +178,7 @@
                                 <br>
                                 <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="nrootradical" :min="2" :max="20" />
+                            <el-slider v-model="nrootradical" :min="2.7" :max="4" disabled/>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -189,7 +192,7 @@
 </template>
 
 <script>
-    import { nodeFilter, scRatio, cutoff, preserve, balance, metrics } from '@/api/filter';
+    import {balance, cutoff, metrics, nodeFilter, preserve, scRatio} from '@/api/filter';
 
     export default {
         name: "Filter",
@@ -251,7 +254,7 @@
                 }],
                 maximumEventDistance: 5,
                 attenuationSelected: 1,
-                nrootradical: 10,
+                nrootradical: 2.7,
             }
         },
         methods: {
@@ -363,26 +366,39 @@
         border-color: #dcdfe6;
         overflow: scroll;
     }
-    .button-position{
+
+    .button-position {
 
         position: relative;
-        top:20px;
+        top: 20px;
         border-radius: 2px;
         border-color: #d9d9d9;
         color: #606266;
 
     }
-    .slider-adjustment1{
+
+    .slider-adjustment1 {
         position: relative;
         top: 70px;
     }
-    .slider-adjustment2{
+
+    .slider-adjustment2 {
         position: relative;
-        top:20px;
+        top: 20px;
     }
-      .slider-adjustment3{
+
+    .slider-adjustment3 {
         position: center;
-        top:50px;
+        top: 52px;
+    }
+
+    .el-dropdown-link {
+        cursor: pointer;
+        color: #409EFF;
+    }
+
+    .el-icon-arrow-down {
+        font-size: 12px;
     }
 
 
