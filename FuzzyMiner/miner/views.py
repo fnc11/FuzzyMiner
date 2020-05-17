@@ -1,6 +1,8 @@
+import json
+
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
@@ -14,6 +16,8 @@ from fuzzyminerpk.FuzzyMiner import Graph
 # Create your views here.
 
 """ Saves uploaded log file and returns its path (/log/example.xes) """
+
+
 @csrf_exempt
 def upload(request):
     if request.method == 'POST':
@@ -44,7 +48,7 @@ def get_default_configuration():
     metric_config8 = MetricConfig("datatype_correlation_binary", "binary")
     metric_config9 = MetricConfig("datavalue_correlation_binary", "binary")
     metric_configs = [metric_config1, metric_config2, metric_config3, metric_config4, metric_config5, metric_config6
-                      , metric_config7, metric_config8, metric_config9]
+        , metric_config7, metric_config8, metric_config9]
     attenuation = LinearAttenuation(7, 7)
     fuzzy_config = Configuration(filter_config, metric_configs, attenuation, 7)
     return fuzzy_config
@@ -63,7 +67,9 @@ def handle_file(request):
     return render(request, 'inp_miner.html')
 
 
+@csrf_exempt
 def show_result(request):
-    log_file_path = upload(request)
+    data = json.loads(request.body)
+    log_file_path = data["path"]
     resp = launch_filter(settings.BASE_DIR + log_file_path)
-    return render(request, 'res_miner.html', {'result': resp})
+    return JsonResponse({'result': resp})
