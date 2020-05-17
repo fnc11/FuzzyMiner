@@ -600,87 +600,197 @@ class FilteredDataRepository:
         self.node_indices = self.fm_log_util.node_indices
         self.concurrency_filter_resultant_binary_values = list()
         self.concurrency_filter_resultant_binary_corr_values = list()
-        self.edge_filter_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.aggregate_edge_filtered_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.relative_concurrency_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.aggregate_edge_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.preserve_mask = list() #needed in edge_filtering
+        self.edge_filter_resultant_binary_values = list()
+        self.edge_filter_resultant_binary_corr_values = list()
 
-        self.init_lists()
-
+        # in each method we first initialize corresponding lists to default values depending upon the context
         self.apply_concurrency_filter(self.filter_config.concurrency_filter)
-        self.apply_edge_filter(self.filter_config.edge_filter)
-        self.apply_node_filer(self.filter_config.node_filter)
+        # no need to call them separately as they will be applied in succession
+        # self.apply_edge_filter(self.filter_config.edge_filter)
+        # self.apply_node_filer(self.filter_config.node_filter)
 
-    def init_lists(self):
-        self.concurrency_filter_resultant_binary_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                                           range(self.num_of_nodes)]
-        self.concurrency_filter_resultant_binary_corr_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                                                range(self.num_of_nodes)]
+    """
+    Applies concurrency_filter and then calls implicitly edge_filter to apply
+    """
 
     def apply_concurrency_filter(self, concurrency_filter):
-        self.filter_config(concurrency_filter)
+        self.filter_config.concurrency_filter = concurrency_filter
+        self.concurrency_filter_resultant_binary_values = self.data_repository.binary_weighted_values
+        self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
         sz = self.num_of_nodes
         for i in range(0, sz):
-            for j in range(0, sz):
-                self.aggregate_edge_values[i][j] = self.data_repository.binary_weighted_values[i][j] + \
-                                                   self.data_repository.binary_corr_weighted_values[i][j]
-                self.concurrency_filter_resultant_binary_values[i][j] = self.data_repository.binary_weighted_values[i][
-                    j]
-                self.concurrency_filter_resultant_binary_values[i][j] = \
-                    self.data_repository.binary_corr_weighted_values[i][j]
-        for i in range(1, sz):
-            for j in range(0, i-1):
-                if self.aggregate_edge_values[i][j] > 0 and self.aggregate_edge_values[j][i] > 0:
-                    self.relative_concurrency_values[i][j] = 0.5 * ((self.aggregate_edge_values[i][j] / sum(self.aggregate_edge_values[i])) + (
-                            self.aggregate_edge_values[i][j] / sum(self.aggregate_edge_values[j])))
-                    self.relative_concurrency_values[j][i] = 0.5 * ((self.aggregate_edge_values[j][i] / sum(self.aggregate_edge_values[j])) + (
-                            self.aggregate_edge_values[j][i] / sum(self.aggregate_edge_values[i])))
-                    if (self.relative_concurrency_values[i][j] < self.filter_config.concurrency_filter.preserve < self.relative_concurrency_values[j][i]) or (
-                            self.relative_concurrency_values[i][j] > self.filter_config.concurrency_filter.preserve > self.relative_concurrency_values[j][
-                        i]) or (
-                            self.relative_concurrency_values[i][j] < self.filter_config.concurrency_filter.preserve and self.relative_concurrency_values[j][
-                        i] < self.filter_config.concurrency_filter.preserve):
-                        if abs(self.relative_concurrency_values[i][j] - self.relative_concurrency_values[j][i]) > self.filter_config.concurrency_filter.offset:
-                            if self.relative_concurrency_values[i][j] > self.relative_concurrency_values[j][i]:
-                                self.aggregate_edge_values[j][i] = 0
-                            else:
-                                self.aggregate_edge_values[i][j] = 0
-                        else:
-                            self.aggregate_edge_values[i][j] = 0
-                            self.aggregate_edge_values[j][i] = 0
+            for j in range(0, i):
+                self.process_relation_pair(i, j)
+        # Applying edge_filter with older values(since only values of concurrency_filter was changed)
+        self.apply_edge_filter(self.filter_config.edge_filter)
 
+    """
+    To process an edge pair for concurrency filter, check according to threshold and ratio values.
+    """
+
+    def process_relation_pair(self, x, y):
+        sig_fwd = self.data_repository.binary_weighted_values[x][y]
+        sig_bwd = self.data_repository.binary_weighted_values[y][x]
+        if sig_fwd > 0.0 and sig_bwd > 0.0:
+            # need to do conflict resolution
+            rel_imp_AB = self.get_relative_imp(x, y)
+            rel_imp_BA = self.get_relative_imp(y, x)
+            if rel_imp_AB > self.filter_config.concurrency_filter.preserve and rel_imp_BA > self.filter_config.concurrency_filter.preserve:
+                return
+            else:
+                ratio = min(rel_imp_AB, rel_imp_BA) / max(rel_imp_AB, rel_imp_BA)
+                if ratio < self.filter_config.concurrency_filter.offset:
+                    # preserve one link which has more relative importance
+                    if rel_imp_AB > rel_imp_BA:
+                        self.concurrency_filter_resultant_binary_values[y][x] = 0.0
+                        self.concurrency_filter_resultant_binary_corr_values[y][x] = 0.0
+                    else:
+                        self.concurrency_filter_resultant_binary_values[x][y] = 0.0
+                        self.concurrency_filter_resultant_binary_corr_values[x][y] = 0.0
+                else:
+                    # both links are not that important, remove both
+                    self.concurrency_filter_resultant_binary_values[x][y] = 0.0
+                    self.concurrency_filter_resultant_binary_corr_values[x][y] = 0.0
+                    self.concurrency_filter_resultant_binary_values[y][x] = 0.0
+                    self.concurrency_filter_resultant_binary_corr_values[y][x] = 0.0
+
+    """
+    Helper method for process_relation_pair, it calculates relative importance 
+    between two pair of nodes, when given their indices.
+    """
+
+    def get_relative_imp(self, x, y):
+        sig_ref = self.data_repository.binary_weighted_values[x][y]
+        sig_source_out = 0.0
+        sig_target_in = 0.0
+        sz = self.num_of_nodes
+        # We reverse the order, need to check if it makes a difference
+        for i in range(0, sz):
+            if i != x:
+                sig_source_out += self.data_repository.binary_weighted_values[x][i]
+            if i != y:
+                sig_target_in += self.data_repository.binary_weighted_values[i][x]
+        return (sig_ref / sig_source_out) + (sig_ref / sig_target_in)
+
+
+    """
+    Applies edge_filter and then implicitly calls node_filter to apply
+    """
     def apply_edge_filter(self, edge_filter):
-        self.filter_config(edge_filter)
-        # out_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        # in_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.filter_config.edge_filter = edge_filter
+        self.edge_filter_resultant_binary_values = self.concurrency_filter_resultant_binary_values
+        self.edge_filter_resultant_binary_corr_values = self.concurrency_filter_resultant_binary_corr_values
         sz = self.num_of_nodes
+        # Initializing an mask for holding true false values
+        self.preserve_mask = [[False for x in range(sz)] for y in range(sz)]
+        for i in range(0, sz):
+            self.process_edges_of_node(i)
+
         for i in range(0, sz):
             for j in range(0, sz):
-                self.aggregate_edge_filtered_values[i][j] = (self.concurrency_filter_resultant_binary_values[i][j] * self.filter_config.edge_filter.sc_ratio) + \
-                                                            (self.concurrency_filter_resultant_binary_corr_values[i][
-                                                                 j] * (1 - self.filter_config.edge_filter.sc_ratio))
-                self.edge_filter_values[i][j] = 0.0 if self.aggregate_edge_filtered_values[i][j] < self.filter_config.edge_filter.cut_off else self.aggregate_edge_filtered_values[i][j]
+                if i == j:
+                    continue
+                if not self.preserve_mask[i][j]:
+                    self.edge_filter_resultant_binary_values[i][j] = 0.0
+                    self.edge_filter_resultant_binary_corr_values[i][j] = 0.0
+        # Applying node_filter with older values(since only values of edge_filter or concurrency_filter was changed)
+        self.apply_node_filter(self.filter_config.node_filter)
 
-    def apply_node_filer(self, node_filter):
+    """
+    Processes an edges of nodes one by one, checks according to sc_ratio and cut_off.
+    """
+    def process_edges_of_node(self, idx):
+        sz = self.num_of_nodes
+        min_in_val = float('inf')
+        max_in_val = float('-inf')
+        min_out_val = float('inf')
+        max_out_val = float('-inf')
+        in_values = [0.0 for i in range(0, sz)]
+        out_values = [0.0 for i in range(0, sz)]
+        ignore_self_loops = self.filter_config.edge_filter.ignore_self_loops
+        sc_ratio = self.filter_config.edge_filter.sc_ratio
+        for i in range(0, sz):
+            if ignore_self_loops and i == idx:
+                # do nothing
+                continue
+
+            # Check for incoming relations
+            significance = self.concurrency_filter_resultant_binary_values[i][idx]
+            if significance > 0.0:
+                correlation = self.concurrency_filter_resultant_binary_corr_values[i][idx]
+                in_values[i] = significance * sc_ratio + correlation * (1.0 - sc_ratio)
+                if in_values[i] > max_in_val:
+                    max_in_val = in_values[i]
+                if in_values[i] < min_in_val:
+                    min_in_val = in_values[i]
+            else:
+                in_values[i] = 0.0
+
+            # check for outgoing relations
+            significance = self.concurrency_filter_resultant_binary_values[idx][i]
+            if significance > 0.0:
+                correlation = self.concurrency_filter_resultant_binary_corr_values[idx][i]
+                out_values[i] = significance * sc_ratio + correlation * (1.0 - sc_ratio)
+                if out_values[i] > max_out_val:
+                    max_out_val = out_values[i]
+                if out_values[i] < min_out_val:
+                    min_out_val = out_values[i]
+            else:
+                out_values[i] = 0.0
+
+        if self.filter_config.edge_filter.interpret_abs:
+            max_in_val = max(max_in_val, max_out_val)
+            max_out_val = max_in_val
+            min_in_val = max(min_in_val, min_out_val)
+            min_out_val = min_in_val
+        in_limit = max_in_val - (max_in_val - min_in_val) * self.filter_config.edge_filter.cut_off
+        out_limit = max_out_val - (max_out_val - min_out_val) * self.filter_config.edge_filter.cut_off
+        for i in range(0, sz):
+            if in_values[i] >= in_limit:
+                self.preserve_mask[i][idx] = True
+            if out_values[i] >= out_limit:
+                self.preserve_mask[idx][i] = True
+
+    def apply_node_filter(self, node_filter):
         pass
 
     def debug_concurrency_filter_values(self):
         print("concurrency filtered values")
+        print("concurrency_filter_resultant_binary_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
             for j in range(0, sze):
-                print(str(self.aggregate_edge_values[i][j]), end=" ")
+                print(str(self.concurrency_filter_resultant_binary_values[i][j]), end=" ")
+            print()
+        print()
+        print("concurrency_filter_resultant_binary_corr_values")
+        sze = self.num_of_nodes
+        for i in range(0, sze):
+            for j in range(0, sze):
+                print(str(self.concurrency_filter_resultant_binary_corr_values[i][j]), end=" ")
             print()
         print()
 
     def debug_edge_filter_values(self):
         print("edge filtered values")
+        print("edge_filter_resultant_binary_values")
         sze = self.num_of_nodes
         for i in range(0, sze):
             for j in range(0, sze):
-                print(str(self.edge_filter_values[i][j]), end=" ")
+                print(str(self.edge_filter_resultant_binary_values[i][j]), end=" ")
+            print()
+        print()
+        print("edge_filter_resultant_binary_corr_values")
+        sze = self.num_of_nodes
+        for i in range(0, sze):
+            for j in range(0, sze):
+                print(str(self.edge_filter_resultant_binary_corr_values[i][j]), end=" ")
             print()
         print()
 
+
     def debug_node_filter_values(self):
         pass
+
+
