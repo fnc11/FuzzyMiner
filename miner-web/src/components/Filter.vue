@@ -83,90 +83,107 @@
             </el-col>
         </el-row>
         <el-dialog
-                title="Metrics"
+                title="Configure"
                 :visible.sync="dialog"
-                width="40%">
-            <div>
+                width="40%" style="font-family: 'Segoe UI Semibold';">
+                <div>
                 <el-tabs type="boder-card">
                     <el-tab-pane label="Metrics">
-                        <el-dropdown @command="selectTypes">
+                        <el-dropdown  type="primary" @command="selectTypes">
                             <span class="el-dropdown-link">
                                 Select Metrics<i class="el-icon-arrow-down el-icon--right"></i>
                             </span>
+
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item command="unary">Unary Metrics</el-dropdown-item>
+                                <hr>
                                 <el-dropdown-item command="significance">Binary Significance</el-dropdown-item>
+                                <hr>
                                 <el-dropdown-item command="correlation">Binary Correlation</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                         <div v-if="selectedType === 'unary'">
                             <div>
                                 <label>Frequency Significance Metric</label>
-                                <el-radio-group v-model="unaryFrequencySignificance">
-                                    <el-radio :label="1">active</el-radio>
-                                    <el-radio :label="2">significance</el-radio>
-                                </el-radio-group>
+                                <div v-model="unaryFrequencySignificance" style="display: flex">
+                                    <el-checkbox v-model="checked" :label="1">active</el-checkbox>
+                                        <el-checkbox :label="2">Invert the significance</el-checkbox>
+                                </div>
                                 <label>Weight</label>
                                 <el-slider v-model="unaryFrequencyWeight" />
                             </div>
+                            <el-divider></el-divider>
                             <div>
                                 <label>Routing Significance</label>
-                                <el-radio-group v-model="routingSignificance">
-                                    <el-radio :label="1">Active</el-radio>
-                                    <el-radio :label="2">en</el-radio>
-                                </el-radio-group>
-                                <label>Weight</label>
+                                <div v-model="routingSignificance" style="display: table-cell">
+                                         <el-checkbox v-model="checked" :label="1">Active</el-checkbox>
+                                        <el-checkbox  :label="2">Invert the significance</el-checkbox>
+                                </div>
+                                <div style="vertical-align: middle">
+                                <label>Weight </label>
                                 <el-slider v-model="routingWeight" />
+                                </div>
                             </div>
                         </div>
                         <div v-else-if="selectedType === 'significance'">
                             <div>
                                 <label>Frequency Significance Metric</label>
-                                <el-radio-group v-model="binaryFrequencySignificance">
-                                    <el-radio :label="1">active</el-radio>
-                                    <el-radio :label="2">significance</el-radio>
-                                </el-radio-group>
+                                <div v-model="binaryFrequencySignificance" style="display: flex">
+                                    <el-checkbox v-model="checked" :label="1">active</el-checkbox>
+
+                                    <el-checkbox  :label="2">Invert the significance</el-checkbox>
+                                </div>
                                 <label>Weight</label>
                                 <el-slider v-model="binaryFrequencyWeight" />
                             </div>
+                            <el-divider></el-divider>
                             <div>
                                 <label>Distance Significance</label>
-                                <el-radio-group v-model="distanceSignificance">
-                                    <el-radio :label="1">active</el-radio>
-                                    <el-radio :label="2">significance</el-radio>
-                                </el-radio-group>
+                                <div v-model="distanceSignificance" style="display: flex">
+                                    <el-checkbox v-model="checked" :label="1">active</el-checkbox>
+                                    <el-checkbox  :label="2">significance</el-checkbox>
+                                </div>
                                 <label>Weight</label>
                                 <el-slider v-model="distanceWeight" />
                             </div>
                         </div>
                         <div v-else>
+
                             <div v-for="(item, index) in binaryCorrelation" :key="index">
+                                 <el-divider></el-divider>
                                 <label>{{ item.name }}</label>
-                                <el-radio-group v-model="item.selected">
-                                    <el-radio :label="1">active</el-radio>
-                                    <el-radio :label="2">significance</el-radio>
-                                </el-radio-group>
+                                <div style="display: flex">
+                                    <el-checkbox v-model="checked" :label="1">active</el-checkbox>
+
+                                    <el-checkbox  :label="2">Invert the significance</el-checkbox>
+                                </div>
                                 <label>Weight</label>
                                 <el-slider v-model="item.weight" />
+
                             </div>
+
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane label="Atlenation">
+                    <el-tab-pane label="Attenuation">
                         <div>
-                            <label>Maximum distance</label>
+                            <label>Maximal event distance</label>
                             <el-slider v-model="maximumDistance" :min="1" :max="20" />
                         </div>
+                        <el-divider></el-divider>
                         <div>
-                            <label>S</label>
+                            <label >Select Attenuation</label>
+                            <br>
                             <el-radio-group>
-                                <el-radio :label="1">1 Alten</el-radio>
-                                <el-radio :label="2">2 Alten</el-radio>
+                                <el-radio :label="1">Linear Attenuation</el-radio>
+                                <br>
+                                <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider />
+                            <el-slider v-model="nrootradical" :min="2" :max="20" />
                         </div>
                     </el-tab-pane>
                 </el-tabs>
             </div>
+             <el-divider></el-divider>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialog = false">Save</el-button>
             </div>
@@ -200,16 +217,18 @@
                 binaryFrequencyWeight: 50,
                 distanceSignificance: 1,
                 distanceWeight: 50,
+                checked:true,
+
                 binaryCorrelation: [{
-                    name: 'Pro',
+                    name: 'Proximity Correlation',
                     selected: 1,
                     weight: 50
                 }, {
-                    name: 'Endpoint',
+                    name: 'Endpoint Correlation',
                     selected: 1,
                     weight: 50
                 }, {
-                    name: 'Or',
+                    name: 'Originator Correlation',
                     selected: 1,
                     weight: 50
                 }, {
@@ -221,7 +240,9 @@
                     selected: 1,
                     weight: 50
                 }],
-                maximumDistance: 10,
+                maximumDistance: 5,
+                nrootradical:2,
+
             }
         },
         methods: {
