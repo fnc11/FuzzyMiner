@@ -11,7 +11,7 @@
                         <!-- here should be canvas -->
                     </div>
 
-                    <el-button type="info" plain class="button-position">Save Snapshot</el-button>
+                    <el-button type="primary" plain class="button-position">Save Snapshot</el-button>
 
 
                 </div>
@@ -77,7 +77,9 @@
                         </el-col>
                     </el-row>
                     <div class="text-center-align metrics">
-                        <el-button type="info" plain class="button-position" @click="openConfig">Metrics Configuration</el-button>
+                        <el-button type="primary" plain class="button-position" @click="openConfig">Metrics
+                            Configuration
+                        </el-button>
                     </div>
                 </div>
             </el-col>
@@ -106,10 +108,15 @@
                                 <h4>Frequency Significance Metric</h4>
                                 <div style="display: flex">
                                     <el-checkbox v-model="unaryFrequencyActive">Include</el-checkbox>
-                                    <el-checkbox v-model="unaryFrequencySignificance" >Invert the significance</el-checkbox>
+                                    <el-checkbox v-model="unaryFrequencySignificance">Invert the significance
+                                    </el-checkbox>
                                 </div>
-                                <label>Weight</label>
-                                <el-slider v-model="unaryFrequencyWeight" />
+                                <br>
+                                <div class="horizontal-align">
+                                    <label class="slider-label">Weight</label>
+                                    <el-slider class="adjust-slider-width" v-model="unaryFrequencyWeight"/>
+                                </div>
+
                             </div>
                             <el-divider></el-divider>
                             <div>
@@ -118,10 +125,10 @@
                                     <el-checkbox v-model="routingActive">Include</el-checkbox>
                                     <el-checkbox v-model="routingSignificance">Invert the significance</el-checkbox>
                                 </div>
-                                <div style="vertical-align: middle">
-                                    <div></div>
-                                <label>Weight </label>
-                                <el-slider v-model="routingWeight" />
+                                <br>
+                                <div class="horizontal-align">
+                                    <label class="slider-label">Weight </label>
+                                    <el-slider class="adjust-slider-width" v-model="routingWeight"/>
                                 </div>
                             </div>
                         </div>
@@ -131,10 +138,14 @@
                                 <h4>Frequency Significance Metric</h4>
                                 <div style="display: flex">
                                     <el-checkbox v-model="binaryFrequencyActive">Include</el-checkbox>
-                                    <el-checkbox v-model="binaryFrequencySignificance">Invert the significance</el-checkbox>
+                                    <el-checkbox v-model="binaryFrequencySignificance">Invert the significance
+                                    </el-checkbox>
                                 </div>
-                                <label>Weight</label>
-                                <el-slider v-model="binaryFrequencyWeight" />
+                                <br>
+                                <div class="horizontal-align">
+                                <label class="slider-label">Weight</label>
+                                <el-slider class="adjust-slider-width" v-model="binaryFrequencyWeight"/>
+                                </div>
                             </div>
                             <el-divider></el-divider>
                             <div>
@@ -143,20 +154,26 @@
                                     <el-checkbox v-model="distanceActive">Include</el-checkbox>
                                     <el-checkbox v-model="distanceSignificance">Invert the significance</el-checkbox>
                                 </div>
-                                <label>Weight</label>
-                                <el-slider v-model="distanceWeight" />
+                                <br>
+                                <div class="horizontal-align">
+                                <label class="slider-label">Weight</label>
+                                <el-slider class="adjust-slider-width" v-model="distanceWeight"/>
+                                </div>
                             </div>
                         </div>
                         <div v-else>
                             <div v-for="(item, index) in binaryCorrelation" :key="index">
-                                 <el-divider></el-divider>
+                                <el-divider></el-divider>
                                 <h4>{{ item.name }}</h4>
                                 <div style="display: flex">
                                     <el-checkbox v-model="item.active">Include</el-checkbox>
                                     <el-checkbox v-model="item.significance">Invert the significance</el-checkbox>
                                 </div>
-                                <label>Weight</label>
-                                <el-slider v-model="item.weight" />
+                                <br>
+                                <div class="horizontal-align">
+                                <label class="slider-label">Weight</label>
+                                <el-slider class="adjust-slider-width" v-model="item.weight"/>
+                                </div>
                             </div>
                         </div>
                     </el-tab-pane>
@@ -167,14 +184,15 @@
                         </div>
                         <el-divider></el-divider>
                         <div>
-                            <label>Select Attenuation</label>
-                            <br>
+                            <h4>Select Attenuation</h4>
                             <el-radio-group v-model="attenuationSelected">
                                 <el-radio :label="1">Linear Attenuation</el-radio>
                                 <br>
                                 <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="radical" :min="1" :max="4"/>
+                            <div v-if="attenuationSelected===2">
+                                <el-slider v-model="radical" :min="1" :max="4"/>
+                            </div>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -189,7 +207,7 @@
 </template>
 
 <script>
-    import {metrics, nodeFilter, edgeFilter, concurrencyFilter} from '@/api/filter';
+    import {concurrencyFilter, edgeFilter, metrics, nodeFilter} from '@/api/filter';
 
     export default {
         name: "Filter",
@@ -250,7 +268,7 @@
                     weight: 50
                 }],
                 maximumEventDistance: 5,
-                attenuationSelected: 1,
+                attenuationSelected: 2,
                 radical: 2,
                 metrics_save: {}
             }
@@ -484,8 +502,7 @@
         position: relative;
         top: 20px;
         border-radius: 2px;
-        border-color: #d9d9d9;
-        color: #606266;
+
 
     }
 
@@ -514,6 +531,21 @@
     .el-icon-arrow-down {
         font-size: 12px;
 
+    }
+
+    .adjust-slider-width {
+        width: 90%;
+
+    }
+
+    .slider-label {
+        position: relative;
+        top: 10px;
+    }
+
+    .horizontal-align {
+        display: flex;
+        justify-content: space-evenly;
     }
 
 
