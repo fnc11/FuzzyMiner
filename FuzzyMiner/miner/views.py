@@ -30,7 +30,8 @@ def upload(request):
 def get_default_configuration():
     # defining default configuration
     node_filter = NodeFilter()
-    edge_filter = EdgeFilter("edge_filter", True, 0.5, 0.5, False, False)
+    # Can specify type of edge filter you want use by giving "Fuzzy" or "Best"
+    edge_filter = EdgeFilter("edge_filter", "Fuzzy", 0.5, 0.5, False, False)
     concurrency_filter = ConcurrencyFilter("concurrency_filter", True, 0.5, 0.5)
     filter_config = FilterConfig(node_filter, edge_filter, concurrency_filter)
     metric_config1 = MetricConfig("frequency_significance_unary", "unary")

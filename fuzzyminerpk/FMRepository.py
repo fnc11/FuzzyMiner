@@ -600,7 +600,7 @@ class FilteredDataRepository:
         self.node_indices = self.fm_log_util.node_indices
         self.concurrency_filter_resultant_binary_values = list()
         self.concurrency_filter_resultant_binary_corr_values = list()
-        self.preserve_mask = list() #needed in edge_filtering
+        self.preserve_mask = list()  # needed in edge_filtering
         self.edge_filter_resultant_binary_values = list()
         self.edge_filter_resultant_binary_corr_values = list()
 
@@ -617,6 +617,7 @@ class FilteredDataRepository:
             for j in range(0, i):
                 self.process_relation_pair(i, j)
         # Applying edge_filter with older values(since only values of concurrency_filter was changed)
+        # call method based on type of filter selected fuzzy or best edge(by default it's fuzzy edge filter)
         self.apply_edge_filter(self.filter_config.edge_filter)
 
     """
@@ -667,9 +668,8 @@ class FilteredDataRepository:
                 sig_target_in += self.data_repository.binary_weighted_values[i][x]
         return (sig_ref / sig_source_out) + (sig_ref / sig_target_in)
 
-
     """
-    Applies edge_filter and then implicitly calls node_filter to apply
+    Applies edge_filter according to selected type Fuzzy or Best and then implicitly calls node_filter to apply
     """
     def apply_edge_filter(self, edge_filter):
         self.filter_config.edge_filter = edge_filter
@@ -678,9 +678,12 @@ class FilteredDataRepository:
         sz = self.num_of_nodes
         # Initializing an mask for holding true false values
         self.preserve_mask = [[False for x in range(sz)] for y in range(sz)]
-        for i in range(0, sz):
-            self.process_edges_of_node(i)
-
+        if edge_filter.edge_transform == "Fuzzy":
+            for i in range(0, sz):
+                self.process_node_edges_fuzzy_filter(i)
+        else:
+            for i in range(0, sz):
+                self.process_node_edges_best_filter(i)
         for i in range(0, sz):
             for j in range(0, sz):
                 if i == j:
@@ -688,13 +691,16 @@ class FilteredDataRepository:
                 if not self.preserve_mask[i][j]:
                     self.edge_filter_resultant_binary_values[i][j] = 0.0
                     self.edge_filter_resultant_binary_corr_values[i][j] = 0.0
+
         # Applying node_filter with older values(since only values of edge_filter or concurrency_filter was changed)
         self.apply_node_filter(self.filter_config.node_filter)
 
+
     """
-    Processes an edges of nodes one by one, checks according to sc_ratio and cut_off.
+    Processes edges of nodes one by one, checks according to sc_ratio, cut_off and other attributes.
     """
-    def process_edges_of_node(self, idx):
+
+    def process_node_edges_fuzzy_filter(self, idx):
         sz = self.num_of_nodes
         min_in_val = float('inf')
         max_in_val = float('-inf')
@@ -746,6 +752,34 @@ class FilteredDataRepository:
             if out_values[i] >= out_limit:
                 self.preserve_mask[idx][i] = True
 
+
+    """
+    Processes edges of nodes one by one for best edge filter.
+    """
+
+    def process_node_edges_best_filter(self, idx):
+        # Finding best predecessor and successor of this node
+        best_pre = -1
+        best_succ = -1
+        best_pre_sig = 0.0
+        best_succ_sig = 0.0
+        sz = self.num_of_nodes
+        for i in range(0, sz):
+            if i == idx:
+                continue
+            pre_sig = self.data_repository.binary_weighted_values[i][idx]
+            if pre_sig > best_pre_sig:
+                best_pre_sig = pre_sig
+                best_pre = i
+            succ_sig = self.data_repository.binary_weighted_values[idx][i]
+            if succ_sig > best_succ_sig:
+                best_succ_sig = succ_sig
+                best_succ = i
+        if best_pre >= 0:
+            self.preserve_mask[best_pre][idx] = True
+        if best_succ >= 0:
+            self.preserve_mask[idx][best_succ] = True
+
     def apply_node_filter(self, node_filter):
         pass
 
@@ -783,8 +817,5 @@ class FilteredDataRepository:
             print()
         print()
 
-
     def debug_node_filter_values(self):
         pass
-
-
