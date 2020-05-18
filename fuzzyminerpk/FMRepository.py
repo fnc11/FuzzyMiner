@@ -678,6 +678,7 @@ class FilteredDataRepository:
         sz = self.num_of_nodes
         # Initializing an mask for holding true false values
         self.preserve_mask = [[False for x in range(sz)] for y in range(sz)]
+        ## Return error if something else was sent other than Fuzzy and Best
         if edge_filter.edge_transform == "Fuzzy":
             for i in range(0, sz):
                 self.process_node_edges_fuzzy_filter(i)
