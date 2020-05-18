@@ -77,7 +77,7 @@
                         </el-col>
                     </el-row>
                     <div class="text-center-align metrics">
-                        <el-button type="info" plain class="button-position" @click="dialog = true">Metrics Configuration</el-button>
+                        <el-button type="info" plain class="button-position" @click="openConfig">Metrics Configuration</el-button>
                     </div>
                 </div>
             </el-col>
@@ -172,23 +172,24 @@
                             <el-radio-group v-model="attenuationSelected">
                                 <el-radio :label="1">Linear Attenuation</el-radio>
                                 <br>
-                                <el-radio :label="2" v-model="Nroot">N(th) root with radical</el-radio>
+                                <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="radical" :min="1.0" :max="4"/>
+                            <el-slider v-model="radical" :min="1" :max="4"/>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
             </div>
             <el-divider></el-divider>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialog = false">Save</el-button>
+                <el-button @click="saveConfig">Save</el-button>
+                <el-button @click="cancelConfig">Cancel</el-button>
             </div>
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import {balance, cutoff, metrics, nodeFilter, preserve, scRatio} from '@/api/filter';
+    import {metrics, nodeFilter, edgeFilter, concurrencyFilter} from '@/api/filter';
 
     export default {
         name: "Filter",
@@ -250,81 +251,194 @@
                 }],
                 maximumEventDistance: 5,
                 attenuationSelected: 1,
-                Nroot:true,
-
-
+                radical: 2,
+                metrics_save: {}
             }
         },
         methods: {
             async nodeChanged(value) {
                 await nodeFilter({
-                    value: value
+                    'cutoff': value / 100
                 });
-                console.log(value);
+                console.log('change node filter with cutoff: ' + String(value / 100));
             },
             async scChanged(value) {
-                await scRatio({
-                    value: value
+                let edge = 'Best Edges';
+                if (this.edge === 2) {
+                    edge = 'Fuzzy Edges';
+                }
+                await edgeFilter({
+                    'edge_transformer': edge,
+                    's/c_ratio': value / 100,
+                    'cutoff': this.cutoff / 100,
+                    'ignore_self_loops': this.loops,
+                    'interpret_absolute': this.absolute
                 });
-                console.log(value);
+                console.log('change edge filter with s/c ratio: ' + String(value / 100));
             },
             async cutoffChanged(value) {
-                await cutoff({
-                    value: value
+                let edge = 'Best Edges';
+                if (this.edge === 2) {
+                    edge = 'Fuzzy Edges';
+                }
+                await edgeFilter({
+                    'edge_transformer': edge,
+                    's/c_ratio': this.sc / 100,
+                    'cutoff': value / 100,
+                    'ignore_self_loops': this.loops,
+                    'interpret_absolute': this.absolute
                 });
-                console.log(value);
+                console.log('change edge filter with cutoff: ' + String(value / 100));
             },
             async preserveChanged(value) {
-                await preserve({
-                    value: value
+                await concurrencyFilter({
+                    'filter_concurrency': this.concurrency,
+                    'preserve': value / 100,
+                    'balance': this.balance / 100
                 });
-                console.log(value);
+                console.log('change concurrency filter with preserve: ' + String(value / 100));
             },
             async balanceChanged(value) {
-                await balance({
-                    value: value
+                await concurrencyFilter({
+                    'filter_concurrency': this.concurrency,
+                    'preserve': this.preserve / 100,
+                    'balance': value / 100
                 });
-                console.log(value);
+                console.log('change concurrency filter with balance: ' + String(value / 100));
             },
             selectTypes(type) {
                 this.selectedType = type;
             },
-            async saveConfig() {
-                await metrics({
-                    value: '1'
+            openConfig() {
+                this['dialog'] = true;
+                // JSON.parse(JSON.stringify(obj));
+                this.metrics_save['selectedType'] = this.selectedType;
+                this.metrics_save['unaryFrequencyActive'] = this.unaryFrequencyActive;
+                this.metrics_save['unaryFrequencySignificance'] = this.unaryFrequencySignificance;
+                this.metrics_save['unaryFrequencyWeight'] = this.unaryFrequencyWeight;
+                this.metrics_save['routingActive'] = this.routingActive;
+                this.metrics_save['routingSignificance'] = this.routingSignificance;
+                this.metrics_save['routingWeight'] = this.routingWeight;
+                this.metrics_save['binaryFrequencyActive'] = this.binaryFrequencyActive;
+                this.metrics_save['binaryFrequencySignificance'] = this.binaryFrequencySignificance;
+                this.metrics_save['binaryFrequencyWeight'] = this.binaryFrequencyWeight;
+                this.metrics_save['distanceActive'] = this.distanceActive;
+                this.metrics_save['distanceSignificance'] = this.distanceSignificance;
+                this.metrics_save['distanceWeight'] = this.distanceWeight;
+                this.metrics_save['binaryCorrelation'] = [];
+                this.binaryCorrelation.forEach(item => {
+                    let temp = {};
+                    for (let [key, value] in Object.entries(item)) {
+                        temp[key] = value;
+                    }
+                    this.metrics_save['binaryCorrelation'] = temp;
                 });
+                this.metrics_save['maximumEventDistance'] = this.maximumEventDistance;
+                this.metrics_save['attenuationSelected'] = this.attenuationSelected;
+                this.metrics_save['radical'] = this.radical;
             },
+            async saveConfig() {
+                let data = {};
+                const type = this.typeLabels[this.selectedType];
+                data['metrics'] = {};
+                data['metrics']['metrics_type'] = type;
+                if (type === this.typeLabels['unary']) {
+                    data['metrics']['frequency'] = this.unaryFrequencyActive;
+                    data['metrics']['frequency_invert'] = this.unaryFrequencySignificance;
+                    data['metrics']['frequency_wight'] = this.unaryFrequencyWeight / 100;
+                    data['metrics']['routing'] = this.routingActive;
+                    data['metrics']['routing_invert'] = this.routingSignificance;
+                    data['metrics']['routing_weight'] = this.routingWeight / 100;
+                } else if (type === this.typeLabels['significance']) {
+                    data['metrics']['frequency'] = this.binaryFrequencyActive;
+                    data['metrics']['frequency_invert'] = this.binaryFrequencySignificance;
+                    data['metrics']['frequency_weight'] = this.binaryFrequencyWeight;
+                    data['metrics']['distance'] = this.distanceActive;
+                    data['metrics']['distance_invert'] = this.distanceSignificance;
+                    data['metrics']['distance_weight'] = this.distanceWeight / 100;
+                } else {
+                    data['metrics']['correlation'] = [];
+                    this.binaryCorrelation.forEach(item => {
+                        data['metrics']['correlation'].push(item);
+                    });
+                }
+                data['attenuation'] = {};
+                data['attenuation']['maximal_event_distance'] = this.maximumEventDistance / 100;
+                if (this.attenuationSelected === 1) {
+                    data['attenuation']['selected'] = 'Linear Attenuation';
+                } else {
+                    data['attenuation']['selected'] = 'N root with radical';
+                    data['attenuation']['radical'] = this.radical;
+                }
+                await metrics(data);
+                this.dialog = false;
+            },
+            cancelConfig() {
+                for (let [key, value] in Object.entries(this.metrics_save)) {
+                    if (key !== 'binaryCorrelation')
+                        this[key] = value;
+                }
+                this.binaryCorrelation = this.metrics_save['binaryCorrelation'];
+                this.metrics_save = {};
+                this.dialog = false;
+            }
         },
         watch: {
-            edge: function(now, old) {
-                if (now === 1) {
-                    console.log('Best Edges');
-                } else if (now === 2) {
-                    console.log('Fuzzy Edges');
-                }
+            edge: async function(now, old) {
+                if (now === old)
+                    return;
+                let edge = 'Best Edges';
+                if (now === 2)
+                    edge = 'Fuzzy Edges';
+                await edgeFilter({
+                    'edge_transformer': edge,
+                    's/c_ratio': this.sc / 100,
+                    'cutoff': this.cutoff / 100,
+                    'ignore_self_loops': this.loops,
+                    'interpret_absolute': this.absolute
+                });
+                console.log('change edge filter with edge transformer: ' + edge);
             },
-            loop: function (now, old) {
-                if (now === true) {
-                    console.log(now);
-                } else {
-                    console.log(old);
-                }
+            loops: async function (now, old) {
+                if (now === old)
+                    return;
+                let edge = 'Best Edges';
+                if (this.edge === 2)
+                    edge = 'Fuzzy Edges';
+                await edgeFilter({
+                    'edge_transformer': edge,
+                    's/c_ratio': this.sc / 100,
+                    'cutoff': this.cutoff / 100,
+                    'ignore_self_loops': now,
+                    'interpret_absolute': this.absolute
+                });
+                console.log('change edge filter with ignore self-loops: ' + String(now));
             },
-            absolute: function(now, old) {
-                if (now === true) {
-                    console.log(now);
-                } else {
-                    console.log(now);
-                }
+            absolute: async function(now, old) {
+                if (now === old)
+                    return;
+                let edge = 'Best Edges';
+                if (this.edge === 2)
+                    edge = 'Fuzzy Edges';
+                await edgeFilter({
+                    'edge_transformer': edge,
+                    's/c_ratio': this.sc / 100,
+                    'cutoff': this.cutoff / 100,
+                    'ignore_self_loops': this.loops,
+                    'interpret_absolute': now
+                });
+                console.log('change edge filter with interpret absolute: ' + String(now));
             },
-            concurrency: function (now, old) {
-                if (now === true) {
-                    console.log(now);
-                } else {
-                    console.log(now);
-                }
-
-            }
+            concurrency: async function (now, old) {
+                if (now === old)
+                    return;
+                await concurrencyFilter({
+                    'filter_concurrency': now,
+                    'preserve': this.preserve / 100,
+                    'balance': this.balance / 100
+                });
+                console.log('change concurrency filter with filter concurrency: ' + String(now));
+            },
         }
     }
 </script>

@@ -16,33 +16,9 @@ export function edgeFilter(data) {
     });
 }
 
-export function scRatio(data) {
+export function concurrencyFilter(data) {
     return request({
-        url: 'sc_ratio',
-        method: 'data',
-        data: data
-    });
-}
-
-export function cutoff(data) {
-    return request({
-        url: 'cutoff',
-        method: 'data',
-        data: data
-    });
-}
-
-export function preserve(data) {
-    return request({
-        url: 'preserve',
-        method: 'post',
-        data: data
-    });
-}
-
-export function balance(data) {
-    return request({
-        url: 'balance',
+        url: 'concurrency_filter',
         method: 'post',
         data: data
     });

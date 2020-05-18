@@ -73,3 +73,36 @@ def show_result(request):
     log_file_path = data["path"]
     resp = launch_filter(settings.BASE_DIR + log_file_path)
     return JsonResponse({'result': resp})
+
+@csrf_exempt
+def node_filter(request):
+    data = json.loads(request.body)
+    print('node filter')
+    print('cutoff:', data['cutoff'])
+    return HttpResponse()
+
+@csrf_exempt
+def edge_filter(request):
+    data = json.loads(request.body)
+    print('edge filter')
+    print('edge transformer:', data['edge_transformer'])
+    print('s/c ratio:', data['s/c_ratio'])
+    print('cutoff:', data['cutoff'])
+    print('ignore self-loops:', data['ignore_self_loops'])
+    print('interpret absolute:', data['interpret_absolute'])
+    return HttpResponse()
+
+@csrf_exempt
+def concurrency_filter(request):
+    data = json.loads(request.body)
+    print('concurrency filter')
+    print('filter concurrency:', data['filter_concurrency'])
+    print('preserve:', data['preserve'])
+    print('balance:', data['balance'])
+    return HttpResponse()
+
+@csrf_exempt
+def metrics_changed(request):
+    data = json.loads(request.body)
+    print(data)
+    return HttpResponse()

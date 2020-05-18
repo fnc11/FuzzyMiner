@@ -21,7 +21,7 @@
                     </el-upload>
                 </el-col>
                 <el-col :span="2.5">
-                    <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate</el-button>
+                    <el-button type="success" class="button-success" @click="generate" :disabled="generated" :loading="loading">Generate</el-button>
                 </el-col>
             </el-row>
             <br><br><br>
@@ -59,7 +59,8 @@
             return {
                 generated: true,
                 fileList: [],
-                path: ''
+                path: '',
+                loading: false
             }
         },
         methods: {
@@ -72,9 +73,12 @@
                 this.generated = false;
             },
             async generate() {
+                this.loading = true;
                 const data = await generate({
                     'path': this.path
                 });
+                console.log(data);
+                this.loading = false;
                 this.$router.push({path: '/filter'});
             },
             uploadSuccess(response, file) {
