@@ -97,82 +97,57 @@
                             </span>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item command="unary">Unary Metrics</el-dropdown-item>
-                                <el-dropdown-item command="significance" divided>Binary Significance</el-dropdown-item>
-                                <el-dropdown-item command="correlation" divided>Binary Correlation</el-dropdown-item>
+                                <el-dropdown-item command="binarySignificance" divided>Binary Significance</el-dropdown-item>
+                                <el-dropdown-item command="binaryCorrelation" divided>Binary Correlation</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                        <span>{{ " Metrics Selected : "+typeLabels[selectedType] }}</span>
+                        <span>{{ " Metrics Selected : " + typeLabels[selectedType] }}</span>
                         <div v-if="selectedType === 'unary'">
-                            <el-divider></el-divider>
-                            <div>
-                                <h4>Frequency Significance Metric</h4>
-                                <div style="display: flex">
-                                    <el-checkbox v-model="unaryFrequencyActive">Include</el-checkbox>
-                                    <el-checkbox v-model="unaryFrequencySignificance">Invert the significance
-                                    </el-checkbox>
-                                </div>
-                                <br>
-                                <div class="horizontal-align">
-                                    <label class="slider-label">Weight</label>
-                                    <el-slider class="adjust-slider-width" v-model="unaryFrequencyWeight"/>
-                                </div>
-
-                            </div>
-                            <el-divider></el-divider>
-                            <div>
-                                <h4>Routing Significance</h4>
-                                <div style="display: table-cell">
-                                    <el-checkbox v-model="routingActive">Include</el-checkbox>
-                                    <el-checkbox v-model="routingSignificance">Invert the significance</el-checkbox>
-                                </div>
-                                <br>
-                                <div class="horizontal-align">
-                                    <label class="slider-label">Weight </label>
-                                    <el-slider class="adjust-slider-width" v-model="routingWeight"/>
+                            <div v-for="(value, key, index) in metricsConfig.metrics.unary" :key="index">
+                                <el-divider></el-divider>
+                                <div>
+                                    <h4>{{ value.label }}</h4>
+                                    <div style="display: flex">
+                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
+                                    </div>
+                                    <br>
+                                    <div class="horizontal-align">
+                                        <label class="slider-label">Weight</label>
+                                        <el-slider class="adjust-slider-width" v-model="value.weight" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-else-if="selectedType === 'significance'">
-                            <el-divider></el-divider>
-                            <div>
-                                <h4>Frequency Significance Metric</h4>
-                                <div style="display: flex">
-                                    <el-checkbox v-model="binaryFrequencyActive">Include</el-checkbox>
-                                    <el-checkbox v-model="binaryFrequencySignificance">Invert the significance
-                                    </el-checkbox>
-                                </div>
-                                <br>
-                                <div class="horizontal-align">
-                                <label class="slider-label">Weight</label>
-                                <el-slider class="adjust-slider-width" v-model="binaryFrequencyWeight"/>
-                                </div>
-                            </div>
-                            <el-divider></el-divider>
-                            <div>
-                                <h4>Distance Significance</h4>
-                                <div style="display: flex">
-                                    <el-checkbox v-model="distanceActive">Include</el-checkbox>
-                                    <el-checkbox v-model="distanceSignificance">Invert the significance</el-checkbox>
-                                </div>
-                                <br>
-                                <div class="horizontal-align">
-                                <label class="slider-label">Weight</label>
-                                <el-slider class="adjust-slider-width" v-model="distanceWeight"/>
+                        <div v-else-if="selectedType === 'binarySignificance'">
+                            <div v-for="(value, key, index) in metricsConfig.metrics.binarySignificance" :key="index">
+                                <el-divider></el-divider>
+                                <div>
+                                    <h4>{{ value.label }}</h4>
+                                    <div style="display: flex">
+                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
+                                    </div>
+                                    <br>
+                                    <div class="horizontal-align">
+                                        <label class="slider-label">Weight</label>
+                                        <el-slider class="adjust-slider-width" v-model="value.weight" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div v-else>
-                            <div v-for="(item, index) in binaryCorrelation" :key="index">
+                            <div v-for="(value, key, index) in metricsConfig.metrics.binaryCorrelation" :key="index">
                                 <el-divider></el-divider>
-                                <h4>{{ item.name }}</h4>
+                                <h4>{{ value.label }}</h4>
                                 <div style="display: flex">
-                                    <el-checkbox v-model="item.active">Include</el-checkbox>
-                                    <el-checkbox v-model="item.significance">Invert the significance</el-checkbox>
+                                    <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                    <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
                                 </div>
                                 <br>
                                 <div class="horizontal-align">
-                                <label class="slider-label">Weight</label>
-                                <el-slider class="adjust-slider-width" v-model="item.weight"/>
+                                    <label class="slider-label">Weight</label>
+                                    <el-slider class="adjust-slider-width" v-model="value.weight"/>
                                 </div>
                             </div>
                         </div>
@@ -180,19 +155,17 @@
                     <el-tab-pane label="Attenuation">
                         <div>
                             <label>Maximal event distance</label>
-                            <el-slider v-model="maximumEventDistance" :min="1" :max="20" />
+                            <el-slider v-model="metricsConfig.attenuation.eventDistance" :min="1" :max="20" />
                         </div>
                         <el-divider></el-divider>
                         <div>
                             <h4>Select Attenuation</h4>
-                            <el-radio-group v-model="attenuationSelected">
+                            <el-radio-group v-model="metricsConfig.attenuation.seleted">
                                 <el-radio :label="1">Linear Attenuation</el-radio>
                                 <br>
                                 <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <div v-if="attenuationSelected===2">
-                                <el-slider v-model="radical" :min="1" :max="4"/>
-                            </div>
+                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 2" :min="1" :max="4"/>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -225,51 +198,79 @@
                 dialog: false,
                 typeLabels: {
                     'unary': 'Unary Metrics',
-                    'significance': 'Binary Significance',
-                    'correlation': 'Binary Correlation'
+                    'binarySignificance': 'Binary Significance',
+                    'binaryCorrelation': 'Binary Correlation'
                 },
                 selectedType: 'unary',
-                unaryFrequencyActive: true,
-                unaryFrequencySignificance: false,
-                unaryFrequencyWeight: 50,
-                routingActive: true,
-                routingSignificance: false,
-                routingWeight: 50,
-                binaryFrequencyActive: true,
-                binaryFrequencySignificance: false,
-                binaryFrequencyWeight: 50,
-                distanceActive: true,
-                distanceSignificance: false,
-                distanceWeight: 50,
-                binaryCorrelation: [{
-                    name: 'Proximity Correlation',
-                    active: true,
-                    significance: false,
-                    weight: 50
-                }, {
-                    name: 'Endpoint Correlation',
-                    active: true,
-                    significance: false,
-                    weight: 50
-                }, {
-                    name: 'Originator Correlation',
-                    active: true,
-                    significance: false,
-                    weight: 50
-                }, {
-                    name: 'Data Type Correlation',
-                    active: true,
-                    significance: false,
-                    weight: 50
-                }, {
-                    name: 'Data Value Correlation',
-                    active: true,
-                    significance: false,
-                    weight: 50
-                }],
-                maximumEventDistance: 5,
-                attenuationSelected: 2,
-                radical: 2,
+                metricsConfig: {
+                    metrics: {
+                        unary: {
+                            frequency: {
+                                label: 'Frequency Significance Metric',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            },
+                            routing: {
+                                label: 'Routing Significance',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            }
+                        },
+                        binarySignificance: {
+                            frequency: {
+                                label: 'Frequency Significance Metric',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            },
+                            distance: {
+                                label: 'Distance Significance',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            }
+                        },
+                        binaryCorrelation: {
+                            proximity: {
+                                label: 'Proximity Correlation',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            },
+                            endpoint: {
+                                label: 'Endpoint Correlation',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            },
+                            originator: {
+                                label: 'Originator Correlation',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            },
+                            dataType: {
+                                label: 'Data Type Correlation',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            },
+                            dataValue: {
+                                label: 'Data Value Correlation',
+                                inc: true,
+                                invert: false,
+                                weight: 50
+                            }
+                        },
+                    },
+                    attenuation: {
+                        eventDistance: 5,
+                        seleted: 1,
+                        radical: 2
+                    }
+                },
                 metrics_save: {}
             }
         },
@@ -322,73 +323,76 @@
             openConfig() {
                 this.dialog = true;
                 // JSON.parse(JSON.stringify(obj));
-                this.metrics_save['selectedType'] = this.selectedType;
-                this.metrics_save['unaryFrequencyActive'] = this.unaryFrequencyActive;
-                this.metrics_save['unaryFrequencySignificance'] = this.unaryFrequencySignificance;
-                this.metrics_save['unaryFrequencyWeight'] = this.unaryFrequencyWeight;
-                this.metrics_save['routingActive'] = this.routingActive;
-                this.metrics_save['routingSignificance'] = this.routingSignificance;
-                this.metrics_save['routingWeight'] = this.routingWeight;
-                this.metrics_save['binaryFrequencyActive'] = this.binaryFrequencyActive;
-                this.metrics_save['binaryFrequencySignificance'] = this.binaryFrequencySignificance;
-                this.metrics_save['binaryFrequencyWeight'] = this.binaryFrequencyWeight;
-                this.metrics_save['distanceActive'] = this.distanceActive;
-                this.metrics_save['distanceSignificance'] = this.distanceSignificance;
-                this.metrics_save['distanceWeight'] = this.distanceWeight;
-                this.metrics_save['binaryCorrelation'] = [];
-                this.binaryCorrelation.forEach(item => {
-                    let temp = {};
-                    for (let [key, value] in Object.entries(item)) {
-                        temp[key] = value;
-                    }
-                    this.metrics_save['binaryCorrelation'] = temp;
-                });
-                this.metrics_save['maximumEventDistance'] = this.maximumEventDistance;
-                this.metrics_save['attenuationSelected'] = this.attenuationSelected;
-                this.metrics_save['radical'] = this.radical;
             },
             async saveConfig() {
-                let data = {};
-                const type = this.typeLabels[this.selectedType];
-                data['metrics'] = {};
-                data['metrics']['metrics_type'] = type;
-                if (type === this.typeLabels['unary']) {
-                    data['metrics']['frequency'] = this.unaryFrequencyActive;
-                    data['metrics']['frequency_invert'] = this.unaryFrequencySignificance;
-                    data['metrics']['frequency_wight'] = this.unaryFrequencyWeight / 100;
-                    data['metrics']['routing'] = this.routingActive;
-                    data['metrics']['routing_invert'] = this.routingSignificance;
-                    data['metrics']['routing_weight'] = this.routingWeight / 100;
-                } else if (type === this.typeLabels['significance']) {
-                    data['metrics']['frequency'] = this.binaryFrequencyActive;
-                    data['metrics']['frequency_invert'] = this.binaryFrequencySignificance;
-                    data['metrics']['frequency_weight'] = this.binaryFrequencyWeight;
-                    data['metrics']['distance'] = this.distanceActive;
-                    data['metrics']['distance_invert'] = this.distanceSignificance;
-                    data['metrics']['distance_weight'] = this.distanceWeight / 100;
+                let data = {
+                    metrics: {
+                        unary_metrics: {
+                            frequency: {
+                                include: this.metricsConfig.metrics.unary.frequency.inc,
+                                invert: this.metricsConfig.metrics.unary.frequency.invert,
+                                weight: this.metricsConfig.metrics.unary.frequency.weight / 100
+                            },
+                            routing: {
+                                include: this.metricsConfig.metrics.unary.routing.inc,
+                                invert: this.metricsConfig.metrics.unary.routing.invert,
+                                weight: this.metricsConfig.metrics.unary.routing.weight / 100
+                            }
+                        },
+                        binary_significance: {
+                            frequency: {
+                                include: this.metricsConfig.metrics.binarySignificance.frequency.inc,
+                                invert: this.metricsConfig.metrics.binarySignificance.frequency.invert,
+                                weight: this.metricsConfig.metrics.binarySignificance.frequency.weight / 100
+                            },
+                            distance: {
+                                include: this.metricsConfig.metrics.binarySignificance.distance.inc,
+                                invert: this.metricsConfig.metrics.binarySignificance.distance.invert,
+                                weight: this.metricsConfig.metrics.binarySignificance.distance.weight / 100
+                            }
+                        },
+                        binary_correlation: {
+                            proximity: {
+                                include: this.metricsConfig.metrics.binaryCorrelation.proximity.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.proximity.invert,
+                                weight: this.metricsConfig.metrics.binaryCorrelation.proximity.weight / 100
+                            },
+                            endpoint: {
+                                include: this.metricsConfig.metrics.binaryCorrelation.endpoint.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.endpoint.invert,
+                                weight: this.metricsConfig.metrics.binaryCorrelation.endpoint.weight / 100
+                            },
+                            originator: {
+                                include: this.metricsConfig.metrics.binaryCorrelation.originator.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.originator.invert,
+                                weight: this.metricsConfig.metrics.binaryCorrelation.originator.weight / 100
+                            },
+                            data_type: {
+                                include: this.metricsConfig.metrics.binaryCorrelation.dataType.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.dataType.invert,
+                                weight: this.metricsConfig.metrics.binaryCorrelation.dataType.weight / 100
+                            },
+                            data_value: {
+                                include: this.metricsConfig.metrics.binaryCorrelation.dataValue.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.dataValue.invert,
+                                weight: this.metricsConfig.metrics.binaryCorrelation.dataValue.weight / 100
+                            }
+                        }
+                    },
+                    attenuation: {
+                        maximal_event_distance: this.metricsConfig.attenuation.eventDistance,
+                    }
+                };
+                if (this.metricsConfig.attenuation.seleted === 1) {
+                    data.attenuation.selected = 'Linear Attenuation';
                 } else {
-                    data['metrics']['correlation'] = [];
-                    this.binaryCorrelation.forEach(item => {
-                        data['metrics']['correlation'].push(item);
-                    });
-                }
-                data['attenuation'] = {};
-                data['attenuation']['maximal_event_distance'] = this.maximumEventDistance / 100;
-                if (this.attenuationSelected === 1) {
-                    data['attenuation']['selected'] = 'Linear Attenuation';
-                } else {
-                    data['attenuation']['selected'] = 'N root with radical';
-                    data['attenuation']['radical'] = this.radical;
+                    data.attenuation.selected = 'N root with radical';
+                    data.attenuation.radical = this.radical;
                 }
                 await metrics(data);
                 this.dialog = false;
             },
             cancelConfig() {
-                for (let [key, value] in Object.entries(this.metrics_save)) {
-                    if (key !== 'binaryCorrelation')
-                        this[key] = value;
-                }
-                this.binaryCorrelation = this.metrics_save['binaryCorrelation'];
                 this.metrics_save = {};
                 this.dialog = false;
             }

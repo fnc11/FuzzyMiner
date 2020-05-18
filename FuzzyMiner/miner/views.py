@@ -86,7 +86,7 @@ def edge_filter(request):
     data = json.loads(request.body)
     print('edge filter')
     print('edge transformer:', data['edge_transformer'])
-    if data['edge_transformer'] is 'Fuzzy Edges':
+    if data['edge_transformer'] == 'Fuzzy Edges':
         print('s/c ratio:', data['s/c_ratio'])
         print('cutoff:', data['cutoff'])
         print('ignore self-loops:', data['ignore_self_loops'])
@@ -105,5 +105,8 @@ def concurrency_filter(request):
 @csrf_exempt
 def metrics_changed(request):
     data = json.loads(request.body)
-    print(data)
+    metrics = data['metrics']
+    attenuation = data['attenuation']
+    print('metrics:', metrics)
+    print('attenuation:', attenuation)
     return HttpResponse()
