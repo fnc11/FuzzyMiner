@@ -328,7 +328,7 @@
                 this.selectedType = type;
             },
             openConfig() {
-                this['dialog'] = true;
+                this.dialog = true;
                 // JSON.parse(JSON.stringify(obj));
                 this.metrics_save['selectedType'] = this.selectedType;
                 this.metrics_save['unaryFrequencyActive'] = this.unaryFrequencyActive;
