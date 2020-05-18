@@ -40,19 +40,19 @@
                             <el-row :gutter="2" class="slider-adjustment2">
                                 <el-col :span="14" align="middle">
                                     <label>S/C Ratio</label>
-                                    <el-slider vertical v-model="sc" height="280px" @change="scChanged"/>
+                                    <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" @change="scChanged"/>
                                     <label>{{ sc / 100 }}</label>
                                 </el-col>
                                 <el-col :span="4" align="middle">
                                     <label>Cutoff</label>
-                                    <el-slider vertical v-model="cutoff" height="280px" @change="cutoffChanged"/>
+                                    <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" @change="cutoffChanged"/>
                                     <label>{{ cutoff / 100 }}</label>
                                 </el-col>
                             </el-row>
                             <div style="position: relative;top:60px;">
-                            <el-checkbox v-model="loops">Ignore Self-Loops</el-checkbox>
-                            <el-checkbox v-model="absolute">Interpret Absolute</el-checkbox>
-                                </div>
+                                <el-checkbox v-model="loops" :disabled="edge === 1">Ignore Self-Loops</el-checkbox>
+                                <el-checkbox v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
+                            </div>
                         </el-col>
                         <el-col :span="8" class="grid-content-configuration el-table--border">
                             <div class="">
@@ -263,12 +263,8 @@
                 console.log('change node filter with cutoff: ' + String(value / 100));
             },
             async scChanged(value) {
-                let edge = 'Best Edges';
-                if (this.edge === 2) {
-                    edge = 'Fuzzy Edges';
-                }
                 await edgeFilter({
-                    'edge_transformer': edge,
+                    'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': value / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': this.loops,
@@ -277,12 +273,8 @@
                 console.log('change edge filter with s/c ratio: ' + String(value / 100));
             },
             async cutoffChanged(value) {
-                let edge = 'Best Edges';
-                if (this.edge === 2) {
-                    edge = 'Fuzzy Edges';
-                }
                 await edgeFilter({
-                    'edge_transformer': edge,
+                    'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': value / 100,
                     'ignore_self_loops': this.loops,
@@ -387,26 +379,26 @@
             edge: async function(now, old) {
                 if (now === old)
                     return;
-                let edge = 'Best Edges';
-                if (now === 2)
-                    edge = 'Fuzzy Edges';
-                await edgeFilter({
-                    'edge_transformer': edge,
-                    's/c_ratio': this.sc / 100,
-                    'cutoff': this.cutoff / 100,
-                    'ignore_self_loops': this.loops,
-                    'interpret_absolute': this.absolute
-                });
-                console.log('change edge filter with edge transformer: ' + edge);
+                if (now === 1) {
+                    await edgeFilter({
+                        'edge_transformer': 'Best Edges'
+                    });
+                } else {
+                    await edgeFilter({
+                        'edge_transformer': 'Fuzzy Edges',
+                        's/c_ratio': this.sc / 100,
+                        'cutoff': this.cutoff / 100,
+                        'ignore_self_loops': this.loops,
+                        'interpret_absolute': this.absolute
+                    });
+                }
+                console.log('change edge filter with edge transformer: ' + now);
             },
             loops: async function (now, old) {
                 if (now === old)
                     return;
-                let edge = 'Best Edges';
-                if (this.edge === 2)
-                    edge = 'Fuzzy Edges';
                 await edgeFilter({
-                    'edge_transformer': edge,
+                    'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': now,
@@ -417,11 +409,8 @@
             absolute: async function(now, old) {
                 if (now === old)
                     return;
-                let edge = 'Best Edges';
-                if (this.edge === 2)
-                    edge = 'Fuzzy Edges';
                 await edgeFilter({
-                    'edge_transformer': edge,
+                    'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': this.loops,

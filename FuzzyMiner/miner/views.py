@@ -86,10 +86,11 @@ def edge_filter(request):
     data = json.loads(request.body)
     print('edge filter')
     print('edge transformer:', data['edge_transformer'])
-    print('s/c ratio:', data['s/c_ratio'])
-    print('cutoff:', data['cutoff'])
-    print('ignore self-loops:', data['ignore_self_loops'])
-    print('interpret absolute:', data['interpret_absolute'])
+    if data['edge_transformer'] is 'Fuzzy Edges':
+        print('s/c ratio:', data['s/c_ratio'])
+        print('cutoff:', data['cutoff'])
+        print('ignore self-loops:', data['ignore_self_loops'])
+        print('interpret absolute:', data['interpret_absolute'])
     return HttpResponse()
 
 @csrf_exempt
