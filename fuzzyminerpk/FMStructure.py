@@ -1,22 +1,25 @@
 class FMNode:
-    def __init__(self, index, label):
+    def __init__(self, index, label, type="primitive"):
         self.index = index
         self.label = label
+        self.type = type
         self.pre_list = list()
         self.succ_list = list()
 
 
 class FMEdge:
-    pass
+    def __init__(self, source, target, significance, correlation):
+        self.source = source
+        self.target = target
+        self.significance = significance
+        self.correlation = correlation
 
 
-class FMCluster:
-    def __init__(self, idx, label=""):
-        self.idx = idx
-        self.label = label
-        self.nodes = list()
-        self.pre_list = list()
-        self.succ_list = list()
+class FMCluster(FMNode):
+    def __init__(self, index):
+        super().__init__(index, "", "cluster")
+        self.label = "cluster" + str(index)
+        self.primitives = list()
 
     def add_node(self, node):
-        self.nodes.append(node)
+        self.primitives.append(node)

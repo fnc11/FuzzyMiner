@@ -1,4 +1,4 @@
-from fuzzyminerpk.FMStructure import FMCluster
+from fuzzyminerpk.FMStructure import FMCluster, FMEdge, FMNode
 
 
 class ClusterUtil:
@@ -9,6 +9,16 @@ class ClusterUtil:
         self.node_cluster_mapping = [i for i in range(0, self.fm_log_util.get_num_of_nodes())]
         self.cluster_dict = dict()
         self.clusters = list()
+        self.fm_edges_dict = dict()
+        self.fm_nodes = list()
+
+    def clusterize(self, node_filter):
+        self.clean_data_storage()
+        self.initialize_clusters(node_filter)
+        self.merge_clusters()
+        self.remove_isolated_cluster()
+        self.create_simple_fm_nodes()
+        self.finalize_edges()
 
     def initialize_clusters(self, node_filter):
         victims = self.get_victims(node_filter.cut_off)
@@ -70,7 +80,7 @@ class ClusterUtil:
         sz = self.fm_log_util.get_num_of_nodes()
         pre_decessors = subject.get_predecessors()
         for pre_decessor in pre_decessors:
-            if pre_decessor.idx in self.cluster_dict.keys():
+            if pre_decessor.index in self.cluster_dict.keys():
                 corr = self.get_aggregate_correlation(subject, pre_decessor)
                 if corr > max_pre_corr:
                     max_pre_corr = corr
@@ -82,7 +92,7 @@ class ClusterUtil:
 
         successors = subject.get_successors()
         for successor in successors:
-            if successor.idx in self.cluster_dict.keys():
+            if successor.index in self.cluster_dict.keys():
                 corr = self.get_aggregate_correlation(subject, successor)
                 if corr > max_succ_corr:
                     max_succ_corr = corr
@@ -115,8 +125,8 @@ class ClusterUtil:
         loser_primitives = loser.get_primitives()
         for prim in loser_primitives:
             winner.add(prim)
-            self.node_cluster_mapping[prim.idx] = winner.idx
-        self.cluster_dict.pop(loser.idx)
+            self.node_cluster_mapping[prim.index] = winner.index
+        self.cluster_dict.pop(loser.index)
         self.clusters.remove(loser)
 
     def remove_isolated_cluster(self):
@@ -148,14 +158,6 @@ class ClusterUtil:
             else:
                 idx += 1
 
-
-    def clusterize(self, node_filter):
-        self.clean_data_storage()
-        self.initialize_clusters(node_filter)
-        self.merge_clusters()
-        self.remove_isolated_cluster()
-        pass
-
     # Used to clean all lists and dicts
     def clean_data_storage(self):
         pass
@@ -166,10 +168,10 @@ class ClusterUtil:
         aggregate_corr = 0.0
         for prim_a in cluster1_primitives:
             for prim_b in cluster2_primitives:
-                aggregate_corr += self.filtered_data_repository.edge_filter_resultant_binary_corr_values[prim_a.idx][
-                    prim_b.idx]
-                aggregate_corr += self.filtered_data_repository.edge_filter_resultant_binary_corr_values[prim_b.idx][
-                    prim_a.idx]
+                aggregate_corr += self.filtered_data_repository.edge_filter_resultant_binary_corr_values[prim_a.index][
+                    prim_b.index]
+                aggregate_corr += self.filtered_data_repository.edge_filter_resultant_binary_corr_values[prim_b.index][
+                    prim_a.index]
         return aggregate_corr
 
     def check_for_direct_connection(self, cluster):
@@ -191,8 +193,10 @@ class ClusterUtil:
                     from_corr = self.filtered_data_repository.edge_filter_resultant_binary_corr_values[pre_idx][own_idx]
                     to_corr = self.filtered_data_repository.edge_filter_resultant_binary_corr_values[own_idx][succ_idx]
                     # Store in new copy of resultant values
-                    self.filtered_data_repository.node_filter_resultant_binary_values[pre_idx][succ_idx] = (from_sig+to_sig)/2.0
-                    self.filtered_data_repository.node_filter_resultant_binary_corr_values[pre_idx][succ_idx] = (from_corr+to_corr)/2.0
+                    self.filtered_data_repository.node_filter_resultant_binary_values[pre_idx][succ_idx] = (
+                                                                                                                       from_sig + to_sig) / 2.0
+                    self.filtered_data_repository.node_filter_resultant_binary_corr_values[pre_idx][succ_idx] = (
+                                                                                                                            from_corr + to_corr) / 2.0
                 self.filtered_data_repository.node_filter_resultant_binary_values[pre_idx][own_idx] = 0.0
                 self.filtered_data_repository.node_filter_resultant_binary_values[own_idx][succ_idx] = 0.0
                 self.filtered_data_repository.node_filter_resultant_binary_corr_values[pre_idx][own_idx] = 0.0
@@ -201,4 +205,65 @@ class ClusterUtil:
         self.cluster_dict.pop(cluster.index)
         self.clusters.remove(cluster)
 
+    def create_simple_fm_nodes(self):
+        sz = self.fm_log_util.get_num_of_nodes()
+        for i in range(0, sz):
+            if self.node_cluster_mapping[i] != -1:
+                self.fm_nodes.append(FMNode(i, self.fm_log_util.nodes[i]))
 
+    def finalize_edges(self):
+        sz = self.fm_log_util.get_num_of_nodes()
+        for i in range(0, sz):
+            if self.node_cluster_mapping[i] != -1:
+                for j in range(0, sz):
+                    if self.node_cluster_mapping[j] != -1:
+                        mapped_i = self.node_cluster_mapping[i]
+                        mapped_j = self.node_cluster_mapping[j]
+                        significance = self.filtered_data_repository.node_filter_resultant_binary_values[i][j]
+                        correlation = self.filtered_data_repository.node_filter_resultant_binary_corr_values[i][j]
+                        # There'll be multiple cases
+                        # Case 1. Either mapping to same cluster or it is same simple node, in case of cluster nothing to do
+                        if i == j and mapped_i < sz:
+                            # Case 1.1 same simple node
+                            if self.filtered_data_repository.node_filter_resultant_binary_values[i][j] > 0.001:
+                                if (i, j) in self.fm_edges_dict.keys():
+                                    if self.fm_edges_dict[(i, j)].significane > significance:
+                                        self.fm_edges_dict[(i, j)].significance = significance
+                                        self.fm_edges_dict[(i, j)].correlation = correlation
+                                else:
+                                    self.fm_edges_dict[(i, j)] = FMEdge(i, j, significance, correlation)
+                        elif mapped_i < sz and mapped_j < sz:
+                            # Case 2. Both are simple nodes
+                            if (i, j) in self.fm_edges_dict.keys():
+                                if self.fm_edges_dict[(i, j)].significane > significance:
+                                    self.fm_edges_dict[(i, j)].significance = significance
+                                    self.fm_edges_dict[(i, j)].correlation = correlation
+                            else:
+                                self.fm_edges_dict[(i, j)] = FMEdge(i, j, significance, correlation)
+                        else:
+                            # Case 3. One or both are clusters
+                            if mapped_i > sz and mapped_j > sz:
+                                # Case 3.1 Both are clusters
+                                if (mapped_i, mapped_j) in self.fm_edges_dict.keys():
+                                    if self.fm_edges_dict[(mapped_i, mapped_j)].significane > significance:
+                                        self.fm_edges_dict[(mapped_i, mapped_j)].significance = significance
+                                        self.fm_edges_dict[(mapped_i, mapped_j)].correlation = correlation
+                                else:
+                                    self.fm_edges_dict[(mapped_i, mapped_j)] = FMEdge(mapped_i, mapped_j, significance,
+                                                                                      correlation)
+                            elif mapped_i < sz:
+                                # Case 3.2 First is simple node, 2nd is cluster
+                                if (i, mapped_j) in self.fm_edges_dict.keys():
+                                    if self.fm_edges_dict[(i, mapped_j)].significane > significance:
+                                        self.fm_edges_dict[(i, mapped_j)].significance = significance
+                                        self.fm_edges_dict[(i, mapped_j)].correlation = correlation
+                                else:
+                                    self.fm_edges_dict[(i, mapped_j)] = FMEdge(i, mapped_j, significance, correlation)
+                            else:
+                                # Case 3.3 First is cluster and 2nd is simple node
+                                if (mapped_i, j) in self.fm_edges_dict.keys():
+                                    if self.fm_edges_dict[(mapped_i, j)].significane > significance:
+                                        self.fm_edges_dict[(mapped_i, j)].significance = significance
+                                        self.fm_edges_dict[(mapped_i, j)].correlation = correlation
+                                else:
+                                    self.fm_edges_dict[(mapped_i, j)] = FMEdge(mapped_i, j, significance, correlation)
