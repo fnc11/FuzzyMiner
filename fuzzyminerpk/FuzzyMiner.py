@@ -70,10 +70,10 @@ class Graph:
 
         # Just for debug purpose
         # Debug block starts
-        self.data_repository.debug_print_primary_metric_values()
-        self.data_repository.debug_print_aggregate_values()
-        self.data_repository.debug_print_derivative_metric_values()
-        self.data_repository.debug_print_weighted_values()
+        # self.data_repository.debug_print_primary_metric_values()
+        # self.data_repository.debug_print_aggregate_values()
+        # self.data_repository.debug_print_derivative_metric_values()
+        # self.data_repository.debug_print_weighted_values()
         # Debug block ends
 
     """
@@ -87,9 +87,9 @@ class Graph:
 
         # Just for debug purpose
         # Debug block starts
-        self.filtered_data_repository.debug_concurrency_filter_values()
-        self.filtered_data_repository.debug_edge_filter_values()
-        self.filtered_data_repository.debug_node_filter_values()
+        # self.filtered_data_repository.debug_concurrency_filter_values()
+        # self.filtered_data_repository.debug_edge_filter_values()
+        # self.filtered_data_repository.debug_node_filter_values()
         # Debug block ends
 
     """

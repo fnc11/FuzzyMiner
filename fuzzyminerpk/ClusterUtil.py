@@ -46,6 +46,8 @@ class ClusterUtil:
         sz = self.fm_log_util.get_num_of_nodes()
         cluster_idx = sz + 1
         for i in range(0, len(victims)):
+            if victims[i] == -1:
+                continue
             neighbor = self.get_most_correlated(victims[i])
             if neighbor >= sz:
                 # if neighbor is a cluster
@@ -58,12 +60,12 @@ class ClusterUtil:
                 # Storing index of the node inside the cluster
                 cluster.add_node(victims[i])
                 self.node_cluster_mapping[victims[i]] = cluster_idx
-                cluster_idx += 1
                 victims[i] = -1
                 if neighbor in victims:
                     cluster.add_node(neighbor)
                     self.node_cluster_mapping[neighbor] = cluster_idx
                     victims[victims.index(neighbor)] = -1
+                cluster_idx += 1
                 # Do we really need fm_clusters list
                 self.fm_clusters.append(cluster)
 
@@ -301,8 +303,6 @@ class ClusterUtil:
                 self.filtered_data_repository.node_filter_resultant_binary_corr_values[pre_idx][own_idx] = 0.0
                 self.filtered_data_repository.node_filter_resultant_binary_corr_values[own_idx][succ_idx] = 0.0
         self.node_cluster_mapping[own_idx] = -1
-        self.cluster_dict.pop(cluster.index)
-        self.fm_clusters.remove(cluster)
 
     """
     Creates a list of fm_nodes which survived the Node Filtering and Clusterization process
@@ -334,7 +334,7 @@ class ClusterUtil:
                                 # Case 1.1 same simple node
                                 # if significance > 0.001: Original code check but unnecessary
                                 if (i, j) in self.fm_edges_dict.keys():
-                                    if self.fm_edges_dict[(i, j)].significane > significance:
+                                    if self.fm_edges_dict[(i, j)].significance > significance:
                                         self.fm_edges_dict[(i, j)].significance = significance
                                         self.fm_edges_dict[(i, j)].correlation = correlation
                                 else:
@@ -342,7 +342,7 @@ class ClusterUtil:
                             elif mapped_i < sz and mapped_j < sz:
                                 # Case 2. Both are simple nodes
                                 if (i, j) in self.fm_edges_dict.keys():
-                                    if self.fm_edges_dict[(i, j)].significane > significance:
+                                    if self.fm_edges_dict[(i, j)].significance > significance:
                                         self.fm_edges_dict[(i, j)].significance = significance
                                         self.fm_edges_dict[(i, j)].correlation = correlation
                                 else:
@@ -352,7 +352,7 @@ class ClusterUtil:
                                 if mapped_i > sz and mapped_j > sz:
                                     # Case 3.1 Both are clusters
                                     if (mapped_i, mapped_j) in self.fm_edges_dict.keys():
-                                        if self.fm_edges_dict[(mapped_i, mapped_j)].significane > significance:
+                                        if self.fm_edges_dict[(mapped_i, mapped_j)].significance > significance:
                                             self.fm_edges_dict[(mapped_i, mapped_j)].significance = significance
                                             self.fm_edges_dict[(mapped_i, mapped_j)].correlation = correlation
                                     else:
@@ -361,7 +361,7 @@ class ClusterUtil:
                                 elif mapped_i < sz:
                                     # Case 3.2 First is simple node, 2nd is cluster
                                     if (i, mapped_j) in self.fm_edges_dict.keys():
-                                        if self.fm_edges_dict[(i, mapped_j)].significane > significance:
+                                        if self.fm_edges_dict[(i, mapped_j)].significance > significance:
                                             self.fm_edges_dict[(i, mapped_j)].significance = significance
                                             self.fm_edges_dict[(i, mapped_j)].correlation = correlation
                                     else:
@@ -369,7 +369,7 @@ class ClusterUtil:
                                 else:
                                     # Case 3.3 First is cluster and 2nd is simple node
                                     if (mapped_i, j) in self.fm_edges_dict.keys():
-                                        if self.fm_edges_dict[(mapped_i, j)].significane > significance:
+                                        if self.fm_edges_dict[(mapped_i, j)].significance > significance:
                                             self.fm_edges_dict[(mapped_i, j)].significance = significance
                                             self.fm_edges_dict[(mapped_i, j)].correlation = correlation
                                     else:
