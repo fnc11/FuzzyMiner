@@ -20,6 +20,7 @@ class FMLogUtils:
                 temp_set.add(event['concept:name'] + "@" + event['lifecycle:transition'])
         return list(temp_set)
 
+
     """
     This populates the node_indices dictionary from the event classes;
     """
