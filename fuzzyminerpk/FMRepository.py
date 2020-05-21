@@ -603,6 +603,8 @@ class FilteredDataRepository:
         self.preserve_mask = list()  # needed in edge_filtering
         self.edge_filter_resultant_binary_values = list()
         self.edge_filter_resultant_binary_corr_values = list()
+        self.node_filter_resultant_binary_values = list()
+        self.node_filter_resultant_binary_corr_values = list()
 
     """
     Applies concurrency_filter and then calls implicitly edge_filter to apply
@@ -782,7 +784,8 @@ class FilteredDataRepository:
             self.preserve_mask[idx][best_succ] = True
 
     def apply_node_filter(self, node_filter):
-        pass
+        self.node_filter_resultant_binary_values = self.edge_filter_resultant_binary_values
+        self.node_filter_resultant_binary_corr_values = self.edge_filter_resultant_binary_corr_values
 
     def debug_concurrency_filter_values(self):
         print("concurrency filtered values")
