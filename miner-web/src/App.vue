@@ -20,10 +20,8 @@
                             </el-button-group>
                         </div>
                     </el-col>
-
                 </el-row>
             </el-header>
-
             <el-main>
                 <router-view/>
             </el-main>
@@ -42,13 +40,28 @@
     }
 </script>
 
+<style>
+    html, body {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
 <style scoped>
+    #app {
+
+        height: 100%;
+    }
+    .el-container {
+        height: 100%;
+    }
     .header-bg {
         top: 0;
         position: absolute;
         width: 100%;
         height: 60px;
-        background-color: teal;
+        background-color: lightseagreen;
     }
 
     .grid-content {
@@ -64,8 +77,8 @@
         bottom: 0;
         position: absolute;
         width: 100%;
-        background-color: teal;
-        height: 20%;
+        background-color: lightseagreen;
+
 
     }
 
@@ -81,11 +94,6 @@
 
     }
 
-    .el-button {
 
-        border-radius: 0.2px;
-
-
-    }
 
 </style>
