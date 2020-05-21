@@ -23,8 +23,24 @@ class Graph:
         # apply filters on the data
         self.filtered_data_repository = FilteredDataRepository(self.log, self.data_repository, self.config.filter_config)
         self.apply_filters()
-
         self.cluster_util.clusterize(self.config.filter_config.node_filter, self.fm_log_util,self.data_repository, self.filtered_data_repository)
+
+        # debug block start
+        print("Nodes\n")
+        for node in self.cluster_util.fm_nodes:
+            print(node)
+            print()
+
+        print("\nClusters\n")
+        for cluster in self.cluster_util.fm_clusters:
+            print(cluster)
+            print()
+
+        print("\nEdges\n")
+        for edge in self.cluster_util.fm_edges:
+            print(edge)
+            print()
+
 
 
 
