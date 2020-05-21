@@ -225,7 +225,7 @@ class ClusterUtil:
         cluster = self.cluster_dict[index]
         predecessors = set()
         for prim_idx in cluster.get_primitives():
-            predecessors.union(self.get_predecessors_of_node(prim_idx))
+            predecessors = predecessors.union(self.get_predecessors_of_node(prim_idx))
         predecessors -= set(cluster.get_primitives())
         return predecessors
 
@@ -236,7 +236,7 @@ class ClusterUtil:
         cluster = self.cluster_dict[index]
         successors = set()
         for prim_idx in cluster.get_primitives():
-            successors.union(self.get_successors_of_node(prim_idx))
+            successors = successors.union(self.get_successors_of_node(prim_idx))
         successors -= set(cluster.get_primitives())
         return successors
 

@@ -4,12 +4,11 @@ from fuzzyminerpk.ClusterUtil import ClusterUtil
 from fuzzyminerpk.FMRepository import DataRepository, FilteredDataRepository
 from fuzzyminerpk.Utility import FMLogUtils, cal_proximity, cal_endpoint, cal_originator, cal_datatype, cal_datavalue, \
     is_valid_matrix1D, is_valid_matrix2D
+from datetime import datetime
 
 
 class Graph:
     def __init__(self, log, default_config):
-        self.final_nodes = list()
-        self.final_edges = list()
         self.config = default_config
         self.fm_log_util = FMLogUtils(log)
         self.cluster_util = ClusterUtil()
@@ -18,8 +17,14 @@ class Graph:
         self.num_of_nodes = self.fm_log_util.num_of_nodes
         self.node_indices = self.fm_log_util.node_indices
         # extract data from logs
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        print("Current Time before =", current_time)
         self.data_repository = DataRepository(self.log, self.config)
         self.change_config(self.config)
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        print("Current Time after =", current_time)
         # apply filters on the data
         self.filtered_data_repository = FilteredDataRepository(self.log, self.data_repository, self.config.filter_config)
         self.apply_filters()
