@@ -12,6 +12,7 @@ class Graph:
         self.final_edges = list()
         self.config = default_config
         self.fm_log_util = FMLogUtils(log)
+        self.cluster_util = ClusterUtil()
         self.log = log
         self.nodes = self.fm_log_util.nodes
         self.num_of_nodes = self.fm_log_util.num_of_nodes
@@ -23,8 +24,8 @@ class Graph:
         self.filtered_data_repository = FilteredDataRepository(self.log, self.data_repository, self.config.filter_config)
         self.apply_filters()
 
-        self.cluster_util = ClusterUtil(self.fm_log_util, self.data_repository, self.filtered_data_repository)
-        self.final_nodes, self.final_edges = self.cluster_util.clusterize(self.config.filter_config.node_filter)
+        self.cluster_util.clusterize(self.config.filter_config.node_filter, self.fm_log_util,self.data_repository, self.filtered_data_repository)
+
 
 
 
