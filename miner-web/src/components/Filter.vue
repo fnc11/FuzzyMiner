@@ -165,7 +165,7 @@
                                 <br>
                                 <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 2" :min="1" :max="4"/>
+                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4" step="0.01"/>
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -267,7 +267,7 @@
                     },
                     attenuation: {
                         eventDistance: 5,
-                        seleted: 1,
+                        seleted: 2,
                         radical: 2
                     }
                 },
@@ -387,7 +387,7 @@
                     data.attenuation.selected = 'Linear Attenuation';
                 } else {
                     data.attenuation.selected = 'N root with radical';
-                    data.attenuation.radical = this.radical;
+                    data.attenuation.radical = this.radical/100;
                 }
                 await metrics(data);
                 this.dialog = false;
