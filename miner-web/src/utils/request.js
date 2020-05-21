@@ -3,9 +3,9 @@ import { Message } from 'element-ui';
 
 // Create axios instance
 const service = axios.create({
-    baseURL: '/api',
+    baseURL: '/miner',
     // withCredentials: true,
-    timeout: 5000 // Request timeout
+    timeout: 200000 // Request timeout
 });
 
 // Request intercepter
