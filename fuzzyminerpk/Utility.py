@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import Levenshtein
 
 
@@ -40,6 +42,8 @@ def is_standard_key(key):
 
 
 def cal_proximity(evt1, evt2):
+    if 'time:timestamp' not in evt1 or 'time:timestamp' not in evt2:
+        return 0.0
     time1 = evt1['time:timestamp']
     time2 = evt2['time:timestamp']
     if time1 is not None and time2 is not None:

@@ -4,8 +4,8 @@ class FMNode:
         self.label = label + str(index)
         self.type = type
 
-    def __set__(self):
-        return self.label + " and type: " + self.type
+    def __str__(self):
+        return self.label+" and type: "+self.type
 
 
 class FMEdge:
@@ -15,9 +15,8 @@ class FMEdge:
         self.significance = significance
         self.correlation = correlation
 
-    def __set__(self):
-        return "source: " + str(self.source) + " target: " + str(self.target) + " significance: " + str(
-            self.significance) + " correlation: " + str(self.correlation)
+    def __str__(self):
+        return "source: "+ str(self.source)+" target: "+str(self.target)+" significance: "+str(self.significance)+" correlation: "+str(self.correlation)
 
 
 class FMCluster(FMNode):
@@ -33,5 +32,5 @@ class FMCluster(FMNode):
     def get_primitives(self):
         return self.primitives
 
-    def __set__(self):
-        return self.label + " has primitives: " + str(self.get_primitives())
+    def __str__(self):
+        return self.label+" has primitives: "+str(self.get_primitives())
