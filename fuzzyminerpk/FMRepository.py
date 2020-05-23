@@ -391,10 +391,23 @@ class DataRepository:
     def cal_weighted_unary_values(self):
         inc1 = self.metric_settings["frequency_significance_unary"][0]
         inc2 = self.metric_settings["routing_significance_unary"][0]
+
         w1 = self.metric_settings["frequency_significance_unary"][2] if inc1 else 0.0
         w2 = self.metric_settings["routing_significance_unary"][2] if inc2 else 0.0
+
+        inv1 = self.metric_settings["frequency_significance_unary"][1]
+        inv2 = self.metric_settings["routing_significance_unary"][1]
+
         sz = self.num_of_nodes
         ## if single metrics is selected then weight factor doesn't take effect
+        if inv1 and not inv2:
+            w1 = 1 - w1
+        elif not inv1 and inv2:
+            w2 = 1 - w2
+        elif inv1 and inv2:
+            w1 = 1 - w1
+            w2 = 1 - w2
+
         if w1 + w2 != 0:
             for i in range(0, sz):
                 self.unary_weighted_values = [(val1 * w1 + val2 * w2) / (w1 + w2) for val1, val2
@@ -409,11 +422,23 @@ class DataRepository:
     def cal_weighted_binary_values(self):
         inc1 = self.metric_settings["frequency_significance_binary"][0]
         inc2 = self.metric_settings["distance_significance_binary"][0]
+
         w1 = self.metric_settings["frequency_significance_binary"][2] if inc1 else 0.0
         w2 = self.metric_settings["distance_significance_binary"][2] if inc2 else 0.0
+
+        inv1 = self.metric_settings["frequency_significance_binary"][1]
+        inv2 = self.metric_settings["distance_significance_binary"][1]
+
         sz = self.num_of_nodes
 
         ## if single metrics is selected then weight factor doesn't take effect
+        if inv1 and not inv2:
+            w1 = 1 - w1
+        elif not inv1 and inv2:
+            w2 = 1 - w2
+        elif inv1 and inv2:
+            w1 = 1 - w1
+            w2 = 1 - w2
         if w1 + w2 != 0.0:
             binary_weight_values = list()
             for i in range(0, sz):
@@ -441,9 +466,31 @@ class DataRepository:
         w3 = self.metric_settings["endpoint_correlation_binary"][2] if inc3 else 0.0
         w4 = self.metric_settings["datatype_correlation_binary"][2] if inc4 else 0.0
         w5 = self.metric_settings["datavalue_correlation_binary"][2] if inc5 else 0.0
+
+        inv1 = self.metric_settings["proximity_correlation_binary"][1]
+        inv2 = self.metric_settings["originator_correlation_binary"][1]
+        inv3 = self.metric_settings["endpoint_correlation_binary"][1]
+        inv4 = self.metric_settings["datatype_correlation_binary"][1]
+        inv5 = self.metric_settings["datavalue_correlation_binary"][1]
+
         sz = self.num_of_nodes
 
         ## if single metrics is selected then weight factor doesn't take effect
+        if inv1:
+            w1 = 1 - w1
+
+        if inv2:
+            w2 = 1 - w2
+
+        if inv3:
+            w3 = 1 - w3
+
+        if inv4:
+            w4 = 1 - w4
+
+        if inv5:
+            w5 = 1 - w5
+
         if w1 + w2 + w3 + w4 + w5 != 0.0:
             binary_corr_weight_values = list()
             for i in range(0, sz):
@@ -612,15 +659,20 @@ class FilteredDataRepository:
 
     def apply_concurrency_filter(self, concurrency_filter):
         self.filter_config.concurrency_filter = concurrency_filter
-        self.concurrency_filter_resultant_binary_values = self.data_repository.binary_weighted_values
-        self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
-        sz = self.num_of_nodes
-        for i in range(0, sz):
-            for j in range(0, i):
-                self.process_relation_pair(i, j)
-        # Applying edge_filter with older values(since only values of concurrency_filter was changed)
-        # call method based on type of filter selected fuzzy or best edge(by default it's fuzzy edge filter)
-        self.apply_edge_filter(self.filter_config.edge_filter)
+        if self.filter_config.concurrency_filter.filter_concurrency:
+            self.concurrency_filter_resultant_binary_values = self.data_repository.binary_weighted_values
+            self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
+            sz = self.num_of_nodes
+            for i in range(0, sz):
+                for j in range(0, i):
+                    self.process_relation_pair(i, j)
+            # Applying edge_filter with older values(since only values of concurrency_filter was changed)
+            # call method based on type of filter selected fuzzy or best edge(by default it's fuzzy edge filter)
+            self.apply_edge_filter(self.filter_config.edge_filter)
+        else:
+            self.concurrency_filter_resultant_binary_values = self.data_repository.binary_weighted_values
+            self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
+            self.apply_edge_filter(self.filter_config.edge_filter)
 
     """
     To process an edge pair for concurrency filter, check according to threshold and ratio values.
@@ -673,6 +725,7 @@ class FilteredDataRepository:
     """
     Applies edge_filter according to selected type Fuzzy or Best and then implicitly calls node_filter to apply
     """
+
     def apply_edge_filter(self, edge_filter):
         self.filter_config.edge_filter = edge_filter
         self.edge_filter_resultant_binary_values = self.concurrency_filter_resultant_binary_values
@@ -697,7 +750,6 @@ class FilteredDataRepository:
 
         # Applying node_filter with older values(since only values of edge_filter or concurrency_filter was changed)
         self.apply_node_filter(self.filter_config.node_filter)
-
 
     """
     Processes edges of nodes one by one, checks according to sc_ratio, cut_off and other attributes.
@@ -754,7 +806,6 @@ class FilteredDataRepository:
                 self.preserve_mask[i][idx] = True
             if out_values[i] >= out_limit:
                 self.preserve_mask[idx][i] = True
-
 
     """
     Processes edges of nodes one by one for best edge filter.
