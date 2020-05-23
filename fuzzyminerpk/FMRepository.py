@@ -399,7 +399,7 @@ class DataRepository:
         inv2 = self.metric_settings["routing_significance_unary"][1]
 
         sz = self.num_of_nodes
-        ## if single metrics is selected then weight factor doesn't take effect
+        # if single metrics is selected then weight factor doesn't take effect
         if inv1 and not inv2:
             w1 = 1 - w1
         elif not inv1 and inv2:
@@ -659,9 +659,9 @@ class FilteredDataRepository:
 
     def apply_concurrency_filter(self, concurrency_filter):
         self.filter_config.concurrency_filter = concurrency_filter
+        self.concurrency_filter_resultant_binary_values = self.data_repository.binary_weighted_values
+        self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
         if self.filter_config.concurrency_filter.filter_concurrency:
-            self.concurrency_filter_resultant_binary_values = self.data_repository.binary_weighted_values
-            self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
             sz = self.num_of_nodes
             for i in range(0, sz):
                 for j in range(0, i):
@@ -670,8 +670,6 @@ class FilteredDataRepository:
             # call method based on type of filter selected fuzzy or best edge(by default it's fuzzy edge filter)
             self.apply_edge_filter(self.filter_config.edge_filter)
         else:
-            self.concurrency_filter_resultant_binary_values = self.data_repository.binary_weighted_values
-            self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
             self.apply_edge_filter(self.filter_config.edge_filter)
 
     """
