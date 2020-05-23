@@ -1,5 +1,4 @@
-from fuzzyminerpk.Utility import FMLogUtils, cal_proximity, cal_endpoint, cal_originator, cal_datatype, cal_datavalue, \
-    is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, normalize_matrix2D
+from fuzzyminerpk.Utility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, cal_datavalue_correlation, cal_proximity_correlation
 
 
 class DataRepository:
@@ -182,27 +181,27 @@ class DataRepository:
                     self.binary_edge_frequency_divisors[ref_index][follower_index] += att_factor
 
                     # 2 Proximity calculation
-                    self.binary_corr_proximity_values[ref_index][follower_index] += cal_proximity(ref_event,
+                    self.binary_corr_proximity_values[ref_index][follower_index] += cal_proximity_correlation(ref_event,
                                                                                                   follower_event) * att_factor
                     self.binary_corr_proximity_divisors[ref_index][follower_index] += att_factor
 
                     # 3 End Point calculation
-                    self.binary_corr_endpoint_values[ref_index][follower_index] += cal_endpoint(ref_event,
+                    self.binary_corr_endpoint_values[ref_index][follower_index] += cal_endpoint_correlation(ref_event,
                                                                                                 follower_event) * att_factor
                     self.binary_corr_endpoint_divisors[ref_index][follower_index] += att_factor
 
                     # 4 Originator calculation
-                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator(ref_event,
+                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(ref_event,
                                                                                                     follower_event) * att_factor
                     self.binary_corr_originator_divisors[ref_index][follower_index] += att_factor
 
                     # 5 DataType calculation
-                    self.binary_corr_datatype_values[ref_index][follower_index] += cal_datatype(ref_event,
+                    self.binary_corr_datatype_values[ref_index][follower_index] += cal_datatype_correlation(ref_event,
                                                                                                 follower_event) * att_factor
                     self.binary_corr_datatype_divisors[ref_index][follower_index] += att_factor
 
                     # 6 DataValue calculation
-                    self.binary_corr_datavalue_values[ref_index][follower_index] += cal_datavalue(ref_event,
+                    self.binary_corr_datavalue_values[ref_index][follower_index] += cal_datavalue_correlation(ref_event,
                                                                                                   follower_event) * att_factor
                     self.binary_corr_datavalue_divisors[ref_index][follower_index] += att_factor
 

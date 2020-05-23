@@ -2,8 +2,7 @@ import Levenshtein
 
 from fuzzyminerpk.ClusterUtil import ClusterUtil
 from fuzzyminerpk.FMRepository import DataRepository, FilteredDataRepository
-from fuzzyminerpk.Utility import FMLogUtils, cal_proximity, cal_endpoint, cal_originator, cal_datatype, cal_datavalue, \
-    is_valid_matrix1D, is_valid_matrix2D
+from fuzzyminerpk.Utility import FMLogUtils
 from datetime import datetime
 
 
