@@ -52,7 +52,7 @@
                             <div class="">
                             <h4 class="text-center-align">Concurrency Filter</h4>
                                   <el-divider></el-divider>
-                            <el-checkbox v-model="concurrency">Filter Concurrency</el-checkbox>
+                            <el-checkbox v-model="concurrency"><label>Filter Concurrency</label></el-checkbox>
                                 <el-row :gutter="20" class="slider-adjustment3">
                                     <el-col :span="10" align="middle">
                                         <label>Preserve</label>
