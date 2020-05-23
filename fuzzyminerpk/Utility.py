@@ -41,7 +41,7 @@ def is_standard_key(key):
         return False
 
 
-def cal_proximity(evt1, evt2):
+def cal_proximity_correlation(evt1, evt2):
     if 'time:timestamp' not in evt1 or 'time:timestamp' not in evt2:
         return 0.0
     time1 = evt1['time:timestamp']
@@ -57,21 +57,21 @@ def cal_proximity(evt1, evt2):
         return 0.0
 
 
-def cal_endpoint(evt1, evt2):
+def cal_endpoint_correlation(evt1, evt2):
     first_name = evt1['concept:name'] if 'concept:name' in evt1 else "<no name>"
     second_name = evt2['concept:name'] if 'concept:name' in evt2 else "<no name>"
     # Note this implementation is not same as fuzzy_miner plugin String Similarity mechanism
     return Levenshtein.ratio(str(first_name), str(second_name))
 
 
-def cal_originator(evt1, evt2):
+def cal_originator_correlation(evt1, evt2):
     first_resource = evt1['org:resource'] if 'org:resource' in evt1 else "<no resource>"
     second_resource = evt2['org:resource'] if 'org:resource' in evt2 else "<no resource>"
     # Note this implementation is not same as fuzzy_miner plugin String Similarity mechanism
     return Levenshtein.ratio(str(first_resource), str(second_resource))
 
 
-def cal_datatype(evt1, evt2):
+def cal_datatype_correlation(evt1, evt2):
     ref_data_keys = list()
     fol_data_keys = list()
     for key in evt1:
@@ -93,7 +93,7 @@ def cal_datatype(evt1, evt2):
     return overlap / len(ref_data_keys)
 
 
-def cal_datavalue(evt1, evt2):
+def cal_datavalue_correlation(evt1, evt2):
     ref_data_keys = list()
     fol_data_keys = list()
     for key in evt1:
@@ -130,16 +130,11 @@ def is_valid_matrix1D(lst):
 
 # To check if values are correct
 def is_valid_matrix2D(lst):
-    max_found = 0.0
     for i in range(0, len(lst[0])):
         for j in range(0, len(lst[0])):
-            if lst[i][j] > max_found:
-                max_found = lst[i][j]
-    if max_found > 0:
-        return True
-    else:
-        return False
-
+            if lst[i][j] > 0.0:
+                return True
+    return False
 
 def normalize_matrix1D(lst):
     max_val = 0
