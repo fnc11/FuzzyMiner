@@ -19,7 +19,7 @@
                               <el-divider></el-divider>
                             <div class="slider-adjustment1 text-center-align">
                             <label>Significance Cutoff</label>
-                                <el-slider align="middle" vertical v-model="node" height="280px" @change="nodeChanged" />
+                                <el-slider align="middle" vertical v-model="node" height="280px" :format-tooltip="slider_format" @change="nodeChanged" />
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
@@ -34,12 +34,12 @@
                             <el-row :gutter="2" class="slider-adjustment2">
                                 <el-col :span="14" align="middle">
                                     <label>S/C Ratio</label>
-                                    <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" @change="scChanged"/>
+                                    <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="scChanged"/>
                                     <label>{{ sc / 100 }}</label>
                                 </el-col>
                                 <el-col :span="4" align="middle">
                                     <label>Cutoff</label>
-                                    <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" @change="cutoffChanged"/>
+                                    <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="cutoffChanged"/>
                                     <label>{{ cutoff / 100 }}</label>
                                 </el-col>
                             </el-row>
@@ -56,13 +56,13 @@
                                 <el-row :gutter="20" class="slider-adjustment3">
                                     <el-col :span="10" align="middle">
                                         <label>Preserve</label>
-                                        <el-slider vertical v-model="preserve" height="280px" :disabled="!concurrency"
+                                        <el-slider vertical v-model="preserve" height="280px" :disabled="!concurrency" :format-tooltip="slider_format"
                                                    @change="preserveChanged"/>
                                         <label>{{ preserve / 100 }}</label>
                                     </el-col>
                                     <el-col :span="10" align="middle">
                                         <label>Balance</label>
-                                        <el-slider vertical v-model="balance" height="280px" :disabled="!concurrency" @change="balanceChanged"/>
+                                        <el-slider vertical v-model="balance" height="280px" :disabled="!concurrency" :format-tooltip="slider_format" @change="balanceChanged"/>
                                         <label>{{ balance / 100 }}</label>
                                     </el-col>
 
@@ -108,7 +108,7 @@
                                     <br>
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight" />
+                                        <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format" />
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +125,7 @@
                                     <br>
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight" />
+                                        <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format" />
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +141,7 @@
                                 <br>
                                 <div class="horizontal-align">
                                     <label class="slider-label">Weight</label>
-                                    <el-slider class="adjust-slider-width" v-model="value.weight"/>
+                                    <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format"/>
                                 </div>
                             </div>
                         </div>
@@ -159,7 +159,7 @@
                                 <br>
                                 <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4" step="0.01"/>
+                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4" step="0.01" />
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -281,6 +281,9 @@
             }
         },
         methods: {
+            slider_format(value) {
+                return value / 100;
+            },
             progressing() {
                 this.progress = true;
                 this.percentage = 0;
