@@ -21,7 +21,7 @@
                     </el-upload>
                 </el-col>
                 <el-col :span="2.5">
-                    <el-button type="success" class="button-success" @click="generate" :disabled="generated" :loading="loading">Generate</el-button>
+                    <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate</el-button>
                 </el-col>
             </el-row>
             <br><br><br>
@@ -47,11 +47,19 @@
         <h3>Fuzzy Miner</h3>
     </div>
     -->
+        <el-dialog
+            title="Progress"
+            :visible="progress"
+            width="25%">
+            <el-progress type="line" :percentage="percentage"></el-progress>
+            <i class="el-icon-loading" />
+            <label v-if="percentage === 100">Please hold on, the server is running.</label>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-    import { upload, generate } from "@/api/home";
+    import { upload } from "@/api/home";
 
     export default {
         name: "Home",
@@ -60,26 +68,35 @@
                 generated: true,
                 fileList: [],
                 path: '',
-                loading: false
+                progress: false,
+                percentage: 0
             }
         },
         methods: {
             async upload(param) {
+                this.progress = true;
                 let form = new FormData();
                 form.append('file', param.file);
-                const data = await upload(form);
+                let config = {
+                    onUploadProgress: progressEvent => {
+                        let completed = (progressEvent.loaded / progressEvent.total).toFixed(2) * 100;
+                        this.percentage = completed;
+                        if (this.percentage >= 100) {
+                            this.progress = false;
+                        }
+                    },
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                const data = await upload(form, config);
                 this.path = data;
                 console.log(this.path);
                 this.generated = false;
+                this.percentage = 0;
             },
             async generate() {
-                this.loading = true;
-                const data = await generate({
-                    'path': this.path
-                });
-                console.log(data);
-                this.loading = false;
-                this.$router.push({path: '/filter'});
+                this.$router.push({name: 'Filter', params: {path: this.path}});
             },
             uploadSuccess(response, file) {
                 this.$message({

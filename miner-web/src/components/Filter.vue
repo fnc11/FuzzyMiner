@@ -5,15 +5,9 @@
                 <div class="model-view">
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
-                        <canvas></canvas>
-
-
-                        <!-- here should be canvas -->
+                        <img :src="image" alt="" />
                     </div>
-
                     <el-button type="primary" plain class="button-position">Save Snapshot</el-button>
-
-
                 </div>
             </el-col>
             <el-col :span="8">
@@ -25,7 +19,7 @@
                               <el-divider></el-divider>
                             <div class="slider-adjustment1 text-center-align">
                             <label>Significance Cutoff</label>
-                                <el-slider align="middle" vertical v-model="node" height="280px" @change="nodeChanged" />
+                                <el-slider align="middle" vertical v-model="node" height="280px" :format-tooltip="slider_format" @change="nodeChanged" />
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
@@ -40,12 +34,12 @@
                             <el-row :gutter="2" class="slider-adjustment2">
                                 <el-col :span="14" align="middle">
                                     <label>S/C Ratio</label>
-                                    <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" @change="scChanged"/>
+                                    <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="scChanged"/>
                                     <label>{{ sc / 100 }}</label>
                                 </el-col>
                                 <el-col :span="4" align="middle">
                                     <label>Cutoff</label>
-                                    <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" @change="cutoffChanged"/>
+                                    <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="cutoffChanged"/>
                                     <label>{{ cutoff / 100 }}</label>
                                 </el-col>
                             </el-row>
@@ -58,17 +52,17 @@
                             <div class="">
                             <h4 class="text-center-align">Concurrency Filter</h4>
                                   <el-divider></el-divider>
-                            <el-checkbox v-model="concurrency">Filter Concurrency</el-checkbox>
+                            <el-checkbox v-model="concurrency"><label>Filter Concurrency</label></el-checkbox>
                                 <el-row :gutter="20" class="slider-adjustment3">
                                     <el-col :span="10" align="middle">
                                         <label>Preserve</label>
-                                        <el-slider vertical v-model="preserve" height="280px"
+                                        <el-slider vertical v-model="preserve" height="280px" :disabled="!concurrency" :format-tooltip="slider_format"
                                                    @change="preserveChanged"/>
                                         <label>{{ preserve / 100 }}</label>
                                     </el-col>
                                     <el-col :span="10" align="middle">
                                         <label>Balance</label>
-                                        <el-slider vertical v-model="balance" height="280px" @change="balanceChanged"/>
+                                        <el-slider vertical v-model="balance" height="280px" :disabled="!concurrency" :format-tooltip="slider_format" @change="balanceChanged"/>
                                         <label>{{ balance / 100 }}</label>
                                     </el-col>
 
@@ -114,7 +108,7 @@
                                     <br>
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight" />
+                                        <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format" />
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +125,7 @@
                                     <br>
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight" />
+                                        <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format" />
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +141,7 @@
                                 <br>
                                 <div class="horizontal-align">
                                     <label class="slider-label">Weight</label>
-                                    <el-slider class="adjust-slider-width" v-model="value.weight"/>
+                                    <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format"/>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +159,7 @@
                                 <br>
                                 <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4" step="0.01"/>
+                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4" step="0.01" />
                         </div>
                     </el-tab-pane>
                 </el-tabs>
@@ -176,16 +170,28 @@
                 <el-button @click="cancelConfig">Cancel</el-button>
             </div>
         </el-dialog>
+        <el-dialog
+            title="Loading"
+            :visible="progress"
+            width="25%">
+            <el-progress type="line" :percentage="percentage"></el-progress>
+            <i class="el-icon-loading" />
+            <label v-if="percentage === 100">Please hold on, the server is running.</label>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-    import {concurrencyFilter, edgeFilter, metrics, nodeFilter} from '@/api/filter';
+    import { generate } from "@/api/home";
+    import { concurrencyFilter, edgeFilter, metrics, nodeFilter } from '@/api/filter';
 
     export default {
         name: "Filter",
         data() {
             return {
+                image: '',
+                progress: false,
+                percentage: 0,
                 node: 50,
                 edge: 1,
                 sc: 50,
@@ -275,14 +281,30 @@
             }
         },
         methods: {
+            slider_format(value) {
+                return value / 100;
+            },
+            progressing() {
+                this.progress = true;
+                this.percentage = 0;
+                let obj = setInterval(() => {
+                    this.percentage += 1;
+                    if (this.percentage >= 100 || this.progress === false)
+                        clearInterval(obj);
+                }, 300);
+            },
             async nodeChanged(value) {
-                await nodeFilter({
+                this.progressing();
+                const { data } = await nodeFilter({
                     'cutoff': value / 100
                 });
                 console.log('change node filter with cutoff: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             async scChanged(value) {
-                await edgeFilter({
+                this.progressing();
+                const { data } = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': value / 100,
                     'cutoff': this.cutoff / 100,
@@ -290,9 +312,12 @@
                     'interpret_absolute': this.absolute
                 });
                 console.log('change edge filter with s/c ratio: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             async cutoffChanged(value) {
-                await edgeFilter({
+                this.progressing();
+                const { data } = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': value / 100,
@@ -300,22 +325,30 @@
                     'interpret_absolute': this.absolute
                 });
                 console.log('change edge filter with cutoff: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             async preserveChanged(value) {
-                await concurrencyFilter({
+                this.progressing();
+                const { data } = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': value / 100,
                     'balance': this.balance / 100
                 });
                 console.log('change concurrency filter with preserve: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             async balanceChanged(value) {
-                await concurrencyFilter({
+                this.progressing();
+                const { data } = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': this.preserve / 100,
                     'balance': value / 100
                 });
                 console.log('change concurrency filter with balance: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             selectTypes(type) {
                 this.selectedType = type;
@@ -325,7 +358,7 @@
                 // JSON.parse(JSON.stringify(obj));
             },
             async saveConfig() {
-                let data = {
+                let req = {
                     metrics: {
                         unary_metrics: {
                             frequency: {
@@ -384,29 +417,41 @@
                     }
                 };
                 if (this.metricsConfig.attenuation.seleted === 1) {
-                    data.attenuation.selected = 'Linear Attenuation';
+                    req.attenuation.selected = 'Linear Attenuation';
                 } else {
-                    data.attenuation.selected = 'N root with radical';
-                    data.attenuation.radical = this.radical/100;
+                    req.attenuation.selected = 'N root with radical';
+                    req.attenuation.radical = this.radical/100;
                 }
-                await metrics(data);
+                this.progressing();
+                const { data } = await metrics(req);
+                this.image = data;
                 this.dialog = false;
+                this.progress = false;
             },
             cancelConfig() {
                 this.metrics_save = {};
                 this.dialog = false;
+            },
+            async loading() {
+                this.progressing();
+                const path = this.$route.params.path;
+                const { data } = await generate({path: path});
+                this.progress = false;
+                console.log(data);
             }
         },
         watch: {
             edge: async function(now, old) {
+                this.progressing();
+                let resp;
                 if (now === old)
                     return;
                 if (now === 1) {
-                    await edgeFilter({
+                    resp =await edgeFilter({
                         'edge_transformer': 'Best Edges'
                     });
                 } else {
-                    await edgeFilter({
+                    resp = await edgeFilter({
                         'edge_transformer': 'Fuzzy Edges',
                         's/c_ratio': this.sc / 100,
                         'cutoff': this.cutoff / 100,
@@ -415,11 +460,14 @@
                     });
                 }
                 console.log('change edge filter with edge transformer: ' + now);
+                this.image = resp.data;
+                this.progress = false;
             },
             loops: async function (now, old) {
+                this.progressing();
                 if (now === old)
                     return;
-                await edgeFilter({
+                const { data } = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
@@ -427,11 +475,14 @@
                     'interpret_absolute': this.absolute
                 });
                 console.log('change edge filter with ignore self-loops: ' + String(now));
+                this.image = data;
+                this.progress = false;
             },
             absolute: async function(now, old) {
+                this.progressing();
                 if (now === old)
                     return;
-                await edgeFilter({
+                const { data } = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
@@ -439,17 +490,25 @@
                     'interpret_absolute': now
                 });
                 console.log('change edge filter with interpret absolute: ' + String(now));
+                this.image = data;
+                this.progress = false;
             },
             concurrency: async function (now, old) {
+                this.progressing();
                 if (now === old)
                     return;
-                await concurrencyFilter({
+                const { data } = await concurrencyFilter({
                     'filter_concurrency': now,
                     'preserve': this.preserve / 100,
                     'balance': this.balance / 100
                 });
                 console.log('change concurrency filter with filter concurrency: ' + String(now));
+                this.image = data;
+                this.progress = false;
             },
+        },
+        created() {
+            this.loading();
         }
     }
 </script>
