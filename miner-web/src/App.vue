@@ -2,15 +2,15 @@
     <div id="app">
         <el-container>
             <el-header class="header-bg">
-                <el-row>
+                <el-row type="flex" justify="end">
                     <el-col :span="20">
                         <div class="grid-content" align="left">
                             <label>FuzzyMinerWeb</label>
                         </div>
                     </el-col>
 
-                    <el-col :span="4">
-                        <div align="right" class="button-group">
+                    <el-col :span="5">
+                        <div class="button-group">
                             <el-button-group>
                                 <el-button :disabled="$route.name === 'Home'" @click="$router.push({path: '/'})">Home
                                 </el-button>
