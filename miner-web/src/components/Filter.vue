@@ -85,17 +85,18 @@
             <div>
                 <el-tabs type="border-card">
                     <el-tab-pane label="Metrics">
-                        <el-dropdown @command="selectTypes">
-                            <span class="el-dropdown-link">
-                                Select Metrics<i class="el-icon-arrow-down el-icon--left"></i>
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="unary">Unary Metrics</el-dropdown-item>
-                                <el-dropdown-item command="binarySignificance" divided>Binary Significance</el-dropdown-item>
-                                <el-dropdown-item command="binaryCorrelation" divided>Binary Correlation</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                        <span>{{ " Metrics Selected : " + typeLabels[selectedType] }}</span>
+                        <el-cascader v-model="selectedType" :options="selectTypes"></el-cascader>
+
+                        <!-- <span class="el-dropdown-link" >
+                             Select Metrics<i class="el-icon-arrow-down el-icon--left"></i>
+                         </span>
+                         <el-dropdown-menu slot="dropdown">
+                             <el-dropdown-item command="unary">Unary Metrics</el-dropdown-item>
+                             <el-dropdown-item command="binarySignificance" divided>Binary Significance</el-dropdown-item>
+                             <el-dropdown-item command="binaryCorrelation" divided>Binary Correlation</el-dropdown-item>
+                         </el-dropdown-menu>
+
+                   <span>{{ " Metrics Selected : " + typeLabels[selectedType] }}</span>-->
                         <div v-if="selectedType === 'unary'">
                             <div v-for="(value, key, index) in metricsConfig.metrics.unary" :key="index">
                                 <el-divider></el-divider>
@@ -108,13 +109,15 @@
                                     <br>
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format" />
+                                        <el-slider class="adjust-slider-width" v-model="value.weight"
+                                                   :format-tooltip="slider_format"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div v-else-if="selectedType === 'binarySignificance'">
-                            <div v-for="(value, key, index) in metricsConfig.metrics.binarySignificance" :key="index">
+                            <div v-for="(value, key, index) in metricsConfig.metrics.binarySignificance"
+                                 :key="index">
                                 <el-divider></el-divider>
                                 <div>
                                     <h4>{{ value.label }}</h4>
@@ -125,7 +128,8 @@
                                     <br>
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format" />
+                                        <el-slider class="adjust-slider-width" v-model="value.weight"
+                                                   :format-tooltip="slider_format"/>
                                     </div>
                                 </div>
                             </div>
@@ -141,10 +145,12 @@
                                 <br>
                                 <div class="horizontal-align">
                                     <label class="slider-label">Weight</label>
-                                    <el-slider class="adjust-slider-width" v-model="value.weight" :format-tooltip="slider_format"/>
+                                    <el-slider class="adjust-slider-width" v-model="value.weight"
+                                               :format-tooltip="slider_format"/>
                                 </div>
                             </div>
                         </div>
+
                     </el-tab-pane>
                     <el-tab-pane label="Attenuation">
                         <div>
@@ -182,8 +188,8 @@
 </template>
 
 <script>
-    import { generate } from "@/api/home";
-    import { concurrencyFilter, edgeFilter, metrics, nodeFilter } from '@/api/filter';
+    import {generate} from "@/api/home";
+    import {concurrencyFilter, edgeFilter, metrics, nodeFilter} from '@/api/filter';
 
     export default {
         name: "Filter",
@@ -277,7 +283,20 @@
                         radical: 2
                     }
                 },
-                metrics_save: {}
+                metrics_save: {},
+                value: [],
+                selectTypes: [{
+                    value: 'unary',
+                    label: 'Unary Metrics'
+                }, {
+                    value: 'binarySignificance',
+                    label: 'Binary Metrics'
+                }, {
+                        value: 'binaryCorrelation',
+                        label: 'Binary Correlation'
+                    }]
+
+
             }
         },
         methods: {
@@ -350,8 +369,8 @@
                 this.image = data;
                 this.progress = false;
             },
-            selectTypes(type) {
-                this.selectedType = type;
+            selectTypes(value) {
+                this.selectedType = value;
             },
             openConfig() {
                 this.dialog = true;
@@ -433,7 +452,7 @@
                 this.dialog = false;
             },
             async loading() {
-                this.progressing();
+                //this.progressing();
                 const path = this.$route.params.path;
                 const { data } = await generate({path: path});
                 this.progress = false;
@@ -509,7 +528,8 @@
         },
         created() {
             this.loading();
-        }
+        },
+
     }
 </script>
 
@@ -593,6 +613,7 @@
     .slider-label {
         position: relative;
         top: 10px;
+        width: 18%
     }
 
     .horizontal-align {
