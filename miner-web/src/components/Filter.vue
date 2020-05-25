@@ -97,7 +97,7 @@
                          </el-dropdown-menu>
 
                    <span>{{ " Metrics Selected : " + typeLabels[selectedType] }}</span>-->
-                        <div v-if="selectedType === 'unary'">
+                        <div v-if="selectedType[0] === 'unary'">
                             <div v-for="(value, key, index) in metricsConfig.metrics.unary" :key="index">
                                 <el-divider></el-divider>
                                 <div>
@@ -115,7 +115,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-else-if="selectedType === 'binarySignificance'">
+                        <div v-else-if="selectedType[0] === 'binarySignificance'">
                             <div v-for="(value, key, index) in metricsConfig.metrics.binarySignificance"
                                  :key="index">
                                 <el-divider></el-divider>
@@ -294,9 +294,7 @@
                 }, {
                         value: 'binaryCorrelation',
                         label: 'Binary Correlation'
-                    }]
-
-
+                }]
             }
         },
         methods: {
