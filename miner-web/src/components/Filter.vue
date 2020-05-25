@@ -433,7 +433,7 @@
                 this.dialog = false;
             },
             async loading() {
-                this.progressing();
+                // this.progressing();
                 const path = this.$route.params.path;
                 const { data } = await generate({path: path});
                 this.progress = false;
