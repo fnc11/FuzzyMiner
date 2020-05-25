@@ -2,7 +2,7 @@
     <div class="main">
         <div>
             <el-row class="banner-content">
-                <h1>One step to Mine the Fuzzy Model!</h1>
+                <h1 class="wrapper">One step to mine the Fuzzy Model!</h1>
             </el-row>
             <el-row class="button-class" justify="center" type="flex">
                 <el-col :span="2.5">
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-    import { upload } from "@/api/home";
+    import {upload} from "@/api/home";
 
     export default {
         name: "Home",
@@ -144,22 +144,61 @@
 
     .banner-content {
         text-align: center;
+        position: relative;
+        top: 5vh;
     }
 
     .button-class {
+        position: relative;
         height: inherit;
-        top: 5vh;
+        top: 10vh;
 
     }
 
     .button-primary {
         background-color: cornflowerblue;
+        border-color: cornflowerblue;
 
     }
+
 
     .file-list {
         text-align: center;
         position: inherit;
         bottom: 5vh;
     }
+
+    .wrapper {
+        color: darkorange;
+        overflow: hidden;
+        font-weight: bold;
+        font-size: xx-large;
+        border-right: .15em solid orange;
+        white-space: nowrap;
+        margin: 0 auto;
+        letter-spacing: .12em;
+        animation: typing 3.5s steps(40, end),
+        blink-caret .75s step-end infinite;
+
+    }
+
+    @keyframes typing {
+        from {
+            width: 0
+        }
+        to {
+            width: 100%
+        }
+    }
+
+    @keyframes blink-caret {
+        from, to {
+            border-color: transparent
+        }
+        50% {
+            border-color: black;
+        }
+    }
+
+
 </style>

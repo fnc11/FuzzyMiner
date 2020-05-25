@@ -1,11 +1,11 @@
 <template xmlns:el-col="http://www.w3.org/1999/html">
     <div id="app">
-        <el-container>
-            <el-header class="header-bg">
+        <el-container class="el-container">
+            <el-header class="header-bg" height="6.5%">
                 <el-row type="flex" justify="end">
                     <el-col :span="20">
                         <div class="grid-content" align="left">
-                            <label>FuzzyMinerWeb</label>
+                            <label @click="$router.push({path: '/'})">FuzzyMinerWeb</label>
                         </div>
                     </el-col>
 
@@ -45,22 +45,19 @@
         position: relative;
         width: 100%;
         height: 100%;
+        overflow: hidden;
     }
 </style>
 
 <style scoped>
     #app {
+        height: 100%;
+    }
 
-        height: 100%;
-    }
-    .el-container {
-        height: 100%;
-    }
     .header-bg {
         top: 0;
-        position: absolute;
+        position: relative;
         width: 100%;
-        height: 60px;
         background-color: lightseagreen;
     }
 
@@ -79,7 +76,6 @@
         width: 100%;
         background-color: lightseagreen;
 
-
     }
 
     .fluid-container.footer > *:last-child {
@@ -91,8 +87,10 @@
     .button-group {
         position: absolute;
         bottom: 0;
-
     }
+.el-container{
+
+}
 
 
 

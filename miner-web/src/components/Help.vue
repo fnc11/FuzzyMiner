@@ -20,7 +20,7 @@
 <style scoped>
     .help-content{
         position: relative;
-        top: 10%;
+        top: 30px;
     }
     .header-text{
         font-family: "Sitka Subheading";
