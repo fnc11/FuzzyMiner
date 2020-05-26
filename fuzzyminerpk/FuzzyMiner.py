@@ -90,12 +90,12 @@ class Graph:
         self.finalize_graph_data()
         self.check_for_null_graph()
         if self.fm_message.message_type == 0:
+            self.viz_util = VizUtil()
+            self.viz_util.visualize(self.fm_nodes, self.fm_edges, self.fm_clusters)
             # Generate graph and save the path
             self.fm_message.graph_path = "Path to Graph"
-        return self.fm_message
 
-        self.viz_util = VizUtil()
-        self.viz_util.visualize(self.fm_nodes, self.fm_edges, self.fm_clusters)
+        return self.fm_message
 
     def finalize_graph_data(self):
         self.fm_nodes = self.filtered_data_repository.cluster_util.fm_nodes
