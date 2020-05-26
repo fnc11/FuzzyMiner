@@ -22,11 +22,11 @@
                     </el-col>
                 </el-row>
             </el-header>
-            <el-main>
+            <el-main class="el-main">
                 <router-view/>
             </el-main>
             <el-footer class="fluid-container footer" height="5%">
-                <p>@Copy right: 2020</p>
+                <p>@Copyright: 2020</p>
             </el-footer>
         </el-container>
     </div>
@@ -45,7 +45,7 @@
         position: relative;
         width: 100%;
         height: 100%;
-        overflow: hidden;
+        overflow: auto;
     }
 </style>
 
@@ -54,6 +54,9 @@
         height: 100%;
     }
 
+    .el-main{
+        overflow: hidden;
+    }
     .header-bg {
         top: 0;
         position: relative;

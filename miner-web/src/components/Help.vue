@@ -20,6 +20,8 @@
 <style scoped>
     .help-content{
         position: relative;
+        height: 70vh;
+
         top: 30px;
     }
     .header-text{
