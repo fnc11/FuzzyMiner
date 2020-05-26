@@ -21,7 +21,7 @@ class VizUtil:
                 connected_node_indices.add(edge.source)
                 connected_node_indices.add(edge.target)
 
-        dot = Digraph(name='Fuzzy Model', filename='fuzzy.gv', directory='static/graphs/', format='png')
+        dot = Digraph(name='Fuzzy Model', filename='fuzzy.gv', directory='media/graphs/', format='png')
         dot.node_attr['shape'] = 'rectangle'
         dot.node_attr['style'] = 'filled'
         dot.node_attr['fontcolor'] = 'black'
