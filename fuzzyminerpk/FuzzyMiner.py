@@ -110,6 +110,9 @@ class Graph:
         self.filtered_data_repository.apply_node_filter(node_filter)
         self.finalize_graph_data()
 
+        self.viz_util = VizUtil()
+        self.viz_util.visualize(self.fm_nodes, self.fm_edges, self.fm_clusters)
+
     def finalize_graph_data(self):
         self.fm_nodes = self.filtered_data_repository.cluster_util.fm_nodes
         self.fm_edges = self.filtered_data_repository.cluster_util.fm_edges
