@@ -6,6 +6,8 @@ from fuzzyminerpk.Utility import FMLogUtils, cal_proximity, cal_endpoint, cal_or
     is_valid_matrix1D, is_valid_matrix2D
 from datetime import datetime
 
+from fuzzyminerpk.VizUtil import VizUtil
+
 
 class Graph:
     def __init__(self, log, default_config):
@@ -29,6 +31,9 @@ class Graph:
         self.filtered_data_repository = FilteredDataRepository(self.log, self.data_repository, self.config.filter_config)
         self.apply_filters()
         self.cluster_util.clusterize(self.config.filter_config.node_filter, self.fm_log_util,self.data_repository, self.filtered_data_repository)
+
+        self.viz_util = VizUtil()
+        self.viz_util.visualize(self.cluster_util, self.fm_log_util)
 
         # debug block start
         print("Nodes\n")
