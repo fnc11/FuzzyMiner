@@ -90,26 +90,7 @@
                 <el-tabs type="border-card">
                     <el-tab-pane label="Metrics" class="el-tabs__content">
                         <el-cascader v-model="selectedType" :options="selectTypes"></el-cascader>
-                        <div v-if="selectedType[0] === 'unary'">
-                            <div v-for="(value, key, index) in metricsConfig.metrics.unary" :key="index">
-                                <el-divider></el-divider>
-                                <div>
-                                    <h4>{{ value.label }}</h4>
-                                    <div style="display: flex">
-                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
-                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
-                                    </div>
-                                    <br>
-                                    <div class="horizontal-align">
-                                        <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight"
-                                                   :format-tooltip="slider_format"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div v-else-if="selectedType[0] === 'binarySignificance'">
+                        <div v-if="selectedType[0] === 'binarySignificance'">
                             <div v-for="(value, key, index) in metricsConfig.metrics.binarySignificance"
                                  :key="index">
                                 <el-divider></el-divider>
@@ -128,7 +109,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-else>
+                        <div v-else-if="selectedType[0] === 'binaryCorrelation'">
                             <div v-for="(value, key, index) in metricsConfig.metrics.binaryCorrelation"
                                  :key="index">
                                 <el-divider></el-divider>
@@ -142,6 +123,24 @@
                                     <label class="slider-label">Weight</label>
                                     <el-slider class="adjust-slider-width" v-model="value.weight"
                                                :format-tooltip="slider_format"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div v-for="(value, key, index) in metricsConfig.metrics.unary" :key="index">
+                                <el-divider></el-divider>
+                                <div>
+                                    <h4>{{ value.label }}</h4>
+                                    <div style="display: flex">
+                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
+                                    </div>
+                                    <br>
+                                    <div class="horizontal-align">
+                                        <label class="slider-label">Weight</label>
+                                        <el-slider class="adjust-slider-width" v-model="value.weight"
+                                                   :format-tooltip="slider_format"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -448,7 +447,7 @@
                 this.dialog = false;
             },
             async loading() {
-                //this.progressing();
+                this.progressing();
                 const path = this.$route.params.path;
                 const { data } = await generate({path: path});
                 this.progress = false;
@@ -603,19 +602,20 @@
     }
 
     .adjust-slider-width {
-        width: 90%;
+        width: 80%;
 
     }
 
     .slider-label {
         position: relative;
         top: 10px;
-        width: 18%
+        width: 16%;
+        padding-left: 2px;
     }
 
     .horizontal-align {
         display: flex;
-        justify-content: space-evenly;
+        justify-content: left;
     }
 
     .el-tabs__content {
@@ -623,6 +623,7 @@
         position: relative;
         height: 300px;
     }
+
 
 
 </style>
