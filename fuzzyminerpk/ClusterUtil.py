@@ -311,7 +311,7 @@ class ClusterUtil:
     def finalize_fm_nodes(self):
         sz = self.fm_log_util.get_num_of_nodes()
         for i in range(0, sz):
-            if self.node_cluster_mapping[i] != -1:
+            if self.node_cluster_mapping[i] != -1 and self.node_cluster_mapping[i] < sz:
                 self.fm_nodes.append(FMNode(i, self.fm_log_util.nodes[i], self.data_repository.unary_weighted_values[i]))
 
     """
