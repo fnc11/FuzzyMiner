@@ -21,7 +21,7 @@
     .help-content{
         position: relative;
         height: 70vh;
-
+        overflow: hidden;
         top: 30px;
     }
     .header-text{
