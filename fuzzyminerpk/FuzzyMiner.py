@@ -90,10 +90,10 @@ class Graph:
         self.finalize_graph_data()
         self.check_for_null_graph()
         if self.fm_message.message_type == 0:
-            self.viz_util = VizUtil()
-            self.viz_util.visualize(self.fm_nodes, self.fm_edges, self.fm_clusters)
             # Generate graph and save the path
-            self.fm_message.graph_path = "Path to Graph"
+            self.viz_util = VizUtil()
+            graph_path = self.viz_util.visualize(self.fm_nodes, self.fm_edges, self.fm_clusters)
+            self.fm_message.graph_path = graph_path
 
         return self.fm_message
 

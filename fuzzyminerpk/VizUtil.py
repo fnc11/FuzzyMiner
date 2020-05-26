@@ -1,6 +1,11 @@
 import math
+import random
+import string
 
 from graphviz import Digraph
+
+GRAPH_PATH = 'media/graphs/'
+GRAPH_FORMAT = 'png'
 
 
 class VizUtil:
@@ -21,7 +26,10 @@ class VizUtil:
                 connected_node_indices.add(edge.source)
                 connected_node_indices.add(edge.target)
 
-        dot = Digraph(name='Fuzzy Model', filename='fuzzy.gv', directory='media/graphs/', format='png')
+        filename = ''.join(random.choice(string.ascii_lowercase) for i in range(16)) + '.gv'
+        dot = Digraph(name='Fuzzy Model',
+                      filename=filename,
+                      directory=GRAPH_PATH, format=GRAPH_FORMAT)
         dot.node_attr['shape'] = 'rectangle'
         dot.node_attr['style'] = 'filled'
         dot.node_attr['fontcolor'] = 'black'
@@ -43,19 +51,20 @@ class VizUtil:
 
         for cluster in self.fm_clusters:
             dot.node(str(cluster.index), label=cluster.label, shape='oval', color='cadetblue1')
-        # dot.node('L', label='Sir Lancelot the Brave', style='filled', color='blue', fontcolor='white')
 
-        # dot.edges(['AB', 'AL'])
         dot.edge_attr['fontsize'] = '10.0'
         for edge in self.fm_edges:
             label = " sig: " + self.format(edge.significance) + "\n" + " cor: " + self.format(edge.correlation)
-            pen_width = self.thickness(edge.significance)
+            pen_width = self.pen_width(edge.significance)
             dot.edge(str(edge.source), str(edge.target), label=label, constraint='true', penwidth=pen_width)
-        # dot.edge('B', 'L', constraint='false', arrowsize='4.0')
         print(dot.source)
-        dot.render(view=True)
+        # dot.render(view=True)
+        dot.render()
+        graph_path = ''.join(['/', GRAPH_PATH, filename, '.', GRAPH_FORMAT])
+        print(graph_path)
+        return graph_path
 
-    def thickness(self, significance):
+    def pen_width(self, significance):
         return str(math.ceil((significance * 10) / 2))
 
     def format(self, significance):
