@@ -36,6 +36,7 @@ class VizUtil:
                 label = tokens[0] + "\n" + tokens[1]
             else:
                 label = tokens[0]
+            label += "\n" + self.format(node.significance)
             dot.node(str(node.index), label=label, penwidth='1.0', fillcolor='blanchedalmond')
 
         for cluster in self.cluster_util.fm_clusters:
@@ -45,12 +46,15 @@ class VizUtil:
         # dot.edges(['AB', 'AL'])
         dot.edge_attr['fontsize'] = '10.0'
         for edge in self.cluster_util.fm_edges:
-            label = " sig: " + "{:.3f}".format(edge.significance) + "\n" + " cor: " + "{:.3f}".format(edge.correlation)
-            pen_width = self.edge_thickness(edge.significance)
+            label = " sig: " + self.format(edge.significance) + "\n" + " cor: " + self.format(edge.correlation)
+            pen_width = self.thickness(edge.significance)
             dot.edge(str(edge.source), str(edge.target), label=label, constraint='true', penwidth=pen_width)
         # dot.edge('B', 'L', constraint='false', arrowsize='4.0')
         print(dot.source)
-        dot.render()
+        dot.render(view=True)
 
-    def edge_thickness(self, significance):
+    def thickness(self, significance):
         return str(math.ceil((significance * 10) / 2))
+
+    def format(self, significance):
+        return "{:.3f}".format(significance)
