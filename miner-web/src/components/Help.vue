@@ -1,11 +1,13 @@
 <template>
     <div class="help-content">
-        <div>
-            <h3>Demo Video</h3>
+        <div align="center">
+        <div class="text-center-align header-text">Do you want to know how to use our product?</div>
+            <br>
+            <iframe width="540" height="400"
+                    src="https://www.youtube.com/embed/tgbNymZ7vqY?controls=1c">
+            </iframe>
         </div>
-        <div>
-            <h3>Filter Descriptions</h3>
-        </div>
+
     </div>
 </template>
 
@@ -17,6 +19,13 @@
 
 <style scoped>
     .help-content{
-        line-height: 160px;
+        position: relative;
+        top: 30px;
+    }
+    .header-text{
+        font-family: "Sitka Subheading";
+        font-size: xx-large;
+        color: #3875d7;
+
     }
 </style>

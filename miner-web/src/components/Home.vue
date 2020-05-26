@@ -2,7 +2,7 @@
     <div class="main">
         <div>
             <el-row class="banner-content">
-                <h1>One step to Mine the Fuzzy Model!</h1>
+                <h1 class="wrapper">One step to mine the Fuzzy Model!</h1>
             </el-row>
             <el-row class="button-class" justify="center" type="flex">
                 <el-col :span="2.5">
@@ -17,11 +17,11 @@
                             :on-success="uploadSuccess"
                             :on-error="uploadError">
                         <el-button type="primary" class="button-primary">Upload Logs</el-button>
-                        <div slot="tip" class="el-upload__tip">Accepted file format is .xes.</div>
+                        <div slot="tip" class="el-upload__tip" style="color: slategrey">Accepted file format is .xes.</div>
                     </el-upload>
                 </el-col>
                 <el-col :span="2.5">
-                    <el-button type="success" class="button-success" @click="generate" :disabled="generated" :loading="loading">Generate</el-button>
+                    <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate</el-button>
                 </el-col>
             </el-row>
             <br><br><br>
@@ -47,11 +47,19 @@
         <h3>Fuzzy Miner</h3>
     </div>
     -->
+        <el-dialog
+            title="Progress"
+            :visible="progress"
+            width="25%">
+            <el-progress type="line" :percentage="percentage"></el-progress>
+            <i class="el-icon-loading" />
+            <label v-if="percentage === 100">Please hold on, the server is running.</label>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-    import { upload, generate } from "@/api/home";
+    import {upload} from "@/api/home";
 
     export default {
         name: "Home",
@@ -60,26 +68,35 @@
                 generated: true,
                 fileList: [],
                 path: '',
-                loading: false
+                progress: false,
+                percentage: 0
             }
         },
         methods: {
             async upload(param) {
+                this.progress = true;
                 let form = new FormData();
                 form.append('file', param.file);
-                const data = await upload(form);
+                let config = {
+                    onUploadProgress: progressEvent => {
+                        let completed = (progressEvent.loaded / progressEvent.total).toFixed(2) * 100;
+                        this.percentage = completed;
+                        if (this.percentage >= 100) {
+                            this.progress = false;
+                        }
+                    },
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                const data = await upload(form, config);
                 this.path = data;
                 console.log(this.path);
                 this.generated = false;
+                this.percentage = 0;
             },
             async generate() {
-                this.loading = true;
-                const data = await generate({
-                    'path': this.path
-                });
-                console.log(data);
-                this.loading = false;
-                this.$router.push({path: '/filter'});
+                this.$router.push({name: 'Filter', params: {path: this.path}});
             },
             uploadSuccess(response, file) {
                 this.$message({
@@ -127,22 +144,61 @@
 
     .banner-content {
         text-align: center;
+        position: relative;
+        top: 5vh;
     }
 
     .button-class {
+        position: relative;
         height: inherit;
-        top: 5vh;
+        top: 10vh;
 
     }
 
     .button-primary {
         background-color: cornflowerblue;
+        border-color: cornflowerblue;
 
     }
+
 
     .file-list {
         text-align: center;
         position: inherit;
         bottom: 5vh;
     }
+
+    .wrapper {
+        color: darkorange;
+        overflow: hidden;
+        font-weight: bold;
+        font-size: xx-large;
+        border-right: .15em solid orange;
+        white-space: nowrap;
+        margin: 0 auto;
+        letter-spacing: .12em;
+        animation: typing 3.5s steps(40, end),
+        blink-caret .75s step-end infinite;
+
+    }
+
+    @keyframes typing {
+        from {
+            width: 0
+        }
+        to {
+            width: 100%
+        }
+    }
+
+    @keyframes blink-caret {
+        from, to {
+            border-color: transparent
+        }
+        50% {
+            border-color: black;
+        }
+    }
+
+
 </style>

@@ -1,13 +1,12 @@
-from fuzzyminerpk.Utility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, \
-    normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, \
-    cal_datavalue_correlation, cal_proximity_correlation
+from fuzzyminerpk.ClusterUtil import ClusterUtil
+from fuzzyminerpk.Utility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, cal_datavalue_correlation, cal_proximity_correlation
 import numpy as np
 
 
 class DataRepository:
-    def __init__(self, log, config):
+    def __init__(self, log):
         self.log = log
-        self.config = config
+        self.config = None
         self.fm_log_util = FMLogUtils(log)
         self.nodes = self.fm_log_util.nodes
         self.num_of_nodes = self.fm_log_util.num_of_nodes
@@ -93,12 +92,9 @@ class DataRepository:
         # self.binary_corr_weighted_values = list()
         self.binary_corr_weighted_values = np.empty(0)
 
-        # initialize empty lists
-        self.init_lists()
-
         # dictionary to save weights, invert, include
         self.metric_settings = dict()
-        self.fill_dicts()
+
 
     """
     This initializes all the lists which are required to store data to 0 or 0.0, in special cases to 1.0
@@ -301,6 +297,7 @@ class DataRepository:
     """
 
     def extract_weighted_metrics(self):
+        self.fill_dicts()
         self.cal_weighted_unary_values()
         self.cal_weighted_binary_values()
         self.cal_wrighted_binary_corr_values()
@@ -710,10 +707,11 @@ class DataRepository:
 
 
 class FilteredDataRepository:
-    def __init__(self, log, data_repository, filter_config):
-        self.filter_config = filter_config
-        self.data_repository = data_repository
+    def __init__(self, log):
+        self.filter_config = None
+        self.data_repository = None
         self.fm_log_util = FMLogUtils(log)
+        self.cluster_util = ClusterUtil()
         self.log = log
         self.nodes = self.fm_log_util.nodes
         self.num_of_nodes = self.fm_log_util.num_of_nodes
@@ -739,11 +737,6 @@ class FilteredDataRepository:
             for i in range(0, sz):
                 for j in range(0, i):
                     self.process_relation_pair(i, j)
-            # Applying edge_filter with older values(since only values of concurrency_filter was changed)
-            # call method based on type of filter selected fuzzy or best edge(by default it's fuzzy edge filter)
-            self.apply_edge_filter(self.filter_config.edge_filter)
-        else:
-            self.apply_edge_filter(self.filter_config.edge_filter)
 
     """
     To process an edge pair for concurrency filter, check according to threshold and ratio values.
@@ -820,9 +813,6 @@ class FilteredDataRepository:
                 if not self.preserve_mask[i][j]:
                     self.edge_filter_resultant_binary_values[i][j] = 0.0
                     self.edge_filter_resultant_binary_corr_values[i][j] = 0.0
-
-        # Applying node_filter with older values(since only values of edge_filter or concurrency_filter was changed)
-        self.apply_node_filter(self.filter_config.node_filter)
 
     """
     Processes edges of nodes one by one, checks according to sc_ratio, cut_off and other attributes.
@@ -910,6 +900,7 @@ class FilteredDataRepository:
     def apply_node_filter(self, node_filter):
         self.node_filter_resultant_binary_values = self.edge_filter_resultant_binary_values
         self.node_filter_resultant_binary_corr_values = self.edge_filter_resultant_binary_corr_values
+        self.cluster_util.clusterize(self.filter_config.node_filter, self.fm_log_util, self.data_repository, self)
 
     def debug_concurrency_filter_values(self):
         print("concurrency filtered values")

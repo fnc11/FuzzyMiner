@@ -1,19 +1,13 @@
 <template>
-    <div class="page-layout">
+    <div class="page-layout" style="overflow: hidden">
         <el-row :gutter="10">
             <el-col :span="16" align="middle">
                 <div class="model-view">
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
-                        <canvas></canvas>
-
-
-                        <!-- here should be canvas -->
+                        <img :src="image" alt=""/>
                     </div>
-
                     <el-button type="primary" plain class="button-position">Save Snapshot</el-button>
-
-
                 </div>
             </el-col>
             <el-col :span="8">
@@ -21,11 +15,11 @@
                     <h3 class="text-center-align">Configurations</h3>
                     <el-row :gutter="10" class="el-tabs--border-card filter-container">
                         <el-col :span="8" class="grid-content-configuration el-table--border">
-                            <h4 class="text-center-align">Node Filter</h4>
+                            <h4>Node Filter</h4>
                               <el-divider></el-divider>
                             <div class="slider-adjustment1 text-center-align">
                             <label>Significance Cutoff</label>
-                                <el-slider align="middle" vertical v-model="node" height="280px" @change="nodeChanged" />
+                                <el-slider align="middle" vertical v-model="node" height="280px" :format-tooltip="slider_format" @change="nodeChanged" />
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
@@ -37,15 +31,15 @@
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
-                            <el-row :gutter="2" class="slider-adjustment2">
-                                <el-col :span="14" align="middle">
+                            <el-row :gutter="2" class="slider-adjustment2" type="flex" align="middle">
+                                <el-col :span="14">
                                     <label>S/C Ratio</label>
-                                    <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" @change="scChanged"/>
+                                    <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="scChanged"/>
                                     <label>{{ sc / 100 }}</label>
                                 </el-col>
-                                <el-col :span="4" align="middle">
+                                <el-col :span="4">
                                     <label>Cutoff</label>
-                                    <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" @change="cutoffChanged"/>
+                                    <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="cutoffChanged"/>
                                     <label>{{ cutoff / 100 }}</label>
                                 </el-col>
                             </el-row>
@@ -55,25 +49,28 @@
                             </div>
                         </el-col>
                         <el-col :span="8" class="grid-content-configuration el-table--border">
-                            <div class="">
-                            <h4 class="text-center-align">Concurrency Filter</h4>
-                                  <el-divider></el-divider>
-                            <el-checkbox v-model="concurrency">Filter Concurrency</el-checkbox>
-                                <el-row :gutter="20" class="slider-adjustment3">
-                                    <el-col :span="10" align="middle">
-                                        <label>Preserve</label>
-                                        <el-slider vertical v-model="preserve" height="280px"
-                                                   @change="preserveChanged"/>
-                                        <label>{{ preserve / 100 }}</label>
-                                    </el-col>
-                                    <el-col :span="10" align="middle">
-                                        <label>Balance</label>
-                                        <el-slider vertical v-model="balance" height="280px" @change="balanceChanged"/>
-                                        <label>{{ balance / 100 }}</label>
-                                    </el-col>
 
-                                </el-row>
-                        </div>
+                            <h4 class="text-center-align">Concurrency Filter</h4>
+                            <el-divider></el-divider>
+                            <el-checkbox v-model="concurrency"><label style="color: black">Filter Concurrency</label>
+                            </el-checkbox>
+                            <el-row :gutter="20" type="flex" justify="center" class="text-center-align slider-adjustment3">
+                                <el-col :span="10">
+                                    <label>Preserve</label>
+                                    <el-slider vertical v-model="preserve" height="280px" :disabled="!concurrency"
+                                               :format-tooltip="slider_format"
+                                               @change="preserveChanged"/>
+                                    <label>{{ preserve / 100 }}</label>
+                                </el-col>
+                                <el-col :span="10">
+                                    <label>Balance</label>
+                                    <el-slider vertical v-model="balance" height="280px" :disabled="!concurrency"
+                                               :format-tooltip="slider_format" @change="balanceChanged"/>
+                                    <label>{{ balance / 100 }}</label>
+                                </el-col>
+
+                            </el-row>
+
                         </el-col>
                     </el-row>
                     <div class="text-center-align metrics">
@@ -87,22 +84,49 @@
         <el-dialog
                 title="Configure"
                 :visible.sync="dialog"
-                width="40%" style="font-family: Arial, Helvetica, sans-serif">
+                append-to-body="false"
+                width="40%" style="font-family: Arial, Helvetica, sans-serif;">
             <div>
                 <el-tabs type="border-card">
-                    <el-tab-pane label="Metrics">
-                        <el-dropdown @command="selectTypes">
-                            <span class="el-dropdown-link">
-                                Select Metrics<i class="el-icon-arrow-down el-icon--left"></i>
-                            </span>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item command="unary">Unary Metrics</el-dropdown-item>
-                                <el-dropdown-item command="binarySignificance" divided>Binary Significance</el-dropdown-item>
-                                <el-dropdown-item command="binaryCorrelation" divided>Binary Correlation</el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
-                        <span>{{ " Metrics Selected : " + typeLabels[selectedType] }}</span>
-                        <div v-if="selectedType === 'unary'">
+                    <el-tab-pane label="Metrics" class="el-tabs__content">
+                        <el-cascader v-model="selectedType" :options="selectTypes"></el-cascader>
+                        <div v-if="selectedType[0] === 'binarySignificance'">
+                            <div v-for="(value, key, index) in metricsConfig.metrics.binarySignificance"
+                                 :key="index">
+                                <el-divider></el-divider>
+                                <div>
+                                    <h4>{{ value.label }}</h4>
+                                    <div style="display: flex">
+                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
+                                    </div>
+                                    <br>
+                                    <div class="horizontal-align">
+                                        <label class="slider-label">Weight</label>
+                                        <el-slider class="adjust-slider-width" v-model="value.weight"
+                                                   :format-tooltip="slider_format"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else-if="selectedType[0] === 'binaryCorrelation'">
+                            <div v-for="(value, key, index) in metricsConfig.metrics.binaryCorrelation"
+                                 :key="index">
+                                <el-divider></el-divider>
+                                <h4>{{ value.label }}</h4>
+                                <div style="display: flex">
+                                    <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                    <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
+                                </div>
+                                <br>
+                                <div class="horizontal-align">
+                                    <label class="slider-label">Weight</label>
+                                    <el-slider class="adjust-slider-width" v-model="value.weight"
+                                               :format-tooltip="slider_format"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
                             <div v-for="(value, key, index) in metricsConfig.metrics.unary" :key="index">
                                 <el-divider></el-divider>
                                 <div>
@@ -114,43 +138,13 @@
                                     <br>
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight" />
+                                        <el-slider class="adjust-slider-width" v-model="value.weight"
+                                                   :format-tooltip="slider_format"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div v-else-if="selectedType === 'binarySignificance'">
-                            <div v-for="(value, key, index) in metricsConfig.metrics.binarySignificance" :key="index">
-                                <el-divider></el-divider>
-                                <div>
-                                    <h4>{{ value.label }}</h4>
-                                    <div style="display: flex">
-                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
-                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
-                                    </div>
-                                    <br>
-                                    <div class="horizontal-align">
-                                        <label class="slider-label">Weight</label>
-                                        <el-slider class="adjust-slider-width" v-model="value.weight" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <div v-for="(value, key, index) in metricsConfig.metrics.binaryCorrelation" :key="index">
-                                <el-divider></el-divider>
-                                <h4>{{ value.label }}</h4>
-                                <div style="display: flex">
-                                    <el-checkbox v-model="value.inc">Include</el-checkbox>
-                                    <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
-                                </div>
-                                <br>
-                                <div class="horizontal-align">
-                                    <label class="slider-label">Weight</label>
-                                    <el-slider class="adjust-slider-width" v-model="value.weight"/>
-                                </div>
-                            </div>
-                        </div>
+
                     </el-tab-pane>
                     <el-tab-pane label="Attenuation">
                         <div>
@@ -165,8 +159,11 @@
                                 <br>
                                 <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 2" :min="1" :max="4"/>
+                            <el-slider v-model="metricsConfig.attenuation.radical"
+                                       :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4"
+                                       step="0.01"/>
                         </div>
+
                     </el-tab-pane>
                 </el-tabs>
             </div>
@@ -176,16 +173,28 @@
                 <el-button @click="cancelConfig">Cancel</el-button>
             </div>
         </el-dialog>
+        <el-dialog
+            title="Loading"
+            :visible="progress"
+            width="25%">
+            <el-progress type="line" :percentage="percentage"></el-progress>
+            <i class="el-icon-loading" />
+            <label v-if="percentage === 100">Please hold on, the server is running.</label>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+    import {generate} from "@/api/home";
     import {concurrencyFilter, edgeFilter, metrics, nodeFilter} from '@/api/filter';
 
     export default {
         name: "Filter",
         data() {
             return {
+                image: '',
+                progress: false,
+                percentage: 0,
                 node: 50,
                 edge: 1,
                 sc: 50,
@@ -267,22 +276,49 @@
                     },
                     attenuation: {
                         eventDistance: 5,
-                        seleted: 1,
+                        seleted: 2,
                         radical: 2
                     }
                 },
-                metrics_save: {}
+                metrics_save: {},
+                value: [],
+                selectTypes: [{
+                    value: 'unary',
+                    label: 'Unary Metrics'
+                }, {
+                    value: 'binarySignificance',
+                    label: 'Binary Metrics'
+                }, {
+                        value: 'binaryCorrelation',
+                        label: 'Binary Correlation'
+                }]
             }
         },
         methods: {
+            slider_format(value) {
+                return value / 100;
+            },
+            progressing() {
+                this.progress = true;
+                this.percentage = 0;
+                let obj = setInterval(() => {
+                    this.percentage += 1;
+                    if (this.percentage >= 100 || this.progress === false)
+                        clearInterval(obj);
+                }, 300);
+            },
             async nodeChanged(value) {
-                await nodeFilter({
+                this.progressing();
+                const { data } = await nodeFilter({
                     'cutoff': value / 100
                 });
                 console.log('change node filter with cutoff: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             async scChanged(value) {
-                await edgeFilter({
+                this.progressing();
+                const { data } = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': value / 100,
                     'cutoff': this.cutoff / 100,
@@ -290,9 +326,12 @@
                     'interpret_absolute': this.absolute
                 });
                 console.log('change edge filter with s/c ratio: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             async cutoffChanged(value) {
-                await edgeFilter({
+                this.progressing();
+                const { data } = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': value / 100,
@@ -300,32 +339,40 @@
                     'interpret_absolute': this.absolute
                 });
                 console.log('change edge filter with cutoff: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             async preserveChanged(value) {
-                await concurrencyFilter({
+                this.progressing();
+                const { data } = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': value / 100,
                     'balance': this.balance / 100
                 });
                 console.log('change concurrency filter with preserve: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
             async balanceChanged(value) {
-                await concurrencyFilter({
+                this.progressing();
+                const { data } = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': this.preserve / 100,
                     'balance': value / 100
                 });
                 console.log('change concurrency filter with balance: ' + String(value / 100));
+                this.image = data;
+                this.progress = false;
             },
-            selectTypes(type) {
-                this.selectedType = type;
+            selectTypes(value) {
+                this.selectedType = value;
             },
             openConfig() {
                 this.dialog = true;
                 // JSON.parse(JSON.stringify(obj));
             },
             async saveConfig() {
-                let data = {
+                let req = {
                     metrics: {
                         unary_metrics: {
                             frequency: {
@@ -384,29 +431,41 @@
                     }
                 };
                 if (this.metricsConfig.attenuation.seleted === 1) {
-                    data.attenuation.selected = 'Linear Attenuation';
+                    req.attenuation.selected = 'Linear Attenuation';
                 } else {
-                    data.attenuation.selected = 'N root with radical';
-                    data.attenuation.radical = this.radical;
+                    req.attenuation.selected = 'N root with radical';
+                    req.attenuation.radical = this.radical/100;
                 }
-                await metrics(data);
+                this.progressing();
+                const { data } = await metrics(req);
+                this.image = data;
                 this.dialog = false;
+                this.progress = false;
             },
             cancelConfig() {
                 this.metrics_save = {};
                 this.dialog = false;
+            },
+            async loading() {
+                this.progressing();
+                const path = this.$route.params.path;
+                const { data } = await generate({path: path});
+                this.progress = false;
+                console.log(data);
             }
         },
         watch: {
             edge: async function(now, old) {
+                this.progressing();
+                let resp;
                 if (now === old)
                     return;
                 if (now === 1) {
-                    await edgeFilter({
+                    resp =await edgeFilter({
                         'edge_transformer': 'Best Edges'
                     });
                 } else {
-                    await edgeFilter({
+                    resp = await edgeFilter({
                         'edge_transformer': 'Fuzzy Edges',
                         's/c_ratio': this.sc / 100,
                         'cutoff': this.cutoff / 100,
@@ -415,11 +474,14 @@
                     });
                 }
                 console.log('change edge filter with edge transformer: ' + now);
+                this.image = resp.data;
+                this.progress = false;
             },
             loops: async function (now, old) {
+                this.progressing();
                 if (now === old)
                     return;
-                await edgeFilter({
+                const { data } = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
@@ -427,11 +489,14 @@
                     'interpret_absolute': this.absolute
                 });
                 console.log('change edge filter with ignore self-loops: ' + String(now));
+                this.image = data;
+                this.progress = false;
             },
             absolute: async function(now, old) {
+                this.progressing();
                 if (now === old)
                     return;
-                await edgeFilter({
+                const { data } = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
@@ -439,26 +504,36 @@
                     'interpret_absolute': now
                 });
                 console.log('change edge filter with interpret absolute: ' + String(now));
+                this.image = data;
+                this.progress = false;
             },
             concurrency: async function (now, old) {
+                this.progressing();
                 if (now === old)
                     return;
-                await concurrencyFilter({
+                const { data } = await concurrencyFilter({
                     'filter_concurrency': now,
                     'preserve': this.preserve / 100,
                     'balance': this.balance / 100
                 });
                 console.log('change concurrency filter with filter concurrency: ' + String(now));
+                this.image = data;
+                this.progress = false;
             },
-        }
+        },
+        created() {
+            this.loading();
+        },
+
     }
 </script>
+
 
 <style scoped>
     .model-view {
         width: 90%;
         position: relative;
-        top: 20px;
+
         display: block;
     }
     .text-center-align{
@@ -466,7 +541,7 @@
     }
     .page-layout{
         position:relative;
-        top:40px;
+        top:20px;
         height:720px;
     }
     .filter-container{
@@ -527,19 +602,28 @@
     }
 
     .adjust-slider-width {
-        width: 90%;
+        width: 80%;
 
     }
 
     .slider-label {
         position: relative;
         top: 10px;
+        width: 16%;
+        padding-left: 2px;
     }
 
     .horizontal-align {
         display: flex;
-        justify-content: space-evenly;
+        justify-content: left;
     }
+
+    .el-tabs__content {
+        overflow-y: scroll;
+        position: relative;
+        height: 300px;
+    }
+
 
 
 </style>
