@@ -1,3 +1,5 @@
+import numpy as np
+
 
 class Configuration:
     def __init__(self, filter_config, metric_configs, attenuation, chunk_size):

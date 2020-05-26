@@ -1,26 +1,29 @@
 from datetime import datetime
 
 import Levenshtein
+import numpy as np
 
 
 class FMLogUtils:
     def __init__(self, log):
         self.log = log
-        self.nodes = list()
+        # self.nodes = list()
+        self.nodes = np.empty(0)
         self.nodes = self.get_nodes()
         self.num_of_nodes = self.get_num_of_nodes()
         self.node_indices = dict()
         self.update_node_index()
 
     def get_num_of_nodes(self):
-        return len(self.nodes)
+        sz = np.size(self.nodes)
+        return sz
 
     def get_nodes(self):
         temp_set = set()
         for trace in self.log:
             for event in trace:
                 temp_set.add(event['concept:name'] + "@" + event['lifecycle:transition'])
-        return list(temp_set)
+        return np.asarray(list(temp_set))
 
 
     """
@@ -72,17 +75,19 @@ def cal_originator_correlation(evt1, evt2):
 
 
 def cal_datatype_correlation(evt1, evt2):
-    ref_data_keys = list()
-    fol_data_keys = list()
+    # ref_data_keys = list()
+    ref_data_keys = np.empty(0)
+    # fol_data_keys = list()
+    fol_data_keys = np.empty(0)
     for key in evt1:
         if not is_standard_key(key):
-            ref_data_keys.append(key)
+            ref_data_keys = np.append(ref_data_keys, key)
 
     for key in evt2:
         if not is_standard_key(key):
-            fol_data_keys.append(key)
+            fol_data_keys = np.append(fol_data_keys, key)
 
-    if (len(ref_data_keys) == 0) or (len(fol_data_keys) == 0):
+    if (np.size(ref_data_keys) == 0) or (np.size(fol_data_keys) == 0):
         return 0
     overlap = 0
     for key1 in ref_data_keys:
@@ -94,17 +99,19 @@ def cal_datatype_correlation(evt1, evt2):
 
 
 def cal_datavalue_correlation(evt1, evt2):
-    ref_data_keys = list()
-    fol_data_keys = list()
+    # ref_data_keys = list()
+    ref_data_keys = np.empty(0)
+    # fol_data_keys = list()
+    fol_data_keys = np.empty(0)
     for key in evt1:
         if not is_standard_key(key):
-            ref_data_keys.append(key)
+            ref_data_keys = np.append(ref_data_keys, key)
 
     for key in evt2:
         if not is_standard_key(key):
-            fol_data_keys.append(key)
+            fol_data_keys = np.append(fol_data_keys, key)
 
-    if (len(ref_data_keys) == 0) or (len(fol_data_keys) == 0):
+    if (np.size(ref_data_keys) == 0) or (np.size(fol_data_keys) == 0):
         return 0
     key_overlap = 0
     val_overlap = 0
@@ -122,7 +129,7 @@ def cal_datavalue_correlation(evt1, evt2):
 
 # To check if values are correct
 def is_valid_matrix1D(lst):
-    for i in range(0, len(lst)):
+    for i in range(0, np.size(lst)):
         if lst[i] > 0.0:
             return True
     return False
@@ -130,8 +137,8 @@ def is_valid_matrix1D(lst):
 
 # To check if values are correct
 def is_valid_matrix2D(lst):
-    for i in range(0, len(lst[0])):
-        for j in range(0, len(lst[0])):
+    for i in range(0, np.size(lst[0])):
+        for j in range(0, np.size(lst[0])):
             if lst[i][j] > 0.0:
                 return True
     return False
@@ -144,9 +151,10 @@ def normalize_matrix1D(lst):
     if max_val == 0:
         return lst
     else:
-        norm_list = list()
+        # norm_list = list()
+        norm_list = np.empty(0)
         for val in lst:
-            norm_list.append(val / max_val)
+            norm_list = np.append(norm_list, (val / max_val))
         return norm_list
 
 
@@ -160,10 +168,11 @@ def normalize_matrix2D(lst):
     if max_val == 0:
         return lst
     else:
-        norm_list = list()
+        # norm_list = list()
+        norm_list = np.empty(0)
         for i in range(0, sz):
-            temp_list = list()
+            temp_list = np.empty(0)
             for j in range(0, sz):
-                temp_list.append(lst[i][j] / max_val)
-            norm_list.append(temp_list)
+                temp_list = np.append(temp_list, (lst[i][j] / max_val))
+            norm_list = np.append(norm_list, temp_list)
         return norm_list

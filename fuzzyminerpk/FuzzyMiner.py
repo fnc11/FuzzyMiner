@@ -1,4 +1,5 @@
 import Levenshtein
+import numpy as np
 
 from fuzzyminerpk.ClusterUtil import ClusterUtil
 from fuzzyminerpk.FMRepository import DataRepository, FilteredDataRepository
