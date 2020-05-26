@@ -1,11 +1,11 @@
 <template>
-    <div class="page-layout">
+    <div class="page-layout" style="overflow: hidden">
         <el-row :gutter="10">
             <el-col :span="16" align="middle">
                 <div class="model-view">
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
-                        <img :src="image" alt="" />
+                        <img :src="image" alt=""/>
                     </div>
                     <el-button type="primary" plain class="button-position">Save Snapshot</el-button>
                 </div>
@@ -15,7 +15,7 @@
                     <h3 class="text-center-align">Configurations</h3>
                     <el-row :gutter="10" class="el-tabs--border-card filter-container">
                         <el-col :span="8" class="grid-content-configuration el-table--border">
-                            <h4 class="text-center-align">Node Filter</h4>
+                            <h4>Node Filter</h4>
                               <el-divider></el-divider>
                             <div class="slider-adjustment1 text-center-align">
                             <label>Significance Cutoff</label>
@@ -49,25 +49,28 @@
                             </div>
                         </el-col>
                         <el-col :span="8" class="grid-content-configuration el-table--border">
-                            <div class="">
-                            <h4 class="text-center-align">Concurrency Filter</h4>
-                                  <el-divider></el-divider>
-                            <el-checkbox v-model="concurrency"><label>Filter Concurrency</label></el-checkbox>
-                                <el-row :gutter="20" class="slider-adjustment3">
-                                    <el-col :span="10" align="middle">
-                                        <label>Preserve</label>
-                                        <el-slider vertical v-model="preserve" height="280px" :disabled="!concurrency" :format-tooltip="slider_format"
-                                                   @change="preserveChanged"/>
-                                        <label>{{ preserve / 100 }}</label>
-                                    </el-col>
-                                    <el-col :span="10" align="middle">
-                                        <label>Balance</label>
-                                        <el-slider vertical v-model="balance" height="280px" :disabled="!concurrency" :format-tooltip="slider_format" @change="balanceChanged"/>
-                                        <label>{{ balance / 100 }}</label>
-                                    </el-col>
 
-                                </el-row>
-                        </div>
+                            <h4 class="text-center-align">Concurrency Filter</h4>
+                            <el-divider></el-divider>
+                            <el-checkbox v-model="concurrency"><label style="color: black">Filter Concurrency</label>
+                            </el-checkbox>
+                            <el-row :gutter="20" type="flex" justify="center" class="text-center-align">
+                                <el-col :span="10">
+                                    <label>Preserve</label>
+                                    <el-slider vertical v-model="preserve" height="280px" :disabled="!concurrency"
+                                               :format-tooltip="slider_format"
+                                               @change="preserveChanged"/>
+                                    <label>{{ preserve / 100 }}</label>
+                                </el-col>
+                                <el-col :span="10">
+                                    <label>Balance</label>
+                                    <el-slider vertical v-model="balance" height="280px" :disabled="!concurrency"
+                                               :format-tooltip="slider_format" @change="balanceChanged"/>
+                                    <label>{{ balance / 100 }}</label>
+                                </el-col>
+
+                            </el-row>
+
                         </el-col>
                     </el-row>
                     <div class="text-center-align metrics">
@@ -81,22 +84,12 @@
         <el-dialog
                 title="Configure"
                 :visible.sync="dialog"
-                width="40%" style="font-family: Arial, Helvetica, sans-serif">
+                append-to-body="false"
+                width="40%" style="font-family: Arial, Helvetica, sans-serif;">
             <div>
                 <el-tabs type="border-card">
-                    <el-tab-pane label="Metrics">
+                    <el-tab-pane label="Metrics" class="el-tabs__content">
                         <el-cascader v-model="selectedType" :options="selectTypes"></el-cascader>
-
-                        <!-- <span class="el-dropdown-link" >
-                             Select Metrics<i class="el-icon-arrow-down el-icon--left"></i>
-                         </span>
-                         <el-dropdown-menu slot="dropdown">
-                             <el-dropdown-item command="unary">Unary Metrics</el-dropdown-item>
-                             <el-dropdown-item command="binarySignificance" divided>Binary Significance</el-dropdown-item>
-                             <el-dropdown-item command="binaryCorrelation" divided>Binary Correlation</el-dropdown-item>
-                         </el-dropdown-menu>
-
-                   <span>{{ " Metrics Selected : " + typeLabels[selectedType] }}</span>-->
                         <div v-if="selectedType[0] === 'unary'">
                             <div v-for="(value, key, index) in metricsConfig.metrics.unary" :key="index">
                                 <el-divider></el-divider>
@@ -115,6 +108,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div v-else-if="selectedType[0] === 'binarySignificance'">
                             <div v-for="(value, key, index) in metricsConfig.metrics.binarySignificance"
                                  :key="index">
@@ -135,7 +129,8 @@
                             </div>
                         </div>
                         <div v-else>
-                            <div v-for="(value, key, index) in metricsConfig.metrics.binaryCorrelation" :key="index">
+                            <div v-for="(value, key, index) in metricsConfig.metrics.binaryCorrelation"
+                                 :key="index">
                                 <el-divider></el-divider>
                                 <h4>{{ value.label }}</h4>
                                 <div style="display: flex">
@@ -165,8 +160,11 @@
                                 <br>
                                 <el-radio :label="2">N(th) root with radical</el-radio>
                             </el-radio-group>
-                            <el-slider v-model="metricsConfig.attenuation.radical" :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4" step="0.01" />
+                            <el-slider v-model="metricsConfig.attenuation.radical"
+                                       :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4"
+                                       step="0.01"/>
                         </div>
+
                     </el-tab-pane>
                 </el-tabs>
             </div>
@@ -450,7 +448,7 @@
                 this.dialog = false;
             },
             async loading() {
-                this.progressing();
+                //this.progressing();
                 const path = this.$route.params.path;
                 const { data } = await generate({path: path});
                 this.progress = false;
@@ -530,6 +528,7 @@
 
     }
 </script>
+
 
 <style scoped>
     .model-view {
@@ -617,6 +616,12 @@
     .horizontal-align {
         display: flex;
         justify-content: space-evenly;
+    }
+
+    .el-tabs__content {
+        overflow-y: scroll;
+        position: relative;
+        height: 300px;
     }
 
 
