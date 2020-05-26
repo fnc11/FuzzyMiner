@@ -24,6 +24,7 @@ class ClusterUtil:
         self.merge_clusters()
         self.remove_isolated_cluster()
         self.remove_singular_cluster()
+        self.finalize_fm_clusters()
         self.finalize_fm_nodes()
         self.finalize_fm_edges()
 
@@ -311,7 +312,7 @@ class ClusterUtil:
         sz = self.fm_log_util.get_num_of_nodes()
         for i in range(0, sz):
             if self.node_cluster_mapping[i] != -1:
-                self.fm_nodes.append(FMNode(i, self.fm_log_util.nodes[i]))
+                self.fm_nodes.append(FMNode(i, self.fm_log_util.nodes[i], self.data_repository.unary_weighted_values[i]))
 
     """
     Creates an edge dictionary of FMEdges for both FMNodes and FMClusters.
@@ -382,3 +383,9 @@ class ClusterUtil:
     def populate_fm_edges_from_dict(self):
         for key, value in self.fm_edges_dict.items():
             self.fm_edges.append(value)
+
+    def finalize_fm_clusters(self):
+        for cluster in self.fm_clusters:
+            primitive_indices = cluster.get_primitives()
+            primitive_significances = [self.data_repository.unary_weighted_values[idx] for idx in primitive_indices]
+            cluster.significance = sum(primitive_significances)/len(primitive_significances)
