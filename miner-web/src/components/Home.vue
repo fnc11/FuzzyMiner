@@ -17,7 +17,7 @@
                             :on-success="uploadSuccess"
                             :on-error="uploadError">
                         <el-button type="primary" class="button-primary">Upload Logs</el-button>
-                        <div slot="tip" class="el-upload__tip">Accepted file format is .xes.</div>
+                        <div slot="tip" class="el-upload__tip" style="color: slategrey">Accepted file format is .xes.</div>
                     </el-upload>
                 </el-col>
                 <el-col :span="2.5">

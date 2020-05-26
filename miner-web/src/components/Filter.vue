@@ -31,13 +31,13 @@
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
-                            <el-row :gutter="2" class="slider-adjustment2">
-                                <el-col :span="14" align="middle">
+                            <el-row :gutter="2" class="slider-adjustment2" type="flex" align="middle">
+                                <el-col :span="14">
                                     <label>S/C Ratio</label>
                                     <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="scChanged"/>
                                     <label>{{ sc / 100 }}</label>
                                 </el-col>
-                                <el-col :span="4" align="middle">
+                                <el-col :span="4">
                                     <label>Cutoff</label>
                                     <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="cutoffChanged"/>
                                     <label>{{ cutoff / 100 }}</label>
@@ -54,7 +54,7 @@
                             <el-divider></el-divider>
                             <el-checkbox v-model="concurrency"><label style="color: black">Filter Concurrency</label>
                             </el-checkbox>
-                            <el-row :gutter="20" type="flex" justify="center" class="text-center-align">
+                            <el-row :gutter="20" type="flex" justify="center" class="text-center-align slider-adjustment3">
                                 <el-col :span="10">
                                     <label>Preserve</label>
                                     <el-slider vertical v-model="preserve" height="280px" :disabled="!concurrency"
@@ -533,7 +533,7 @@
     .model-view {
         width: 90%;
         position: relative;
-        top: 20px;
+
         display: block;
     }
     .text-center-align{
