@@ -59,7 +59,7 @@ def launch_filter(log_file_path):
     log = xes_import_factory.apply(log_file_path)
     default_fuzzy_config = get_default_configuration()
     graph = Graph(log)
-    graph.apply_config(default_fuzzy_config)
+    message_ret = graph.apply_config(default_fuzzy_config)
     variants_count = case_statistics.get_variant_statistics(log)
     variants_count = sorted(variants_count, key=lambda x: x['count'], reverse=True)
     return graph.data_repository.unary_weighted_values

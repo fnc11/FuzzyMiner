@@ -33,3 +33,10 @@ class FMCluster(FMNode):
 
     def __str__(self):
         return self.label+" index: "+str(self.index)+" mean significance: "+str(self.significance)+" has primitives: "+str(self.get_primitives())
+
+
+class FMMessage:
+    def __init__(self):
+        self.message_type = 0
+        self.message_desc = "Graph generated successfully"
+        self.graph_path = None
