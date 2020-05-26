@@ -1,11 +1,12 @@
 class FMNode:
-    def __init__(self, index, label, type="primitive"):
+    def __init__(self, index, label, significance, node_type="primitive"):
         self.index = index
-        self.label = label + str(index)
-        self.type = type
+        self.label = label
+        self.significance = significance
+        self.node_type = node_type
 
     def __str__(self):
-        return self.label+" and type: "+self.type
+        return self.label+" index: "+str(self.index)+" significance: "+str(self.significance)+" and type: "+self.node_type
 
 
 class FMEdge:
@@ -21,9 +22,7 @@ class FMEdge:
 
 class FMCluster(FMNode):
     def __init__(self, index):
-        super().__init__(index, "", "cluster")
-        self.label = "cluster" + str(index)
-        # this list stores indices of primitive nodes
+        super().__init__(index, "Cluster", 1.0, "cluster")
         self.primitives = list()
 
     def add_node(self, node_index):
@@ -33,4 +32,4 @@ class FMCluster(FMNode):
         return self.primitives
 
     def __str__(self):
-        return self.label+" has primitives: "+str(self.get_primitives())
+        return self.label+" index: "+str(self.index)+" mean significance: "+str(self.significance)+" has primitives: "+str(self.get_primitives())
