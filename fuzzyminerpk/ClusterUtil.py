@@ -322,7 +322,7 @@ class ClusterUtil:
         for i in range(0, sz):
             if self.node_cluster_mapping[i] != -1:
                 for j in range(0, sz):
-                    if self.node_cluster_mapping[j] != -1:
+                    if self.node_cluster_mapping[j] != -1 and not (self.node_cluster_mapping[i] == self.node_cluster_mapping[j]):
                         mapped_i = self.node_cluster_mapping[i]
                         mapped_j = self.node_cluster_mapping[j]
                         significance = self.filtered_data_repository.node_filter_resultant_binary_values[i][j]
