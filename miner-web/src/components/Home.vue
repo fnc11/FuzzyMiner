@@ -69,7 +69,8 @@
                 fileList: [],
                 path: '',
                 progress: false,
-                percentage: 0
+                percentage: 0,
+
             }
         },
         methods: {
@@ -104,6 +105,8 @@
                     type: 'success',
                     duration: 3000,
                     showClose: true
+
+
                 });
                 this.fileList.splice(0, this.fileList.length);
                 this.fileList.push(file.name);
@@ -164,8 +167,8 @@
 
     .file-list {
         text-align: center;
-        position: inherit;
-        bottom: 5vh;
+        position: relative;
+        top:20px;
     }
 
     .wrapper {
