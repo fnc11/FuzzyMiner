@@ -4,7 +4,7 @@
             <div class="text-center-align header-text">Do you want to know how to use our product?</div>
             <br>
             <iframe width="540" height="400"
-                    src="https://www.youtube.com/embed/tgbNymZ7vqY?controls=1c">
+                    src="https://www.youtube.com/embed/PVhmK-Gc8oE?controls=1c">
             </iframe>
         </div>
         <el-collapse accordion>
