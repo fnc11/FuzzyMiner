@@ -643,12 +643,15 @@
 
     h5 {
         font-weight: lighter;
-        color: darkorange;
+        color: #2f70cd
     }
 
     [class*="el-checkbox"] {
         padding-left: 0;
 
+    }
+    h3{
+        color: darkorange;
     }
 
 </style>
