@@ -562,7 +562,7 @@
     }
 
     .filter-container {
-        height: 64vh;
+        height: 70vh;
         border-color: #f0f0f0;
 
     }
@@ -579,7 +579,7 @@
     }
 
     .process-graph-view {
-        height: 65vh;
+        height: 70vh;
         border-color: #dcdfe6;
         overflow: scroll;
     }
@@ -595,7 +595,7 @@
 
     .slider-adjustment1 {
         position: relative;
-        top: 13%;
+        top: 12.5%;
     }
 
     .slider-adjustment2 {
@@ -643,7 +643,7 @@
 
     h5 {
         font-weight: lighter;
-        color: #2f70cd
+        color: coral
     }
 
     [class*="el-checkbox"] {
