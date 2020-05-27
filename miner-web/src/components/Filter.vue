@@ -7,7 +7,9 @@
                     <div class="el-tabs--border-card grid-content process-graph-view">
                         <img :src="image" alt=""/>
                     </div>
-                    <el-button type="primary" plain class="button-position">Save Snapshot</el-button>
+                    <el-button type="primary" plain class="button-position" v-model="image" @click="downloadImage">Save
+                        Snapshot
+                    </el-button>
                 </div>
             </el-col>
             <el-col :xl="8" :lg="8" :md="12" :sm="10" :xs="10">
@@ -195,6 +197,7 @@
 <script>
     import {generate} from "@/api/home";
     import {concurrencyFilter, edgeFilter, metrics, nodeFilter} from '@/api/filter';
+    import Axios from "axios";
 
     export default {
         name: "Filter",
@@ -297,8 +300,8 @@
                     value: 'binarySignificance',
                     label: 'Binary Metrics'
                 }, {
-                        value: 'binaryCorrelation',
-                        label: 'Binary Correlation'
+                    value: 'binaryCorrelation',
+                    label: 'Binary Correlation'
                 }]
             }
         },
@@ -317,7 +320,7 @@
             },
             async nodeChanged(value) {
                 this.progressing();
-                const { data } = await nodeFilter({
+                const {data} = await nodeFilter({
                     'cutoff': value / 100
                 });
                 console.log('change node filter with cutoff: ' + String(value / 100));
@@ -326,7 +329,7 @@
             },
             async scChanged(value) {
                 this.progressing();
-                const { data } = await edgeFilter({
+                const {data} = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': value / 100,
                     'cutoff': this.cutoff / 100,
@@ -339,7 +342,7 @@
             },
             async cutoffChanged(value) {
                 this.progressing();
-                const { data } = await edgeFilter({
+                const {data} = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': value / 100,
@@ -352,7 +355,7 @@
             },
             async preserveChanged(value) {
                 this.progressing();
-                const { data } = await concurrencyFilter({
+                const {data} = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': value / 100,
                     'balance': this.balance / 100
@@ -363,7 +366,7 @@
             },
             async balanceChanged(value) {
                 this.progressing();
-                const { data } = await concurrencyFilter({
+                const {data} = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': this.preserve / 100,
                     'balance': value / 100
@@ -442,10 +445,10 @@
                     req.attenuation.selected = 'Linear Attenuation';
                 } else {
                     req.attenuation.selected = 'N root with radical';
-                    req.attenuation.radical = this.radical/100;
+                    req.attenuation.radical = this.radical / 100;
                 }
                 this.progressing();
-                const { data } = await metrics(req);
+                const {data} = await metrics(req);
                 this.image = data;
                 this.dialog = false;
                 this.progress = false;
@@ -462,16 +465,43 @@
                 if (data.message_type === 0)
                     this.image = data.graph_path;
                 console.log(data);
+            },
+            forceFileDownload(response) {
+                const url = window.URL.createObjectURL(new Blob([response.data]))
+                const link = document.createElement('a')
+                link.href = url
+                link.setAttribute('download', 'file.png') //or any other extension
+                document.body.appendChild(link)
+                link.click()
+            },
+
+
+            downloadImage() {
+                console.log("Download Image")
+                Axios({
+                    url: this.image,
+                    method: 'GET',
+                    responseType: 'blob',
+                }).then((response) => {
+                    var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+                    var fileLink = document.createElement('a');
+
+                    fileLink.href = fileURL;
+                    fileLink.setAttribute('download', 'graph.png');
+                    document.body.appendChild(fileLink);
+
+                    fileLink.click();
+                });
             }
         },
         watch: {
-            edge: async function(now, old) {
+            edge: async function (now, old) {
                 this.progressing();
                 let resp;
                 if (now === old)
                     return;
                 if (now === 1) {
-                    resp =await edgeFilter({
+                    resp = await edgeFilter({
                         'edge_transformer': 'Best Edges'
                     });
                 } else {
@@ -491,7 +521,7 @@
                 this.progressing();
                 if (now === old)
                     return;
-                const { data } = await edgeFilter({
+                const {data} = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
@@ -502,11 +532,11 @@
                 this.image = data;
                 this.progress = false;
             },
-            absolute: async function(now, old) {
+            absolute: async function (now, old) {
                 this.progressing();
                 if (now === old)
                     return;
-                const { data } = await edgeFilter({
+                const {data} = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
@@ -521,7 +551,7 @@
                 this.progressing();
                 if (now === old)
                     return;
-                const { data } = await concurrencyFilter({
+                const {data} = await concurrencyFilter({
                     'filter_concurrency': now,
                     'preserve': this.preserve / 100,
                     'balance': this.balance / 100
@@ -534,6 +564,7 @@
         created() {
             this.loading();
         },
+
 
     }
 </script>
@@ -597,7 +628,7 @@
 
     .slider-adjustment1 {
         position: relative;
-        top: 12.5%;
+        top: 13%;
     }
 
     .slider-adjustment2 {
@@ -645,7 +676,7 @@
 
     h5 {
         font-weight: lighter;
-        color: coral
+        color: coral;
     }
 
     [class*="el-checkbox"] {
