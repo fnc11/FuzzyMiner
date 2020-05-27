@@ -1,3 +1,5 @@
+import numpy as np
+
 class FMNode:
     def __init__(self, index, label, significance, node_type="primitive"):
         self.index = index
@@ -23,10 +25,10 @@ class FMEdge:
 class FMCluster(FMNode):
     def __init__(self, index):
         super().__init__(index, "Cluster", 1.0, "cluster")
-        self.primitives = list()
+        self.primitives = np.empty(0)
 
     def add_node(self, node_index):
-        self.primitives.append(node_index)
+        self.primitives = np.append(self.primitives, node_index)
 
     def get_primitives(self):
         return self.primitives

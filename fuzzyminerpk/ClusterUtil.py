@@ -1,4 +1,5 @@
 from fuzzyminerpk.FMStructure import FMCluster, FMEdge, FMNode
+import numpy as np
 
 
 class ClusterUtil:
@@ -6,7 +7,7 @@ class ClusterUtil:
         self.fm_log_util = None
         self.data_repository = None
         self.filtered_data_repository = None
-        self.node_cluster_mapping = list()
+        self.node_cluster_mapping = np.empty(0)
         self.cluster_dict = dict()
         self.fm_edges_dict = dict()
         self.fm_clusters = list()
@@ -35,8 +36,8 @@ class ClusterUtil:
         self.node_cluster_mapping = [i for i in range(0, self.fm_log_util.get_num_of_nodes())]
         self.cluster_dict.clear()
         self.fm_edges_dict.clear()
-        self.fm_clusters.clear()
-        self.fm_nodes.clear()
+        self.fm_clusters = np.delete(self.fm_clusters)
+        self.fm_nodes = np.delete(self.fm_nodes)
 
     """
     Initializes victim nodes into clusters
@@ -46,7 +47,7 @@ class ClusterUtil:
         victims = self.get_victims(cut_off)
         sz = self.fm_log_util.get_num_of_nodes()
         cluster_idx = sz + 1
-        for i in range(0, len(victims)):
+        for i in range(0, np.size(victims)):
             if victims[i] == -1:
                 continue
             neighbor = self.get_most_correlated(victims[i])
@@ -65,7 +66,8 @@ class ClusterUtil:
                 if neighbor in victims:
                     cluster.add_node(neighbor)
                     self.node_cluster_mapping[neighbor] = cluster_idx
-                    victims[victims.index(neighbor)] = -1
+                    tmpidx = np.argwhere(neighbor)
+                    victims[tmpidx] = -1
                 cluster_idx += 1
                 # Do we really need fm_clusters list
                 self.fm_clusters.append(cluster)
@@ -76,10 +78,10 @@ class ClusterUtil:
     """
     def get_victims(self, cut_off):
         sz = self.fm_log_util.get_num_of_nodes()
-        victims = list()
+        victims = np.empty(0)
         for i in range(0, sz):
             if self.data_repository.unary_weighted_values[i] < cut_off:
-                victims.append(i)
+                victims = np.append(victims, i)
         return victims
 
     """

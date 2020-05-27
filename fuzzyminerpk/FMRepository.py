@@ -1,5 +1,6 @@
 from fuzzyminerpk.ClusterUtil import ClusterUtil
 from fuzzyminerpk.Utility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, cal_datavalue_correlation, cal_proximity_correlation
+import numpy as np
 
 
 class DataRepository:
@@ -12,52 +13,84 @@ class DataRepository:
         self.node_indices = self.fm_log_util.node_indices
 
         # declare lists to store data
-        self.unary_node_frequency_values = list()
-        self.unary_node_frequency_normalized_values = list()
+        # self.unary_node_frequency_values = list()
+        self.unary_node_frequency_values = np.empty(0)
+        # self.unary_node_frequency_normalized_values = list()
+        self.unary_node_frequency_normalized_values = np.empty(0)
 
-        self.binary_edge_frequency_values = list()
-        self.binary_edge_frequency_divisors = list()
-        self.binary_edge_frequency_normalized_values = list()
+        # self.binary_edge_frequency_values = list()
+        self.binary_edge_frequency_values = np.empty(0)
+        # self.binary_edge_frequency_divisors = list()
+        self.binary_edge_frequency_divisors = np.empty(0)
+        # self.binary_edge_frequency_normalized_values = list()
+        self.binary_edge_frequency_normalized_values = np.empty(0)
 
-        self.binary_corr_proximity_values = list()
-        self.binary_corr_proximity_divisors = list()
-        self.binary_corr_proximity_normalized_values = list()
+        # self.binary_corr_proximity_values = list()
+        self.binary_corr_proximity_values = np.empty(0)
+        # self.binary_corr_proximity_divisors = list()
+        self.binary_corr_proximity_divisors = np.empty(0)
+        # self.binary_corr_proximity_normalized_values = list()
+        self.binary_corr_proximity_normalized_values = np.empty(0)
 
-        self.binary_corr_endpoint_values = list()
-        self.binary_corr_endpoint_divisors = list()
-        self.binary_corr_endpoint_normalized_values = list()
+        # self.binary_corr_endpoint_values = list()
+        self.binary_corr_endpoint_values = np.empty(0)
+        # self.binary_corr_endpoint_divisors = list()
+        self.binary_corr_endpoint_divisors = np.empty(0)
+        # self.binary_corr_endpoint_normalized_values = list()
+        self.binary_corr_endpoint_normalized_values = np.empty(0)
 
-        self.binary_corr_originator_values = list()
-        self.binary_corr_originator_divisors = list()
-        self.binary_corr_originator_normalized_values = list()
+        # self.binary_corr_originator_values = list()
+        self.binary_corr_originator_values = np.empty(0)
+        # self.binary_corr_originator_divisors = list()
+        self.binary_corr_originator_divisors = np.empty(0)
+        # self.binary_corr_originator_normalized_values = list()
+        self.binary_corr_originator_normalized_values = np.empty(0)
 
-        self.binary_corr_datatype_values = list()
-        self.binary_corr_datatype_divisors = list()
-        self.binary_corr_datatype_normalized_values = list()
+        # self.binary_corr_datatype_values = list()
+        self.binary_corr_datatype_values = np.empty(0)
+        # self.binary_corr_datatype_divisors = list()
+        self.binary_corr_datatype_divisors = np.empty(0)
+        # self.binary_corr_datatype_normalized_values = list()
+        self.binary_corr_datatype_normalized_values = np.empty(0)
 
-        self.binary_corr_datavalue_values = list()
-        self.binary_corr_datavalue_divisors = list()
-        self.binary_corr_datavalue_normalized_values = list()
+        # self.binary_corr_datavalue_values = list()
+        self.binary_corr_datavalue_values = np.empty(0)
+        # self.binary_corr_datavalue_divisors = list()
+        self.binary_corr_datavalue_divisors = np.empty(0)
+        # self.binary_corr_datavalue_normalized_values = list()
+        self.binary_corr_datavalue_normalized_values = np.empty(0)
 
         ###########Aggregate(simple sum)########
         # unary aggregate computation - used frequency significance, will be used in cal distance
-        self.unary_simple_aggregate_normalized_values = list()
+        # self.unary_simple_aggregate_normalized_values = list()
+        self.unary_simple_aggregate_normalized_values = np.empty(0)
         # binary aggregate computation - used frequency significance, will be used in cal routing_significance and distance
-        self.binary_simple_aggregate_normalized_values = list()
+        # self.binary_simple_aggregate_normalized_values = list()
+        self.binary_simple_aggregate_normalized_values = np.empty(0)
         # binary aggregate multiple computation - used all binary corr metrics, will be used in cal routing_significance
-        self.binary_simple_multi_aggregate_normalized_values = list()
+        # self.binary_simple_multi_aggregate_normalized_values = list()
+        self.binary_simple_multi_aggregate_normalized_values = np.empty(0)
 
         ###########Derivative metrices######
-        self.unary_derivative_routing_values = list()
-        self.unary_derivative_routing_normalized_values = list()
+        # self.unary_derivative_routing_values = list()
+        self.unary_derivative_routing_values = np.empty(0)
+        # self.unary_derivative_routing_normalized_values = list()
+        self.unary_derivative_routing_normalized_values = np.empty(0)
 
-        self.binary_derivative_distance_values = list()
-        self.binary_derivative_distance_divisors = list()
+        # self.binary_derivative_distance_values = list()
+        self.binary_derivative_distance_values = np.empty(0)
+        # self.binary_derivative_distance_divisors = list()
+        self.binary_derivative_distance_divisors = np.empty(0)
+        # self.unary_derivative_distance_normalized_values = list()
+        self.binary_derivative_distance_normalized_values = np.empty(0)
 
         ###########Weighted metrics######
-        self.unary_weighted_values = list()
-        self.binary_weighted_values = list()
-        self.binary_corr_weighted_values = list()
+        # self.unary_weighted_values = list()
+        self.unary_weighted_values = np.empty(0)
+        # self.binary_weighted_values = list()
+        self.binary_weighted_values = np.empty(0)
+        # self.binary_corr_weighted_values = list()
+        self.binary_corr_weighted_values = np.empty(0)
 
         # dictionary to save weights, invert, include
         self.metric_settings = dict()
@@ -68,72 +101,104 @@ class DataRepository:
     """
 
     def init_lists(self):
-        self.unary_node_frequency_values = [0 for x in range(self.num_of_nodes)]
-        self.unary_node_frequency_normalized_values = [0 for x in range(self.num_of_nodes)]
+        # self.unary_node_frequency_values = [0 for x in range(self.num_of_nodes)]
+        # self.unary_node_frequency_normalized_values = [0 for x in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            self.unary_node_frequency_values = np.zeros(x)
+            self.unary_node_frequency_normalized_values = np.zeros(x)
 
-        self.binary_edge_frequency_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_edge_frequency_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
-                                               range(self.num_of_nodes)]
-        self.binary_edge_frequency_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                        range(self.num_of_nodes)]
+        # self.binary_edge_frequency_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_edge_frequency_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_edge_frequency_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
 
-        self.binary_corr_proximity_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_proximity_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
-                                               range(self.num_of_nodes)]
-        self.binary_corr_proximity_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                        range(self.num_of_nodes)]
+        # self.binary_corr_proximity_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_proximity_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_proximity_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
 
-        self.binary_corr_endpoint_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_endpoint_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
-                                              range(self.num_of_nodes)]
-        self.binary_corr_endpoint_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                       range(self.num_of_nodes)]
+        # self.binary_corr_endpoint_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_endpoint_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_endpoint_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
 
-        self.binary_corr_originator_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_originator_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
-                                                range(self.num_of_nodes)]
-        self.binary_corr_originator_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                         range(self.num_of_nodes)]
+        # self.binary_corr_originator_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_originator_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_originator_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
 
-        self.binary_corr_datatype_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_datatype_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
-                                              range(self.num_of_nodes)]
-        self.binary_corr_datatype_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                       range(self.num_of_nodes)]
+        # self.binary_corr_datatype_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_datatype_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_datatype_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
 
-        self.binary_corr_datavalue_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_datavalue_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
-                                               range(self.num_of_nodes)]
-        self.binary_corr_datavalue_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                        range(self.num_of_nodes)]
+        # self.binary_corr_datavalue_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_datavalue_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        # self.binary_corr_datavalue_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+
+        for x in range(self.num_of_nodes):
+            for y in range(self.num_of_nodes):
+                self.binary_edge_frequency_values = np.zeros((x, y), float)
+                self.binary_edge_frequency_divisors = np.ones((x, y), float)
+                self.binary_edge_frequency_normalized_values = np.zeros((x, y), float)
+                self.binary_corr_proximity_values = np.zeros((x, y), float)
+                self.binary_corr_proximity_divisors = np.ones((x, y), float)
+                self.binary_corr_proximity_normalized_values = np.zeros((x, y), float)
+                self.binary_corr_endpoint_values = np.zeros((x, y), float)
+                self.binary_corr_endpoint_divisors = np.ones((x, y), float)
+                self.binary_corr_endpoint_normalized_values = np.zeros((x, y), float)
+                self.binary_corr_originator_values = np.zeros((x, y), float)
+                self.binary_corr_originator_divisors = np.ones((x, y), float)
+                self.binary_corr_originator_normalized_values = np.zeros((x, y), float)
+                self.binary_corr_datatype_values = np.zeros((x, y), float)
+                self.binary_corr_datatype_divisors = np.ones((x, y), float)
+                self.binary_corr_datatype_normalized_values = np.zeros((x, y), float)
+                self.binary_corr_datavalue_values = np.zeros((x, y), float)
+                self.binary_corr_datavalue_divisors = np.ones((x, y), float)
+                self.binary_corr_datavalue_normalized_values = np.zeros((x, y), float)
 
         ###########Aggregate(simple sum)########
         # unary aggregate computation - used frequency significance, will be used in cal distance
-        self.unary_simple_aggregate_normalized_values = [0.0 for x in range(self.num_of_nodes)]
+        # self.unary_simple_aggregate_normalized_values = [0.0 for x in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            self.unary_simple_aggregate_normalized_values = np.zeros(x, float)
 
         # binary aggregate computation - used frequency significance, will be used in cal routing_significance and distance
-        self.binary_simple_aggregate_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                          range(self.num_of_nodes)]
+        # self.binary_simple_aggregate_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            for y in range(self.num_of_nodes):
+                self.binary_simple_aggregate_normalized_values = np.zeros((x, y), float)
 
         # binary aggregate multiple computation - used all binary corr metrics, will be used in cal routing_significance
-        self.binary_simple_multi_aggregate_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                                range(self.num_of_nodes)]
+        # self.binary_simple_multi_aggregate_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            for y in range(self.num_of_nodes):
+                self.binary_simple_aggregate_normalized_values = np.zeros((x, y), float)
 
         ###########Derivative metrices######
-        self.unary_derivative_routing_values = [0 for x in range(self.num_of_nodes)]
-        self.unary_derivative_routing_normalized_values = [0 for x in range(self.num_of_nodes)]
+        # self.unary_derivative_routing_values = [0 for x in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            self.unary_derivative_routing_values = np.zeros(x)
+        # self.unary_derivative_routing_normalized_values = [0 for x in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            self.unary_derivative_routing_normalized_values = np.zeros(x)
 
-        self.binary_derivative_distance_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                                  range(self.num_of_nodes)]
-        self.binary_derivative_distance_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                             range(self.num_of_nodes)]
+        # self.binary_derivative_distance_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            for y in range(self.num_of_nodes):
+                self.binary_derivative_distance_values = np.zeros((x, y))
+        # self.binary_derivative_distance_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            for y in range(self.num_of_nodes):
+                self.binary_derivative_distance_normalized_values = np.zeros((x, y), float)
 
         ########Weighted lists###########
-        self.unary_weighted_values = [0 for x in range(self.num_of_nodes)]
-        self.binary_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                       range(self.num_of_nodes)]
-        self.binary_corr_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                            range(self.num_of_nodes)]
+        # self.unary_weighted_values = [0 for x in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            self.unary_weighted_values = np.zeros(x)
+        # self.binary_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            for y in range(self.num_of_nodes):
+                self.binary_weighted_values = np.zeros((x, y))
+        # self.binary_corr_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        for x in range(self.num_of_nodes):
+            for y in range(self.num_of_nodes):
+                self.binary_corr_weighted_values = np.zeros((x, y))
 
     """
     This method extract metric config settings like include, invert and weight, and then stores them
@@ -152,23 +217,28 @@ class DataRepository:
     def extract_primary_metrics(self):
         max_look_back = self.config.chunk_size
         for trace in self.log:
-            look_back = list()
-            look_back_indices = list()
+            look_back = np.empty(0)
+            look_back_indices = np.empty(0)
             for event in trace:
                 follower_event = event
                 follower_index = self.node_indices[
                     follower_event['concept:name'] + "@" + follower_event['lifecycle:transition']]
-                look_back.insert(0, follower_event)
-                look_back_indices.insert(0, follower_index)
+                # look_back.insert(0, follower_event)
+                look_back = np.insert(arr=look_back, obj=event, values=follower_event, axis=0)
+                # look_back_indices.insert(0, follower_index)
+                look_back_indices = np.insert(arr=look_back_indices, obj=event, values=follower_index, axis=0)
                 # check to remove extra elements from the list
                 # check for out of index error
-                if len(look_back) > max_look_back + 1:
-                    look_back.pop(max_look_back + 1)
-                    look_back_indices.pop(max_look_back + 1)
+                if np.size(look_back) > max_look_back + 1:
+                    # look_back.pop(max_look_back + 1)
+                    # look_back_indices.pop(max_look_back + 1)
+                    look_back = np.delete(look_back, (max_look_back + 1))
+                    look_back_indices = np.delete(look_back_indices, (max_look_back + 1))
+
                 # Calculating unary frequency values for the nodes
                 self.unary_node_frequency_values[follower_index] += 1
                 # Iterating over multi-step relations
-                for k in range(1, len(look_back)):
+                for k in range(1, np.size(look_back)):
                     ref_event = look_back[k]
                     ref_index = look_back_indices[k]
 
@@ -180,27 +250,28 @@ class DataRepository:
 
                     # 2 Proximity calculation
                     self.binary_corr_proximity_values[ref_index][follower_index] += cal_proximity_correlation(ref_event,
-                                                                                                  follower_event) * att_factor
+                                                                                                              follower_event) * att_factor
                     self.binary_corr_proximity_divisors[ref_index][follower_index] += att_factor
 
                     # 3 End Point calculation
                     self.binary_corr_endpoint_values[ref_index][follower_index] += cal_endpoint_correlation(ref_event,
-                                                                                                follower_event) * att_factor
+                                                                                                            follower_event) * att_factor
                     self.binary_corr_endpoint_divisors[ref_index][follower_index] += att_factor
 
                     # 4 Originator calculation
-                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(ref_event,
-                                                                                                    follower_event) * att_factor
+                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(
+                        ref_event,
+                        follower_event) * att_factor
                     self.binary_corr_originator_divisors[ref_index][follower_index] += att_factor
 
                     # 5 DataType calculation
                     self.binary_corr_datatype_values[ref_index][follower_index] += cal_datatype_correlation(ref_event,
-                                                                                                follower_event) * att_factor
+                                                                                                            follower_event) * att_factor
                     self.binary_corr_datatype_divisors[ref_index][follower_index] += att_factor
 
                     # 6 DataValue calculation
                     self.binary_corr_datavalue_values[ref_index][follower_index] += cal_datavalue_correlation(ref_event,
-                                                                                                  follower_event) * att_factor
+                                                                                                              follower_event) * att_factor
                     self.binary_corr_datavalue_divisors[ref_index][follower_index] += att_factor
 
     """
@@ -241,12 +312,12 @@ class DataRepository:
         if is_valid_matrix1D(self.unary_node_frequency_values):
             ##Caution for this zero value
             temp_max = 0
-            for i in range(0, len(self.unary_node_frequency_values)):
+            for i in range(0, np.size(self.unary_node_frequency_values)):
                 self.unary_simple_aggregate_normalized_values[i] = self.unary_node_frequency_values[i]
                 if self.unary_node_frequency_values[i] > temp_max:
                     temp_max = self.unary_node_frequency_values[i]
             if temp_max > 0:
-                for i in range(0, len(self.unary_node_frequency_values)):
+                for i in range(0, np.size(self.unary_node_frequency_values)):
                     # Note: Could also fill normalized list self.binary_edge_frequency_normalized_values
                     self.unary_simple_aggregate_normalized_values[i] *= (1 / temp_max)
         else:
@@ -286,26 +357,26 @@ class DataRepository:
     def cal_binary_simple_multi_aggregate(self):
         # Will be used for correlating related metric aggregation
         ##Reminder Check if these metrics were normalized
-        valid_metrics = list()
+        valid_metrics = np.empty(0)
         if is_valid_matrix2D(self.binary_corr_proximity_normalized_values):
-            valid_metrics.append(self.binary_corr_proximity_normalized_values)
+            valid_metrics = np.append(valid_metrics, self.binary_corr_proximity_normalized_values)
         if is_valid_matrix2D(self.binary_corr_endpoint_normalized_values):
-            valid_metrics.append(self.binary_corr_endpoint_normalized_values)
+            valid_metrics = np.append(valid_metrics, self.binary_corr_endpoint_normalized_values)
         if is_valid_matrix2D(self.binary_corr_originator_normalized_values):
-            valid_metrics.append(self.binary_corr_originator_normalized_values)
+            valid_metrics = np.append(valid_metrics, self.binary_corr_originator_normalized_values)
         if is_valid_matrix2D(self.binary_corr_datatype_normalized_values):
-            valid_metrics.append(self.binary_corr_datatype_normalized_values)
+            valid_metrics = np.append(valid_metrics, self.binary_corr_datatype_normalized_values)
         if is_valid_matrix2D(self.binary_corr_datavalue_normalized_values):
-            valid_metrics.append(self.binary_corr_datavalue_normalized_values)
+            valid_metrics = np.append(valid_metrics, self.binary_corr_datavalue_normalized_values)
         ##Caution for this zero value
         temp_max = 0
-        if len(valid_metrics) > 0:
+        if np.size(valid_metrics) > 0:
             # print("valid metrics are :"+str(len(valid_metrics)))
             sz = self.num_of_nodes
             for i in range(0, sz):
                 for j in range(0, sz):
                     aggregated = 0.0
-                    for k in range(0, len(valid_metrics)):
+                    for k in range(0, np.size(valid_metrics)):
                         # Check if this below code is accessing values correctly
                         # print("Accessed value: "+str(valid_metrics[k][i][j]))
                         aggregated += valid_metrics[k][i][j]
@@ -409,8 +480,8 @@ class DataRepository:
         if w1 + w2 != 0:
             for i in range(0, sz):
                 self.unary_weighted_values = [(val1 * w1 + val2 * w2) / (w1 + w2) for val1, val2
-                                              in zip(self.unary_node_frequency_normalized_values,
-                                                     self.unary_derivative_routing_normalized_values)]
+                                              in np.dstack(self.unary_node_frequency_normalized_values,
+                                                           self.unary_derivative_routing_normalized_values)]
 
     """
     For calculating binary weighted values
@@ -438,13 +509,14 @@ class DataRepository:
             w1 = 1 - w1
             w2 = 1 - w2
         if w1 + w2 != 0.0:
-            binary_weight_values = list()
+            binary_weight_values = np.empty(0)
             for i in range(0, sz):
-                temp_list = list()
+                temp_list = np.empty(0)
                 for j in range(0, sz):
-                    temp_list.append((self.binary_edge_frequency_normalized_values[i][j] * w1 +
-                                      self.binary_derivative_distance_normalized_values[i][j] * w2) / (w1 + w2))
-                binary_weight_values.append(temp_list)
+                    temp_list = np.append(temp_list, ((self.binary_edge_frequency_normalized_values[i][j] * w1 +
+                                                       self.binary_derivative_distance_normalized_values[i][j] * w2) / (
+                                                                  w1 + w2)))
+                binary_weight_values = np.append(binary_weight_values, temp_list)
             self.binary_weighted_values = binary_weight_values
 
     """
@@ -490,17 +562,17 @@ class DataRepository:
             w5 = 1 - w5
 
         if w1 + w2 + w3 + w4 + w5 != 0.0:
-            binary_corr_weight_values = list()
+            binary_corr_weight_values = np.empty(0)
             for i in range(0, sz):
-                temp_list = list()
+                temp_list = np.empty(0)
                 for j in range(0, sz):
-                    temp_list.append((self.binary_corr_proximity_normalized_values[i][j] * w1 +
+                    temp_list = np.append(temp_list, ((self.binary_corr_proximity_normalized_values[i][j] * w1 +
                                       self.binary_corr_originator_normalized_values[i][j] * w2 +
                                       self.binary_corr_endpoint_normalized_values[i][j] * w3 +
                                       self.binary_corr_datatype_normalized_values[i][j] * w4 +
                                       self.binary_corr_datavalue_normalized_values[i][j] * w5) / (
-                                             w1 + w2 + w3 + w4 + w5))
-                binary_corr_weight_values.append(temp_list)
+                                             w1 + w2 + w3 + w4 + w5)))
+                binary_corr_weight_values = np.append(binary_corr_weight_values, temp_list)
             self.binary_corr_weighted_values = binary_corr_weight_values
 
     def debug_print_primary_metric_values(self):
@@ -644,13 +716,13 @@ class FilteredDataRepository:
         self.nodes = self.fm_log_util.nodes
         self.num_of_nodes = self.fm_log_util.num_of_nodes
         self.node_indices = self.fm_log_util.node_indices
-        self.concurrency_filter_resultant_binary_values = list()
-        self.concurrency_filter_resultant_binary_corr_values = list()
-        self.preserve_mask = list()  # needed in edge_filtering
-        self.edge_filter_resultant_binary_values = list()
-        self.edge_filter_resultant_binary_corr_values = list()
-        self.node_filter_resultant_binary_values = list()
-        self.node_filter_resultant_binary_corr_values = list()
+        self.concurrency_filter_resultant_binary_values = np.empty(0)
+        self.concurrency_filter_resultant_binary_corr_values = np.empty(0)
+        self.preserve_mask = np.empty(0)  # needed in edge_filtering
+        self.edge_filter_resultant_binary_values = np.empty(0)
+        self.edge_filter_resultant_binary_corr_values = np.empty(0)
+        self.node_filter_resultant_binary_values = np.empty(0)
+        self.node_filter_resultant_binary_corr_values = np.empty(0)
 
     """
     Applies concurrency_filter and then calls implicitly edge_filter to apply
@@ -724,7 +796,9 @@ class FilteredDataRepository:
         self.edge_filter_resultant_binary_corr_values = self.concurrency_filter_resultant_binary_corr_values
         sz = self.num_of_nodes
         # Initializing an mask for holding true false values
-        self.preserve_mask = [[False for x in range(sz)] for y in range(sz)]
+        for x in range(sz):
+            for y in range(sz):
+                self.preserve_mask = np.zeros((x, y), bool)
         ## Return error if something else was sent other than Fuzzy and Best
         if edge_filter.edge_transform == "Fuzzy":
             for i in range(0, sz):
