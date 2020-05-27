@@ -2,4 +2,4 @@
 FuzzyMiner/settings.py
 /templates
 /venv
-/logs
+/media
