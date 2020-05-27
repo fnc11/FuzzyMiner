@@ -455,10 +455,12 @@
                 this.dialog = false;
             },
             async loading() {
-                //this.progressing();
+                this.progressing();
                 const path = this.$route.params.path;
-                const { data } = await generate({path: path});
+                const data = await generate({path: path});
                 this.progress = false;
+                if (data.message_type === 0)
+                    this.image = data.graph_path;
                 console.log(data);
             }
         },
