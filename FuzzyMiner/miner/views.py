@@ -6,7 +6,6 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
-from pm4py.statistics.traces.log import case_statistics
 
 from fuzzyminerpk.Attenuation import LinearAttenuation
 from fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
@@ -35,7 +34,8 @@ def upload(request):
 def get_default_configuration():
     # defining default configuration
     node_filter = NodeFilter()
-    edge_filter = EdgeFilter("edge_filter", True, 0.5, 0.5, False, False)
+    # Can specify type of edge filter you want use by giving "Fuzzy" or "Best"
+    edge_filter = EdgeFilter("edge_filter", "Fuzzy", 0.5, 0.5, False, False)
     concurrency_filter = ConcurrencyFilter("concurrency_filter", True, 0.5, 0.5)
     filter_config = FilterConfig(node_filter, edge_filter, concurrency_filter)
     metric_config1 = MetricConfig("frequency_significance_unary", "unary")
@@ -57,10 +57,17 @@ def get_default_configuration():
 def launch_filter(log_file_path):
     log = xes_import_factory.apply(log_file_path)
     default_fuzzy_config = get_default_configuration()
-    graph = Graph(log, default_fuzzy_config)
-    variants_count = case_statistics.get_variant_statistics(log)
-    variants_count = sorted(variants_count, key=lambda x: x['count'], reverse=True)
-    return graph.data_repository.unary_weighted_values
+    graph = Graph(log)
+    fm_message = graph.apply_config(default_fuzzy_config)
+    return to_json(fm_message)
+
+
+def to_json(fm_message):
+    return JsonResponse(
+        {"message_type": fm_message.message_type,
+         "message_desc": fm_message.message_desc,
+         "graph_path": fm_message.graph_path
+         })
 
 
 def handle_file(request):
@@ -72,7 +79,8 @@ def show_result(request):
     data = json.loads(request.body)
     log_file_path = data["path"]
     resp = launch_filter(settings.BASE_DIR + log_file_path)
-    return JsonResponse({'result': resp})
+    return resp
+
 
 @csrf_exempt
 def node_filter(request):
@@ -80,6 +88,7 @@ def node_filter(request):
     print('node filter')
     print('cutoff:', data['cutoff'])
     return HttpResponse()
+
 
 @csrf_exempt
 def edge_filter(request):
@@ -93,6 +102,7 @@ def edge_filter(request):
         print('interpret absolute:', data['interpret_absolute'])
     return HttpResponse()
 
+
 @csrf_exempt
 def concurrency_filter(request):
     data = json.loads(request.body)
@@ -101,6 +111,7 @@ def concurrency_filter(request):
     print('preserve:', data['preserve'])
     print('balance:', data['balance'])
     return HttpResponse()
+
 
 @csrf_exempt
 def metrics_changed(request):
