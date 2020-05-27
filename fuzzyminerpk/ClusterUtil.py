@@ -1,5 +1,4 @@
 from fuzzyminerpk.FMStructure import FMCluster, FMEdge, FMNode
-import numpy as np
 
 
 class ClusterUtil:
@@ -7,7 +6,7 @@ class ClusterUtil:
         self.fm_log_util = None
         self.data_repository = None
         self.filtered_data_repository = None
-        self.node_cluster_mapping = np.empty(0)
+        self.node_cluster_mapping = list()
         self.cluster_dict = dict()
         self.fm_edges_dict = dict()
         self.fm_clusters = list()
@@ -36,8 +35,8 @@ class ClusterUtil:
         self.node_cluster_mapping = [i for i in range(0, self.fm_log_util.get_num_of_nodes())]
         self.cluster_dict.clear()
         self.fm_edges_dict.clear()
-        self.fm_clusters = np.delete(self.fm_clusters)
-        self.fm_nodes = np.delete(self.fm_nodes)
+        self.fm_clusters.clear()
+        self.fm_nodes.clear()
 
     """
     Initializes victim nodes into clusters
@@ -47,7 +46,7 @@ class ClusterUtil:
         victims = self.get_victims(cut_off)
         sz = self.fm_log_util.get_num_of_nodes()
         cluster_idx = sz + 1
-        for i in range(0, np.size(victims)):
+        for i in range(0, len(victims)):
             if victims[i] == -1:
                 continue
             neighbor = self.get_most_correlated(victims[i])
@@ -66,8 +65,7 @@ class ClusterUtil:
                 if neighbor in victims:
                     cluster.add_node(neighbor)
                     self.node_cluster_mapping[neighbor] = cluster_idx
-                    tmpidx = np.argwhere(neighbor)
-                    victims[tmpidx] = -1
+                    victims[victims.index(neighbor)] = -1
                 cluster_idx += 1
                 # Do we really need fm_clusters list
                 self.fm_clusters.append(cluster)
@@ -78,10 +76,10 @@ class ClusterUtil:
     """
     def get_victims(self, cut_off):
         sz = self.fm_log_util.get_num_of_nodes()
-        victims = np.empty(0)
+        victims = list()
         for i in range(0, sz):
             if self.data_repository.unary_weighted_values[i] < cut_off:
-                victims = np.append(victims, i)
+                victims.append(i)
         return victims
 
     """
@@ -324,7 +322,7 @@ class ClusterUtil:
         for i in range(0, sz):
             if self.node_cluster_mapping[i] != -1:
                 for j in range(0, sz):
-                    if self.node_cluster_mapping[j] != -1 and not (self.node_cluster_mapping[i] == self.node_cluster_mapping[j]):
+                    if self.node_cluster_mapping[j] != -1:
                         mapped_i = self.node_cluster_mapping[i]
                         mapped_j = self.node_cluster_mapping[j]
                         significance = self.filtered_data_repository.node_filter_resultant_binary_values[i][j]
