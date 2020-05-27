@@ -1,7 +1,7 @@
 <template>
     <div class="page-layout" style="overflow: hidden">
         <el-row :gutter="10">
-            <el-col :span="16" align="middle">
+            <el-col :xl="16" :lg="16" :md="12" :sm="14" :xs="10" align="middle">
                 <div class="model-view">
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
@@ -10,66 +10,74 @@
                     <el-button type="primary" plain class="button-position">Save Snapshot</el-button>
                 </div>
             </el-col>
-            <el-col :span="8">
-                <div class="model-view">
-                    <h3 class="text-center-align">Configurations</h3>
-                    <el-row :gutter="10" class="el-tabs--border-card filter-container">
-                        <el-col :span="8" class="grid-content-configuration el-table--border">
-                            <h4>Node Filter</h4>
-                              <el-divider></el-divider>
-                            <div class="slider-adjustment1 text-center-align">
-                            <label>Significance Cutoff</label>
-                                <el-slider align="middle" vertical v-model="node" height="280px" :format-tooltip="slider_format" @change="nodeChanged" />
+            <el-col :xl="8" :lg="8" :md="12" :sm="10" :xs="10">
+                <div class="model-view-conf">
+                    <h3 class="text-center-align">Filter Configurations</h3>
+                    <el-row :gutter="10" class="el-tabs--border-card filter-container"
+                            style="overflow-wrap: break-spaces">
+                        <el-col :xl="8" :lg="8" :md="6" :sm="6" :xs="6"
+                                class="text-center-align grid-content-configuration el-table--border">
+                            <h4 class="text-center-align">Node</h4>
+                            <el-divider style="position:relative;top:10vh"></el-divider>
+                            <div class="slider-adjustment1">
+                                <h5>Significance Cutoff</h5>
+                                <el-slider align="middle" vertical v-model="node" height="30vh"
+                                           :format-tooltip="slider_format" @change="nodeChanged"/>
                                 <label> {{ node / 100 }}</label>
                             </div>
                         </el-col>
-                        <el-col :span="8" class="grid-content-configuration el-table--border">
-                            <h4 class="text-center-align">Edge Filter</h4>
-                            <el-divider></el-divider>
-                            <label>Edge Transformer</label>
+                        <el-col :xl="8" :lg="8" :md="9" :sm="9" :xs="9"
+                                class="grid-content-configuration el-table--border">
+                            <h4 class="text-center-align">Edge</h4>
+                            <el-divider class="hidden-sm-and-down"></el-divider>
+                            <label style="font-size: 14px">Edge Transformer</label>
                             <el-radio-group v-model="edge" style="position: relative; top:10px;">
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
-                            <el-row :gutter="2" class="slider-adjustment2" type="flex" align="middle">
-                                <el-col :span="14">
-                                    <label>S/C Ratio</label>
-                                    <el-slider vertical v-model="sc" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="scChanged"/>
+                            <div class="slider-adjustment2">
+                                <div align="center">
+                                    <h5>S/C Ratio</h5>
+                                    <el-slider vertical v-model="sc" height="30vh" :disabled="edge === 1"
+                                               :format-tooltip="slider_format" @change="scChanged"/>
                                     <label>{{ sc / 100 }}</label>
-                                </el-col>
-                                <el-col :span="4">
-                                    <label>Cutoff</label>
-                                    <el-slider vertical v-model="cutoff" height="280px" :disabled="edge === 1" :format-tooltip="slider_format" @change="cutoffChanged"/>
+                                </div>
+                                <div align="center">
+                                    <h5>Cutoff</h5>
+                                    <el-slider vertical v-model="cutoff" height="30vh" :disabled="edge === 1"
+                                               :format-tooltip="slider_format" @change="cutoffChanged"/>
                                     <label>{{ cutoff / 100 }}</label>
-                                </el-col>
-                            </el-row>
-                            <div style="position: relative;top:60px;">
-                                <el-checkbox v-model="loops" :disabled="edge === 1">Ignore Self-Loops</el-checkbox>
-                                <el-checkbox v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
+                                </div>
+                            </div>
+                            <div style="position:relative;top:2vh;">
+                                <el-checkbox class="el-checkbox__label" v-model="loops" :disabled="edge === 1">Ignore Self-Loops</el-checkbox>
+                                <el-checkbox class="el-checkbox__label" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
                             </div>
                         </el-col>
-                        <el-col :span="8" class="grid-content-configuration el-table--border">
+                        <el-col :xl="8" :lg="8" :md="9" :sm="9" :xs="9"
+                                class="grid-content-configuration el-table--border">
 
-                            <h4 class="text-center-align">Concurrency Filter</h4>
+                            <h4 class="text-center-align">Concurrency</h4>
                             <el-divider></el-divider>
-                            <el-checkbox v-model="concurrency"><label style="color: black">Filter Concurrency</label>
+                            <el-checkbox v-model="concurrency" align="left">
+                                <label style="color: black">Filter Concurrency</label>
+
                             </el-checkbox>
-                            <el-row :gutter="20" type="flex" justify="center" class="text-center-align slider-adjustment3">
-                                <el-col :span="10">
-                                    <label>Preserve</label>
-                                    <el-slider vertical v-model="preserve" height="280px" :disabled="!concurrency"
+                            <div class="slider-adjustment3">
+                                <div align="center">
+                                    <h5>Preserve</h5>
+                                    <el-slider vertical v-model="preserve" height="30vh" :disabled="!concurrency"
                                                :format-tooltip="slider_format"
                                                @change="preserveChanged"/>
                                     <label>{{ preserve / 100 }}</label>
-                                </el-col>
-                                <el-col :span="10">
-                                    <label>Balance</label>
-                                    <el-slider vertical v-model="balance" height="280px" :disabled="!concurrency"
+                                </div>
+                                <div align="center">
+                                    <h5>Balance</h5>
+                                    <el-slider vertical v-model="balance" height="30vh" :disabled="!concurrency"
                                                :format-tooltip="slider_format" @change="balanceChanged"/>
                                     <label>{{ balance / 100 }}</label>
-                                </el-col>
-
-                            </el-row>
+                                </div>
+                            </div>
 
                         </el-col>
                     </el-row>
@@ -85,7 +93,7 @@
                 title="Configure"
                 :visible.sync="dialog"
                 append-to-body="false"
-                width="40%" style="font-family: Arial, Helvetica, sans-serif;">
+                width="40vw" style="font-family: Arial, Helvetica, sans-serif;">
             <div>
                 <el-tabs type="border-card">
                     <el-tab-pane label="Metrics" class="el-tabs__content">
@@ -447,7 +455,7 @@
                 this.dialog = false;
             },
             async loading() {
-                this.progressing();
+                //this.progressing();
                 const path = this.$route.params.path;
                 const { data } = await generate({path: path});
                 this.progress = false;
@@ -533,34 +541,45 @@
     .model-view {
         width: 90%;
         position: relative;
-
         display: block;
     }
-    .text-center-align{
-        text-align:center;
+
+    .model-view-conf {
+        width: 96%;
+        position: relative;
+        display: block;
     }
-    .page-layout{
-        position:relative;
-        top:20px;
-        height:720px;
+
+    .text-center-align {
+        text-align: center;
     }
-    .filter-container{
-        height:570px;
-       border-color: #f0f0f0;
+
+    .page-layout {
+        position: relative;
+
+        height: 100vh;
 
     }
 
-    .grid-content{
+    .filter-container {
+        height: 64vh;
+        border-color: #f0f0f0;
+
+    }
+
+    .grid-content {
         height: inherit;
         background-color: #d9d9d9;
 
     }
-    .grid-content-configuration{
+
+    .grid-content-configuration {
         height: inherit;
         border-color: #d9d9d9;
     }
-    .process-graph-view{
-        height: 570px;
+
+    .process-graph-view {
+        height: 65vh;
         border-color: #dcdfe6;
         overflow: scroll;
     }
@@ -576,29 +595,21 @@
 
     .slider-adjustment1 {
         position: relative;
-        top: 70px;
+        top: 13%;
     }
 
     .slider-adjustment2 {
-        position: relative;
-        top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly
+
     }
 
     .slider-adjustment3 {
-        position: center;
-        top: 52px;
-    }
-
-    .el-dropdown-link {
-        cursor: pointer;
-        color: #409EFF;
-        margin-bottom: 20px;
-
-    }
-
-    .el-icon-arrow-down {
-        font-size: 12px;
-
+        display: flex;
+        justify-content: space-evenly;
+        position: relative;
+        top: 5.5%;
     }
 
     .adjust-slider-width {
@@ -624,6 +635,23 @@
         height: 300px;
     }
 
+    h4 {
+        font-size: 1vm;
+        font-weight: bold;
 
+    }
+
+    h5 {
+        font-weight: lighter;
+        color: #2f70cd
+    }
+
+    [class*="el-checkbox"] {
+        padding-left: 0;
+
+    }
+    h3{
+        color: darkorange;
+    }
 
 </style>
