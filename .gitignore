@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 **/.idea
 **/settings.py
+**/logs
 
 # C extensions
 *.so
