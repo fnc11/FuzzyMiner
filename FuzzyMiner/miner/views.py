@@ -6,6 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
+from .graphpool import GraphPool
 
 from fuzzyminerpk.Attenuation import LinearAttenuation
 from fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
@@ -16,6 +17,13 @@ from fuzzyminerpk.FuzzyMiner import Graph
 
 """ Saves uploaded log file and returns its path (/log/example.xes) """
 
+def get_ip_port(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')  # Whether using proxy
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]  # Get the real ip according proxy
+    else:
+        ip = request.META.get('REMOTE_ADDR')  # Get the real ip
+    return ip, request.META.get('SERVER_PORT')
 
 @csrf_exempt
 def upload(request):
@@ -54,12 +62,19 @@ def get_default_configuration():
     return fuzzy_config
 
 
-def launch_filter(log_file_path):
+def launch_filter(log_file_path, ip, port):
     log = xes_import_factory.apply(log_file_path)
     default_fuzzy_config = get_default_configuration()
     graph = Graph(log)
+    pool = GraphPool()
+    id = pool.update_graph(ip, port, graph)
     fm_message = graph.apply_config(default_fuzzy_config)
-    return to_json(fm_message)
+    return JsonResponse({
+        "message_type": fm_message.message_type,
+        "message_desc": fm_message.message_desc,
+        "graph_path": fm_message.graph_path,
+        "id": id
+    })
 
 
 def to_json(fm_message):
@@ -78,16 +93,19 @@ def handle_file(request):
 def show_result(request):
     data = json.loads(request.body)
     log_file_path = data["path"]
-    resp = launch_filter(settings.BASE_DIR + log_file_path)
+    ip, port = get_ip_port(request)
+    resp = launch_filter(settings.BASE_DIR + log_file_path, ip, port)
     return resp
-
 
 @csrf_exempt
 def node_filter(request):
     data = json.loads(request.body)
     print('node filter')
     print('cutoff:', data['cutoff'])
-    return HttpResponse()
+    config = NodeFilter(cut_off=data['cutoff'])
+    graph = GraphPool().get_graph_by_id(data["id"])
+    fm_message = graph.apply_node_filter(config)
+    return to_json(fm_message)
 
 
 @csrf_exempt
@@ -100,7 +118,10 @@ def edge_filter(request):
         print('cutoff:', data['cutoff'])
         print('ignore self-loops:', data['ignore_self_loops'])
         print('interpret absolute:', data['interpret_absolute'])
-    return HttpResponse()
+    config = EdgeFilter(edge_transform=data['edge_transformer'], sc_ratio=data['s/c_ratio'], cut_off=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
+    graph = GraphPool().get_graph_by_id(data['id'])
+    fm_message = graph.apply_edge_filter(config)
+    return to_json(fm_message)
 
 
 @csrf_exempt
@@ -110,7 +131,10 @@ def concurrency_filter(request):
     print('filter concurrency:', data['filter_concurrency'])
     print('preserve:', data['preserve'])
     print('balance:', data['balance'])
-    return HttpResponse()
+    config = ConcurrencyFilter(filter_concurrency=data['filter_concurrency'], preserve=data['preserve'], offset=data['balance'])
+    graph = GraphPool().get_graph_by_id(data['id'])
+    fm_message = graph.apply_concurrency_filter(config)
+    return to_json(fm_message)
 
 
 @csrf_exempt

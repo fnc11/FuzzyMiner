@@ -459,9 +459,13 @@
                 const path = this.$route.params.path;
                 const data = await generate({path: path});
                 this.progress = false;
-                if (data.message_type === 0)
-                    this.image = data.graph_path;
+                this.handleResponse(data);
                 console.log(data);
+            },
+            handleResponse(resp) {
+                if (resp.message_type === 0) {
+                    this.image = data.graph_path;
+                }
             }
         },
         watch: {
