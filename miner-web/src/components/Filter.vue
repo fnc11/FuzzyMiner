@@ -195,9 +195,9 @@
 </template>
 
 <script>
+    import Axios from 'axios';
     import {generate} from "@/api/home";
     import {concurrencyFilter, edgeFilter, metrics, nodeFilter} from '@/api/filter';
-    import Axios from "axios";
 
     export default {
         name: "Filter",
@@ -474,36 +474,27 @@
                 console.log(data);
             },
             handleResponse(resp) {
+                // here needs to handle error message
                 if (resp.message_type === 0) {
                     this.image = resp.graph_path;
                 }
             },
-            forceFileDownload(response) {
-                const url = window.URL.createObjectURL(new Blob([response.data]))
-                const link = document.createElement('a')
-                link.href = url
-                link.setAttribute('download', 'file.png') //or any other extension
-                document.body.appendChild(link)
-                link.click()
-            },
-
-
-            downloadImage() {
-                console.log("Download Image")
-                Axios({
+            async downloadImage() {
+                console.log("Download Image");
+                const resp = await Axios({
                     url: this.image,
-                    method: 'GET',
-                    responseType: 'blob',
-                }).then((response) => {
-                    var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-                    var fileLink = document.createElement('a');
-
-                    fileLink.href = fileURL;
-                    fileLink.setAttribute('download', 'graph.png');
-                    document.body.appendChild(fileLink);
-
-                    fileLink.click();
+                    method: 'get',
+                    responseType: 'blob'
                 });
+                // here need to handle error
+                const data = resp.data;
+                let a = document.createElement('a');
+                let url = window.URL.createObjectURL(new Blob([data], {type: 'image/png'}));
+                a.href = url;
+                a.download = 'graph.png';
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
             }
         },
         watch: {
