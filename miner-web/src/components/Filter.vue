@@ -188,7 +188,7 @@
         </el-dialog>
         <el-dialog
             title="Loading"
-            :visible="progress"
+            :visible.sync="progress"
             width="25%">
             <el-progress type="line" :percentage="percentage"></el-progress>
             <i class="el-icon-loading" />
