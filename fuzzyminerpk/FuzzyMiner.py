@@ -30,6 +30,8 @@ class Graph:
     """
 
     def apply_config(self, config):
+        print("Apply Config called with the following config: ")
+        print(config)
         self.config = config
         self.data_repository.config = config
         self.data_repository.init_lists()
@@ -66,6 +68,8 @@ class Graph:
     """
 
     def apply_concurrency_filter(self, concurrency_filter):
+        print("Apply Concurrency filter is called with following values: ")
+        print(concurrency_filter)
         self.config.filter_config.concurrency_filter = concurrency_filter
         self.filtered_data_repository.apply_concurrency_filter(concurrency_filter)
         return self.apply_edge_filter(self.config.filter_config.edge_filter)
@@ -76,6 +80,8 @@ class Graph:
     """
 
     def apply_edge_filter(self, edge_filter):
+        print("Apply Edge filter is called with following values: ")
+        print(edge_filter)
         self.config.filter_config.edge_filter = edge_filter
         self.filtered_data_repository.apply_edge_filter(edge_filter)
         return self.apply_node_filter(self.config.filter_config.node_filter)
@@ -86,6 +92,8 @@ class Graph:
     """
 
     def apply_node_filter(self, node_filter):
+        print("Apply Node filter is called with following values: ")
+        print(node_filter)
         self.config.filter_config.node_filter = node_filter
         self.filtered_data_repository.apply_node_filter(node_filter)
         self.finalize_graph_data()
@@ -131,6 +139,10 @@ class Graph:
             self.fm_message.message_desc == "The current config and filter settings resulted either a null graph or one cluster. Please try changing config or filters or both."
 
     def apply_metrics_config(self, metrics_configs, attenuation, chunk_size):
+        print("Apply Metrics config is called with following values: ")
+        print(metrics_configs)
+        print(attenuation)
+        print("Maximum Distance: "+chunk_size)
         self.config.metrics_configs = metrics_configs
         self.config.attenuation = attenuation
         self.config.chunk_size = chunk_size
