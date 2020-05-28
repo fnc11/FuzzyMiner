@@ -42,8 +42,8 @@ def upload(request):
 def get_default_configuration():
     # defining default configuration
     node_filter = NodeFilter()
-    # Can specify type of edge filter you want use by giving "Fuzzy" or "Best"
-    edge_filter = EdgeFilter("edge_filter", "Fuzzy", 0.5, 0.5, False, False)
+    # Can specify type of edge filter you want use by giving "Fuzzy Edges" or "Best Edges"
+    edge_filter = EdgeFilter("edge_filter", "Fuzzy Edges", 0.5, 0.5, False, False)
     concurrency_filter = ConcurrencyFilter("concurrency_filter", True, 0.5, 0.5)
     filter_config = FilterConfig(node_filter, edge_filter, concurrency_filter)
     metric_config1 = MetricConfig("frequency_significance_unary", "unary")
@@ -57,7 +57,7 @@ def get_default_configuration():
     metric_config9 = MetricConfig("datavalue_correlation_binary", "binary")
     metric_configs = [metric_config1, metric_config2, metric_config3, metric_config4, metric_config5, metric_config6
         , metric_config7, metric_config8, metric_config9]
-    attenuation = LinearAttenuation(5, 5)
+    attenuation = NRootAttenuation(5, 2.7)
     fuzzy_config = Configuration(filter_config, metric_configs, attenuation, 5)
     return fuzzy_config
 
@@ -102,9 +102,9 @@ def node_filter(request):
     data = json.loads(request.body)
     print('node filter')
     print('cutoff:', data['cutoff'])
-    config = NodeFilter(cut_off=data['cutoff'])
+    node_filter_obj = NodeFilter(cut_off=data['cutoff'])
     graph = GraphPool().get_graph_by_id(data["id"])
-    fm_message = graph.apply_node_filter(config)
+    fm_message = graph.apply_node_filter(node_filter_obj)
     return to_json(fm_message)
 
 
@@ -118,9 +118,11 @@ def edge_filter(request):
         print('cutoff:', data['cutoff'])
         print('ignore self-loops:', data['ignore_self_loops'])
         print('interpret absolute:', data['interpret_absolute'])
-    config = EdgeFilter(edge_transform=data['edge_transformer'], sc_ratio=data['s/c_ratio'], cut_off=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
+        edge_filter_obj = EdgeFilter(edge_transform=data['edge_transformer'], sc_ratio=data['s/c_ratio'], cut_off=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
+    else:
+        edge_filter_obj = EdgeFilter(edge_transform="Best Edges")
     graph = GraphPool().get_graph_by_id(data['id'])
-    fm_message = graph.apply_edge_filter(config)
+    fm_message = graph.apply_edge_filter(edge_filter_obj)
     return to_json(fm_message)
 
 
@@ -131,9 +133,9 @@ def concurrency_filter(request):
     print('filter concurrency:', data['filter_concurrency'])
     print('preserve:', data['preserve'])
     print('balance:', data['balance'])
-    config = ConcurrencyFilter(filter_concurrency=data['filter_concurrency'], preserve=data['preserve'], offset=data['balance'])
+    concurrency_filter_obj = ConcurrencyFilter(filter_concurrency=data['filter_concurrency'], preserve=data['preserve'], offset=data['balance'])
     graph = GraphPool().get_graph_by_id(data['id'])
-    fm_message = graph.apply_concurrency_filter(config)
+    fm_message = graph.apply_concurrency_filter(concurrency_filter_obj)
     return to_json(fm_message)
 
 
