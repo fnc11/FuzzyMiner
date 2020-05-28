@@ -50,10 +50,9 @@ class VizUtil:
             dot.node(str(node.index), label=label, penwidth='1.0', fillcolor='blanchedalmond')
 
         for cluster in self.fm_clusters:
-            label = ''.join([cluster.label, str(cluster.index), ' ~ ', str(len(cluster.primitives)), ' primitives'])
-            label = ''.join([label, '\n primitives: ', str(cluster.primitives)])
-            label = ''.join([label, '\n mean significance: ', self.format(cluster.significance)])
-            dot.node(str(cluster.index), label=label, color='cadetblue1')
+            label = ''.join([cluster.label, ' ', str(cluster.index), ' ~ ', str(len(cluster.primitives)), ' primitives'])
+            label = ''.join([label, '\n mean_sig: ', self.format(cluster.significance)])
+            dot.node(str(cluster.index), label=label, shape='oval', color='cadetblue1')
 
         dot.edge_attr['fontsize'] = '10.0'
         for edge in self.fm_edges:
