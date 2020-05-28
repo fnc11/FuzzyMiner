@@ -57,7 +57,7 @@ def get_default_configuration():
     metric_config9 = MetricConfig("datavalue_correlation_binary", "binary")
     metric_configs = [metric_config1, metric_config2, metric_config3, metric_config4, metric_config5, metric_config6
         , metric_config7, metric_config8, metric_config9]
-    attenuation = LinearAttenuation(7, 7)
+    attenuation = NRootAttenuation(5, 2.7)
     fuzzy_config = Configuration(filter_config, metric_configs, attenuation, 7)
     return fuzzy_config
 
