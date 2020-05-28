@@ -320,59 +320,64 @@
             },
             async nodeChanged(value) {
                 this.progressing();
-                const {data} = await nodeFilter({
-                    'cutoff': value / 100
+                const data = await nodeFilter({
+                    'cutoff': value / 100,
+                    'id': this.$store.getters.id
                 });
                 console.log('change node filter with cutoff: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             async scChanged(value) {
                 this.progressing();
-                const {data} = await edgeFilter({
+                const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': value / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': this.loops,
-                    'interpret_absolute': this.absolute
+                    'interpret_absolute': this.absolute,
+                    'id': this.$store.getters.id
                 });
                 console.log('change edge filter with s/c ratio: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             async cutoffChanged(value) {
                 this.progressing();
-                const {data} = await edgeFilter({
+                const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': value / 100,
                     'ignore_self_loops': this.loops,
-                    'interpret_absolute': this.absolute
+                    'interpret_absolute': this.absolute,
+                    'id': this.$store.getters.id
                 });
                 console.log('change edge filter with cutoff: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             async preserveChanged(value) {
                 this.progressing();
-                const {data} = await concurrencyFilter({
+                const data = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': value / 100,
-                    'balance': this.balance / 100
+                    'balance': this.balance / 100,
+                    'id': this.$store.getters.id
                 });
                 console.log('change concurrency filter with preserve: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             async balanceChanged(value) {
                 this.progressing();
-                const {data} = await concurrencyFilter({
+                const data = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': this.preserve / 100,
-                    'balance': value / 100
+                    'balance': value / 100,
+                    'id': this.$store.getters.id
                 });
                 console.log('change concurrency filter with balance: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             selectTypes(value) {
@@ -447,9 +452,10 @@
                     req.attenuation.selected = 'N root with radical';
                     req.attenuation.radical = this.radical / 100;
                 }
+                req.id = this.$store.getters.id;
                 this.progressing();
-                const {data} = await metrics(req);
-                this.image = data;
+                const data = await metrics(req);
+                this.handleResponse(data);
                 this.dialog = false;
                 this.progress = false;
             },
@@ -463,11 +469,13 @@
                 const data = await generate({path: path});
                 this.progress = false;
                 this.handleResponse(data);
+                if (data.id)
+                    await this.$store.dispatch('app/setId', data.id);
                 console.log(data);
             },
             handleResponse(resp) {
                 if (resp.message_type === 0) {
-                    this.image = data.graph_path;
+                    this.image = resp.graph_path;
                 }
             },
             forceFileDownload(response) {
@@ -506,7 +514,8 @@
                     return;
                 if (now === 1) {
                     resp = await edgeFilter({
-                        'edge_transformer': 'Best Edges'
+                        'edge_transformer': 'Best Edges',
+                        'id': this.$store.getters.id
                     });
                 } else {
                     resp = await edgeFilter({
@@ -514,62 +523,64 @@
                         's/c_ratio': this.sc / 100,
                         'cutoff': this.cutoff / 100,
                         'ignore_self_loops': this.loops,
-                        'interpret_absolute': this.absolute
+                        'interpret_absolute': this.absolute,
+                        'id': this.$store.getters.id
                     });
                 }
                 console.log('change edge filter with edge transformer: ' + now);
-                this.image = resp.data;
+                this.handleResponse(resp);
                 this.progress = false;
             },
             loops: async function (now, old) {
                 this.progressing();
                 if (now === old)
                     return;
-                const {data} = await edgeFilter({
+                const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': now,
-                    'interpret_absolute': this.absolute
+                    'interpret_absolute': this.absolute,
+                    'id': this.$store.getters.id
                 });
                 console.log('change edge filter with ignore self-loops: ' + String(now));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             absolute: async function (now, old) {
                 this.progressing();
                 if (now === old)
                     return;
-                const {data} = await edgeFilter({
+                const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': this.loops,
-                    'interpret_absolute': now
+                    'interpret_absolute': now,
+                    'id': this.$store.getters.id
                 });
                 console.log('change edge filter with interpret absolute: ' + String(now));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             concurrency: async function (now, old) {
                 this.progressing();
                 if (now === old)
                     return;
-                const {data} = await concurrencyFilter({
+                const data = await concurrencyFilter({
                     'filter_concurrency': now,
                     'preserve': this.preserve / 100,
-                    'balance': this.balance / 100
+                    'balance': this.balance / 100,
+                    'id': this.$store.getters.id
                 });
                 console.log('change concurrency filter with filter concurrency: ' + String(now));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
         },
         created() {
             this.loading();
         },
-
-
     }
 </script>
 

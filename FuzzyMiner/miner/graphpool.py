@@ -12,9 +12,10 @@ class GraphPool(object):
     __max_size__ = 20
     __max_delta__ = timedelta(hours=2)
     _instance_lock = threading.Lock()
+    __pool = {}
 
     def __init__(self):
-        self.__pool = {}
+        pass
 
     # singleton, make sure to get the only one object for graph pool
     def __new__(cls, *args, **kwargs):
@@ -42,7 +43,8 @@ class GraphPool(object):
         if len(self.__pool) >= self.__max_size__:
             del self.__pool[item]
 
-    def __joint_ip_port(self, ip, port):
+    @staticmethod
+    def __joint_ip_port(ip, port):
         return str(ip) + str(port)
 
     def update_graph(self, ip, port, graph):
@@ -63,4 +65,4 @@ class GraphPool(object):
         return self.get_graph_by_id(self.__generate_id(self.__joint_ip_port(ip, port)))
 
     def get_graph_by_id(self, id):
-        return self.__pool[id]
+        return self.__pool[id]["graph"]

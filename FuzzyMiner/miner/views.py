@@ -23,7 +23,7 @@ def get_ip_port(request):
         ip = x_forwarded_for.split(',')[0]  # Get the real ip according proxy
     else:
         ip = request.META.get('REMOTE_ADDR')  # Get the real ip
-    return ip, request.META.get('SERVER_PORT')
+    return ip, int(request.META.get('SERVER_PORT'))
 
 @csrf_exempt
 def upload(request):
