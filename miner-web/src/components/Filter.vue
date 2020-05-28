@@ -6,7 +6,7 @@
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
 <!--                        <img :src="image" alt=""/>-->
-                        <viewer :images="images" @inited="inited">
+                        <viewer id="viewer" :images="images">
                             <img v-for="(item, index) in images" :src="item" :key="index">
                         </viewer>
                     </div>
@@ -483,9 +483,6 @@
                     this.images.push(resp.graph_path);
                 }
             },
-            inited(viewer) {
-                this.selectedImage = viewer.image.currentSrc;
-            },
             async downloadImage() {
                 console.log("Download Image");
                 const resp = await Axios({
@@ -576,9 +573,14 @@
                 this.progress = false;
             },
         },
+        mounted() {
+            this.$el.querySelector('#viewer').addEventListener('viewed', (e) => {
+                this.selectedImage = e.detail.originalImage.currentSrc;
+            });
+        },
         created() {
             this.loading();
-        },
+        }
     }
 </script>
 
