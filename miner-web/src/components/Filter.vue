@@ -211,7 +211,7 @@
                 progress: false,
                 percentage: 0,
                 node: 50,
-                edge: 1,
+                edge: 2,
                 sc: 50,
                 cutoff: 50,
                 preserve: 50,
@@ -292,7 +292,7 @@
                     attenuation: {
                         eventDistance: 5,
                         seleted: 2,
-                        radical: 2
+                        radical: 2.7
                     }
                 },
                 metrics_save: {},
