@@ -68,8 +68,7 @@
                                 only the weaker relation.</p></li>
                     </ul>
                 </div>
-                <div>Visual feedback: reflect current state by updating or rearranging elements of the page.
-                </div>
+
             </el-collapse-item>
             <el-collapse-item name="3">
                 <template class="collapse-text" slot="title">
@@ -133,7 +132,7 @@
 <style scoped>
     .help-content {
         position: relative;
-        height: 100vh;
+        height: 110vh;
         overflow: hidden;
         top: 30px;
     }

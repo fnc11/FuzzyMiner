@@ -5,9 +5,14 @@
                 <div class="model-view">
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
-                        <img :src="image" alt=""/>
+<!--                        <img :src="image" alt=""/>-->
+                        <viewer :images="images" @inited="inited">
+                            <img v-for="(item, index) in images" :src="item" :key="index">
+                        </viewer>
                     </div>
-                    <el-button type="primary" plain class="button-position">Save Snapshot</el-button>
+                    <el-button type="primary" plain class="button-position" v-model="image" @click="downloadImage">Save
+                        Snapshot
+                    </el-button>
                 </div>
             </el-col>
             <el-col :xl="8" :lg="8" :md="12" :sm="10" :xs="10">
@@ -193,6 +198,7 @@
 </template>
 
 <script>
+    import Axios from 'axios';
     import {generate} from "@/api/home";
     import {concurrencyFilter, edgeFilter, metrics, nodeFilter} from '@/api/filter';
 
@@ -200,7 +206,8 @@
         name: "Filter",
         data() {
             return {
-                image: '',
+                selectedImage: '',
+                images: [],
                 progress: false,
                 percentage: 0,
                 node: 50,
@@ -297,9 +304,9 @@
                     value: 'binarySignificance',
                     label: 'Binary Metrics'
                 }, {
-                        value: 'binaryCorrelation',
-                        label: 'Binary Correlation'
-                }]
+                    value: 'binaryCorrelation',
+                    label: 'Binary Correlation'
+                }],
             }
         },
         methods: {
@@ -317,59 +324,64 @@
             },
             async nodeChanged(value) {
                 this.progressing();
-                const { data } = await nodeFilter({
-                    'cutoff': value / 100
+                const data = await nodeFilter({
+                    'cutoff': value / 100,
+                    'id': this.$store.getters.id
                 });
                 console.log('change node filter with cutoff: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             async scChanged(value) {
                 this.progressing();
-                const { data } = await edgeFilter({
+                const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': value / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': this.loops,
-                    'interpret_absolute': this.absolute
+                    'interpret_absolute': this.absolute,
+                    'id': this.$store.getters.id
                 });
                 console.log('change edge filter with s/c ratio: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             async cutoffChanged(value) {
                 this.progressing();
-                const { data } = await edgeFilter({
+                const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': value / 100,
                     'ignore_self_loops': this.loops,
-                    'interpret_absolute': this.absolute
+                    'interpret_absolute': this.absolute,
+                    'id': this.$store.getters.id
                 });
                 console.log('change edge filter with cutoff: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             async preserveChanged(value) {
                 this.progressing();
-                const { data } = await concurrencyFilter({
+                const data = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': value / 100,
-                    'balance': this.balance / 100
+                    'balance': this.balance / 100,
+                    'id': this.$store.getters.id
                 });
                 console.log('change concurrency filter with preserve: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             async balanceChanged(value) {
                 this.progressing();
-                const { data } = await concurrencyFilter({
+                const data = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
                     'preserve': this.preserve / 100,
-                    'balance': value / 100
+                    'balance': value / 100,
+                    'id': this.$store.getters.id
                 });
                 console.log('change concurrency filter with balance: ' + String(value / 100));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             selectTypes(value) {
@@ -383,24 +395,24 @@
                 let req = {
                     metrics: {
                         unary_metrics: {
-                            frequency: {
+                            frequency_significance_unary: {
                                 include: this.metricsConfig.metrics.unary.frequency.inc,
                                 invert: this.metricsConfig.metrics.unary.frequency.invert,
                                 weight: this.metricsConfig.metrics.unary.frequency.weight / 100
                             },
-                            routing: {
+                            routing_significance_unary: {
                                 include: this.metricsConfig.metrics.unary.routing.inc,
                                 invert: this.metricsConfig.metrics.unary.routing.invert,
                                 weight: this.metricsConfig.metrics.unary.routing.weight / 100
                             }
                         },
                         binary_significance: {
-                            frequency: {
+                            frequency_significance_binary: {
                                 include: this.metricsConfig.metrics.binarySignificance.frequency.inc,
                                 invert: this.metricsConfig.metrics.binarySignificance.frequency.invert,
                                 weight: this.metricsConfig.metrics.binarySignificance.frequency.weight / 100
                             },
-                            distance: {
+                            distance_significance_binary: {
                                 include: this.metricsConfig.metrics.binarySignificance.distance.inc,
                                 invert: this.metricsConfig.metrics.binarySignificance.distance.invert,
                                 weight: this.metricsConfig.metrics.binarySignificance.distance.weight / 100
@@ -422,12 +434,12 @@
                                 invert: this.metricsConfig.metrics.binaryCorrelation.originator.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.originator.weight / 100
                             },
-                            data_type: {
+                            datatype_correlation_binary: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.dataType.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.dataType.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.dataType.weight / 100
                             },
-                            data_value: {
+                            datavalue_correlation_binary: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.dataValue.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.dataValue.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.dataValue.weight / 100
@@ -442,11 +454,12 @@
                     req.attenuation.selected = 'Linear Attenuation';
                 } else {
                     req.attenuation.selected = 'N root with radical';
-                    req.attenuation.radical = this.radical/100;
+                    req.attenuation.radical = this.metricsConfig.attenuation.radical;
                 }
+                req.id = this.$store.getters.id;
                 this.progressing();
-                const { data } = await metrics(req);
-                this.image = data;
+                const data = await metrics(req);
+                this.handleResponse(data);
                 this.dialog = false;
                 this.progress = false;
             },
@@ -459,20 +472,48 @@
                 const path = this.$route.params.path;
                 const data = await generate({path: path});
                 this.progress = false;
-                if (data.message_type === 0)
-                    this.image = data.graph_path;
+                this.handleResponse(data);
+                if (data.id)
+                    await this.$store.dispatch('app/setId', data.id);
                 console.log(data);
+            },
+            handleResponse(resp) {
+                // here needs to handle error message
+                if (resp.message_type === 0) {
+                    this.images.push(resp.graph_path);
+                }
+            },
+            inited(viewer) {
+                this.selectedImage = viewer.image.currentSrc;
+            },
+            async downloadImage() {
+                console.log("Download Image");
+                const resp = await Axios({
+                    url: this.selectedImage,
+                    method: 'get',
+                    responseType: 'blob'
+                });
+                // here need to handle error
+                const data = resp.data;
+                let a = document.createElement('a');
+                let url = window.URL.createObjectURL(new Blob([data], {type: 'image/png'}));
+                a.href = url;
+                a.download = 'graph.png';
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
             }
         },
         watch: {
-            edge: async function(now, old) {
+            edge: async function (now, old) {
                 this.progressing();
                 let resp;
                 if (now === old)
                     return;
                 if (now === 1) {
-                    resp =await edgeFilter({
-                        'edge_transformer': 'Best Edges'
+                    resp = await edgeFilter({
+                        'edge_transformer': 'Best Edges',
+                        'id': this.$store.getters.id
                     });
                 } else {
                     resp = await edgeFilter({
@@ -480,61 +521,64 @@
                         's/c_ratio': this.sc / 100,
                         'cutoff': this.cutoff / 100,
                         'ignore_self_loops': this.loops,
-                        'interpret_absolute': this.absolute
+                        'interpret_absolute': this.absolute,
+                        'id': this.$store.getters.id
                     });
                 }
                 console.log('change edge filter with edge transformer: ' + now);
-                this.image = resp.data;
+                this.handleResponse(resp);
                 this.progress = false;
             },
             loops: async function (now, old) {
                 this.progressing();
                 if (now === old)
                     return;
-                const { data } = await edgeFilter({
+                const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': now,
-                    'interpret_absolute': this.absolute
+                    'interpret_absolute': this.absolute,
+                    'id': this.$store.getters.id
                 });
                 console.log('change edge filter with ignore self-loops: ' + String(now));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
-            absolute: async function(now, old) {
+            absolute: async function (now, old) {
                 this.progressing();
                 if (now === old)
                     return;
-                const { data } = await edgeFilter({
+                const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
                     's/c_ratio': this.sc / 100,
                     'cutoff': this.cutoff / 100,
                     'ignore_self_loops': this.loops,
-                    'interpret_absolute': now
+                    'interpret_absolute': now,
+                    'id': this.$store.getters.id
                 });
                 console.log('change edge filter with interpret absolute: ' + String(now));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
             concurrency: async function (now, old) {
                 this.progressing();
                 if (now === old)
                     return;
-                const { data } = await concurrencyFilter({
+                const data = await concurrencyFilter({
                     'filter_concurrency': now,
                     'preserve': this.preserve / 100,
-                    'balance': this.balance / 100
+                    'balance': this.balance / 100,
+                    'id': this.$store.getters.id
                 });
                 console.log('change concurrency filter with filter concurrency: ' + String(now));
-                this.image = data;
+                this.handleResponse(data);
                 this.progress = false;
             },
         },
         created() {
             this.loading();
         },
-
     }
 </script>
 
@@ -597,7 +641,7 @@
 
     .slider-adjustment1 {
         position: relative;
-        top: 12.5%;
+        top: 13%;
     }
 
     .slider-adjustment2 {
@@ -645,7 +689,7 @@
 
     h5 {
         font-weight: lighter;
-        color: coral
+        color: coral;
     }
 
     [class*="el-checkbox"] {
