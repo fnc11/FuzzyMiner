@@ -1,5 +1,7 @@
 from fuzzyminerpk.ClusterUtil import ClusterUtil
-from fuzzyminerpk.Utility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, cal_datavalue_correlation, cal_proximity_correlation
+from fuzzyminerpk.Utility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, \
+    normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, \
+    cal_datavalue_correlation, cal_proximity_correlation
 
 
 class DataRepository:
@@ -61,7 +63,6 @@ class DataRepository:
 
         # dictionary to save weights, invert, include
         self.metric_settings = dict()
-
 
     """
     This initializes all the lists which are required to store data to 0 or 0.0, in special cases to 1.0
@@ -180,27 +181,28 @@ class DataRepository:
 
                     # 2 Proximity calculation
                     self.binary_corr_proximity_values[ref_index][follower_index] += cal_proximity_correlation(ref_event,
-                                                                                                  follower_event) * att_factor
+                                                                                                              follower_event) * att_factor
                     self.binary_corr_proximity_divisors[ref_index][follower_index] += att_factor
 
                     # 3 End Point calculation
                     self.binary_corr_endpoint_values[ref_index][follower_index] += cal_endpoint_correlation(ref_event,
-                                                                                                follower_event) * att_factor
+                                                                                                            follower_event) * att_factor
                     self.binary_corr_endpoint_divisors[ref_index][follower_index] += att_factor
 
                     # 4 Originator calculation
-                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(ref_event,
-                                                                                                    follower_event) * att_factor
+                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(
+                        ref_event,
+                        follower_event) * att_factor
                     self.binary_corr_originator_divisors[ref_index][follower_index] += att_factor
 
                     # 5 DataType calculation
                     self.binary_corr_datatype_values[ref_index][follower_index] += cal_datatype_correlation(ref_event,
-                                                                                                follower_event) * att_factor
+                                                                                                            follower_event) * att_factor
                     self.binary_corr_datatype_divisors[ref_index][follower_index] += att_factor
 
                     # 6 DataValue calculation
                     self.binary_corr_datavalue_values[ref_index][follower_index] += cal_datavalue_correlation(ref_event,
-                                                                                                  follower_event) * att_factor
+                                                                                                              follower_event) * att_factor
                     self.binary_corr_datavalue_divisors[ref_index][follower_index] += att_factor
 
     """
@@ -398,19 +400,18 @@ class DataRepository:
 
         sz = self.num_of_nodes
         # if single metrics is selected then weight factor doesn't take effect
-        if inv1 and not inv2:
-            w1 = 1 - w1
-        elif not inv1 and inv2:
-            w2 = 1 - w2
-        elif inv1 and inv2:
-            w1 = 1 - w1
-            w2 = 1 - w2
-
         if w1 + w2 != 0:
             for i in range(0, sz):
-                self.unary_weighted_values = [(val1 * w1 + val2 * w2) / (w1 + w2) for val1, val2
-                                              in zip(self.unary_node_frequency_normalized_values,
-                                                     self.unary_derivative_routing_normalized_values)]
+                val1 = self.unary_node_frequency_normalized_values[i]
+                val2 = self.unary_derivative_routing_normalized_values[i]
+                if inv1 and not inv2:
+                    val1 = 1 - val1
+                elif not inv1 and inv2:
+                    val2 = 1 - val2
+                elif inv1 and inv2:
+                    val1 = 1 - val1
+                    val2 = 1 - val2
+                self.unary_weighted_values = [(val1 * w1 + val2 * w2) / (w1 + w2)]
 
     """
     For calculating binary weighted values
@@ -430,20 +431,22 @@ class DataRepository:
         sz = self.num_of_nodes
 
         ## if single metrics is selected then weight factor doesn't take effect
-        if inv1 and not inv2:
-            w1 = 1 - w1
-        elif not inv1 and inv2:
-            w2 = 1 - w2
-        elif inv1 and inv2:
-            w1 = 1 - w1
-            w2 = 1 - w2
+
         if w1 + w2 != 0.0:
             binary_weight_values = list()
             for i in range(0, sz):
                 temp_list = list()
                 for j in range(0, sz):
-                    temp_list.append((self.binary_edge_frequency_normalized_values[i][j] * w1 +
-                                      self.binary_derivative_distance_normalized_values[i][j] * w2) / (w1 + w2))
+                    val1 = self.binary_edge_frequency_normalized_values[i][j]
+                    val2 = self.binary_derivative_distance_normalized_values[i][j]
+                    if inv1 and not inv2:
+                        val1 = 1 - val1
+                    elif not inv1 and inv2:
+                        val2 = 1 - val2
+                    elif inv1 and inv2:
+                        val1 = 1 - val1
+                        val2 = 1 - val2
+                    temp_list.append((val1 * w1 + val2 * w2) / (w1 + w2))
                 binary_weight_values.append(temp_list)
             self.binary_weighted_values = binary_weight_values
 
@@ -474,32 +477,29 @@ class DataRepository:
         sz = self.num_of_nodes
 
         ## if single metrics is selected then weight factor doesn't take effect
-        if inv1:
-            w1 = 1 - w1
-
-        if inv2:
-            w2 = 1 - w2
-
-        if inv3:
-            w3 = 1 - w3
-
-        if inv4:
-            w4 = 1 - w4
-
-        if inv5:
-            w5 = 1 - w5
 
         if w1 + w2 + w3 + w4 + w5 != 0.0:
             binary_corr_weight_values = list()
             for i in range(0, sz):
                 temp_list = list()
                 for j in range(0, sz):
-                    temp_list.append((self.binary_corr_proximity_normalized_values[i][j] * w1 +
-                                      self.binary_corr_originator_normalized_values[i][j] * w2 +
-                                      self.binary_corr_endpoint_normalized_values[i][j] * w3 +
-                                      self.binary_corr_datatype_normalized_values[i][j] * w4 +
-                                      self.binary_corr_datavalue_normalized_values[i][j] * w5) / (
-                                             w1 + w2 + w3 + w4 + w5))
+                    val1 = self.binary_corr_proximity_normalized_values[i][j]
+                    val2 = self.binary_corr_originator_normalized_values[i][j]
+                    val3 = self.binary_corr_endpoint_normalized_values[i][j]
+                    val4 = self.binary_corr_datatype_normalized_values[i][j]
+                    val5 = self.binary_corr_datavalue_normalized_values[i][j]
+                    if inv1:
+                        val1 = 1 - val1
+                    if inv2:
+                        val2 = 1 - val2
+                    if inv3:
+                        val3 = 1 - val3
+                    if inv4:
+                        val4 = 1 - val4
+                    if inv5:
+                        val5 = 1 - val5
+                    temp_list.append((val1 * w1 + val2 * w2 + val3 * w3 + val4 * w4 + val5 * w5) /
+                                     (w1 + w2 + w3 + w4 + w5))
                 binary_corr_weight_values.append(temp_list)
             self.binary_corr_weighted_values = binary_corr_weight_values
 
