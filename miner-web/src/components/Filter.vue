@@ -188,7 +188,7 @@
         </el-dialog>
         <el-dialog
             title="Loading"
-            :visible="progress"
+            :visible.sync="progress"
             width="25%">
             <el-progress type="line" :percentage="percentage"></el-progress>
             <i class="el-icon-loading" />
@@ -218,7 +218,7 @@
                 balance: 50,
                 loops: false,
                 absolute: false,
-                concurrency: false,
+                concurrency: true,
                 dialog: false,
                 typeLabels: {
                     'unary': 'Unary Metrics',
