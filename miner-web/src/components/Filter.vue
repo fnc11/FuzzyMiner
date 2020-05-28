@@ -5,7 +5,10 @@
                 <div class="model-view">
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
-                        <img :src="image" alt=""/>
+<!--                        <img :src="image" alt=""/>-->
+                        <viewer :images="images">
+                            <img v-for="(item, index) in images" :src="item" :key="index">
+                        </viewer>
                     </div>
                     <el-button type="primary" plain class="button-position" v-model="image" @click="downloadImage">Save
                         Snapshot
@@ -203,7 +206,7 @@
         name: "Filter",
         data() {
             return {
-                image: '',
+                images: [],
                 progress: false,
                 percentage: 0,
                 node: 50,
@@ -476,7 +479,7 @@
             handleResponse(resp) {
                 // here needs to handle error message
                 if (resp.message_type === 0) {
-                    this.image = resp.graph_path;
+                    this.images.push(resp.graph_path);
                 }
             },
             async downloadImage() {
