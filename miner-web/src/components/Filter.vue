@@ -218,7 +218,7 @@
                 balance: 50,
                 loops: false,
                 absolute: false,
-                concurrency: false,
+                concurrency: true,
                 dialog: false,
                 typeLabels: {
                     'unary': 'Unary Metrics',
