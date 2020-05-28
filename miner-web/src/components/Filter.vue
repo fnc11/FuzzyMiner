@@ -6,7 +6,7 @@
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
 <!--                        <img :src="image" alt=""/>-->
-                        <viewer :images="images">
+                        <viewer :images="images" @inited="inited">
                             <img v-for="(item, index) in images" :src="item" :key="index">
                         </viewer>
                     </div>
@@ -206,6 +206,7 @@
         name: "Filter",
         data() {
             return {
+                selectedImage: '',
                 images: [],
                 progress: false,
                 percentage: 0,
@@ -305,7 +306,7 @@
                 }, {
                     value: 'binaryCorrelation',
                     label: 'Binary Correlation'
-                }]
+                }],
             }
         },
         methods: {
@@ -394,24 +395,24 @@
                 let req = {
                     metrics: {
                         unary_metrics: {
-                            frequency: {
+                            frequency_significance_unary: {
                                 include: this.metricsConfig.metrics.unary.frequency.inc,
                                 invert: this.metricsConfig.metrics.unary.frequency.invert,
                                 weight: this.metricsConfig.metrics.unary.frequency.weight / 100
                             },
-                            routing: {
+                            routing_significance_unary: {
                                 include: this.metricsConfig.metrics.unary.routing.inc,
                                 invert: this.metricsConfig.metrics.unary.routing.invert,
                                 weight: this.metricsConfig.metrics.unary.routing.weight / 100
                             }
                         },
                         binary_significance: {
-                            frequency: {
+                            frequency_significance_binary: {
                                 include: this.metricsConfig.metrics.binarySignificance.frequency.inc,
                                 invert: this.metricsConfig.metrics.binarySignificance.frequency.invert,
                                 weight: this.metricsConfig.metrics.binarySignificance.frequency.weight / 100
                             },
-                            distance: {
+                            distance_significance_binary: {
                                 include: this.metricsConfig.metrics.binarySignificance.distance.inc,
                                 invert: this.metricsConfig.metrics.binarySignificance.distance.invert,
                                 weight: this.metricsConfig.metrics.binarySignificance.distance.weight / 100
@@ -433,12 +434,12 @@
                                 invert: this.metricsConfig.metrics.binaryCorrelation.originator.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.originator.weight / 100
                             },
-                            data_type: {
+                            datatype_correlation_binary: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.dataType.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.dataType.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.dataType.weight / 100
                             },
-                            data_value: {
+                            datavalue_correlation_binary: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.dataValue.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.dataValue.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.dataValue.weight / 100
@@ -453,7 +454,7 @@
                     req.attenuation.selected = 'Linear Attenuation';
                 } else {
                     req.attenuation.selected = 'N root with radical';
-                    req.attenuation.radical = this.radical / 100;
+                    req.attenuation.radical = this.metricsConfig.attenuation.radical;
                 }
                 req.id = this.$store.getters.id;
                 this.progressing();
@@ -482,10 +483,13 @@
                     this.images.push(resp.graph_path);
                 }
             },
+            inited(viewer) {
+                this.selectedImage = viewer.image.currentSrc;
+            },
             async downloadImage() {
                 console.log("Download Image");
                 const resp = await Axios({
-                    url: this.image,
+                    url: this.selectedImage,
                     method: 'get',
                     responseType: 'blob'
                 });

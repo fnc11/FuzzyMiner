@@ -128,3 +128,9 @@ class Graph:
         if len(self.fm_nodes) == 0:
             self.fm_message.message_type == 2
             self.fm_message.message_desc == "The current config and filter settings resulted either a null graph or one cluster. Please try changing config or filters or both."
+
+    def apply_metrics_config(self, metrics_configs, attenuation, chunk_size):
+        self.config.metrics_configs = metrics_configs
+        self.config.attenuation = attenuation
+        self.config.chunk_size = chunk_size
+        return self.apply_config(self.config)

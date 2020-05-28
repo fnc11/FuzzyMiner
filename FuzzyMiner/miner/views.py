@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from .graphpool import GraphPool
 
-from fuzzyminerpk.Attenuation import LinearAttenuation
+from fuzzyminerpk.Attenuation import LinearAttenuation, NRootAttenuation
 from fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
 from fuzzyminerpk.Filter import NodeFilter, EdgeFilter, ConcurrencyFilter
 from fuzzyminerpk.FuzzyMiner import Graph
@@ -140,8 +140,28 @@ def concurrency_filter(request):
 @csrf_exempt
 def metrics_changed(request):
     data = json.loads(request.body)
-    metrics = data['metrics']
-    attenuation = data['attenuation']
-    print('metrics:', metrics)
-    print('attenuation:', attenuation)
-    return HttpResponse()
+    metrics_data = data['metrics']
+    attenuation_data = data['attenuation']
+    print("metrics data:", metrics_data)
+    print("attenuation data:", attenuation_data)
+    unary_metrics = metrics_data['unary_metrics']
+    binary_metrics = metrics_data['binary_significance']
+    binary_correlation_metrics = metrics_data['binary_correlation']
+    metrics_configs = list()
+    for key, value in unary_metrics.items():
+        metric = MetricConfig(key, "unary", value['include'], value['invert'], value['weight'])
+        metrics_configs.append(metric)
+    for key, value in binary_metrics.items():
+        metric = MetricConfig(key, "binary", value['include'], value['invert'], value['weight'])
+        metrics_configs.append(metric)
+    for key, value in binary_correlation_metrics.items():
+        metric = MetricConfig(key, "binary", value['include'], value['invert'], value['weight'])
+        metrics_configs.append(metric)
+    if attenuation_data['selected'] == "N root with radical":
+        attenuation = NRootAttenuation(attenuation_data['maximal_event_distance'], attenuation_data['radical'])
+    else:
+        attenuation = LinearAttenuation(attenuation_data['maximal_event_distance'],
+                                        attenuation_data['maximal_event_distance'])
+    graph = GraphPool().get_graph_by_id(data['id'])
+    fm_message = graph.apply_metrics_config(metrics_configs, attenuation, attenuation_data['maximal_event_distance'])
+    return to_json(fm_message)
