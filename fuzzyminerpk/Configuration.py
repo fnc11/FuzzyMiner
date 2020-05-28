@@ -12,7 +12,8 @@ class Configuration:
         metric_info = ""
         for metric in self.metric_configs:
             metric_info += metric.__str__()
-        return self.filter_config.__str__() + metric_info + " Attenuation: "+self.attenuation+" Maximum Distance: "+self.chunk_size
+        return self.filter_config.__str__()  + "\n"  + metric_info + " Attenuation: " + str(
+            self.attenuation) + " Maximum Distance: " + str(self.chunk_size)
 
 
 class FilterConfig:
@@ -22,7 +23,7 @@ class FilterConfig:
         self.concurrency_filter = concurrency_filter
 
     def __str__(self):
-        return self.node_filter.__str__() + self.edge_filter.__str__() + self.concurrency_filter.__str__()
+        return self.node_filter.__str__()  + "\n" + self.edge_filter.__str__()  + "\n"  + self.concurrency_filter.__str__()
 
 
 class MetricConfig:
@@ -42,4 +43,5 @@ class MetricConfig:
         self.weight = weight
 
     def __str__(self):
-        return "Metric Name: " + self.name + " Metric Type: " + self.metric_type + " Included: " + self.include + " Inverted: " + self.invert + " Weight: " + self.weight
+        return "Metric Name: " + self.name + " Metric Type: " + self.metric_type + " Included: " + str(
+            self.include) + " Inverted: " + str(self.invert) + " Weight: " + str(self.weight)

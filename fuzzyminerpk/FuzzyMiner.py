@@ -23,7 +23,6 @@ class Graph:
         self.fm_edges = None
         self.fm_message = FMMessage()
 
-
     """
     This method is to be called when entire config object is changed, for e.g. during the initiation phase
     or when user changes config in the interface
@@ -31,7 +30,9 @@ class Graph:
 
     def apply_config(self, config):
         print("Apply Config called with the following config: ")
-        print(config)
+        print(config.filter_config)
+        for metric_config in config.metric_configs:
+            print(metric_config)
         self.config = config
         self.data_repository.config = config
         self.data_repository.init_lists()
@@ -92,7 +93,7 @@ class Graph:
     """
 
     def apply_node_filter(self, node_filter):
-        print("Apply Node filter is called with following values: ")
+        print("Apply Node filter is called with following values: " + "\n")
         print(node_filter)
         self.config.filter_config.node_filter = node_filter
         self.filtered_data_repository.apply_node_filter(node_filter)
@@ -140,9 +141,10 @@ class Graph:
 
     def apply_metrics_config(self, metrics_configs, attenuation, chunk_size):
         print("Apply Metrics config is called with following values: ")
-        print(metrics_configs)
+        for metrics_config in metrics_configs:
+            print(metrics_config)
         print(attenuation)
-        print("Maximum Distance: "+chunk_size)
+        print("\nMaximum Distance: " + str(chunk_size))
         self.config.metrics_configs = metrics_configs
         self.config.attenuation = attenuation
         self.config.chunk_size = chunk_size

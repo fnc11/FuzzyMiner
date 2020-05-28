@@ -6,7 +6,7 @@ class Filter:
         self.name = name
 
     def __str__(self):
-        return "Filter name: "+self.name
+        return "Filter name: " + self.name
 
 
 class NodeFilter(Filter):
@@ -15,7 +15,7 @@ class NodeFilter(Filter):
         self.cut_off = cut_off
 
     def __str__(self):
-        return  super().__str__()+ " Cut Off: " + self.cut_off
+        return super().__str__() + " Cut Off: " + str(self.cut_off)
 
 
 class EdgeFilter(Filter):
@@ -30,9 +30,12 @@ class EdgeFilter(Filter):
 
     def __str__(self):
         if self.edge_transform == "Fuzzy Edges":
-            return super().__str__()+ " Edge Transform: "+self.edge_transform +" sc_ratio: "+self.sc_ratio+" Cut Off: "+self.cut_off+" Ignore Self Loops: "+self.ignore_self_loops+" Interpret Absolute: "+self.interpret_abs
+            return super().__str__() + " Edge Transform: " + self.edge_transform + " sc_ratio: " + str(
+                self.sc_ratio) + " Cut Off: " + str(self.cut_off) + " Ignore Self Loops: " + str(
+                self.ignore_self_loops) + " Interpret Absolute: " + str(self.interpret_abs)
         else:
-            return super().__str__()+ "Edge Transform: "+self.edge_transform
+            return super().__str__() + "Edge Transform: " + self.edge_transform
+
 
 class ConcurrencyFilter(Filter):
     def __init__(self, name="concurrency_filter", filter_concurrency=True, preserve=0.5, offset=0.5):
@@ -43,6 +46,6 @@ class ConcurrencyFilter(Filter):
 
     def __str__(self):
         if self.filter_concurrency:
-            return super().__str__() + " Preserve: "+self.preserve+" Offset: "+self.offset
+            return super().__str__() + " Preserve: " + str(self.preserve) + " Offset: " + str(self.offset)
         else:
             return super().__str__() + "Filter is Disabled"
