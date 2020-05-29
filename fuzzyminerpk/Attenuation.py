@@ -31,9 +31,8 @@ class Attenuation(ABC):
     def get_name(self):
         pass
 
-    @abstractmethod
-    def get_description(self):
-        pass
+    def __str__(self):
+        return "Buffer Size: " + str(self.buf_size) + " Attenuation Factor: " + self.attenuation_factors
 
 
 class LinearAttenuation(Attenuation):
@@ -51,8 +50,8 @@ class LinearAttenuation(Attenuation):
     def get_name(self):
         return "Linear Attenuation"
 
-    def get_description(self):
-        return "TO DO Yet!!!"
+    def __str__(self):
+        return " Echelons Value: " + str(self.echelons)
 
 
 class NRootAttenuation(Attenuation):
@@ -78,5 +77,5 @@ class NRootAttenuation(Attenuation):
         else:
             return str(self.echelons) + "th root"
 
-    def get_description(self):
-        return "TO DO Yet!!!"
+    def __str__(self):
+        return " Echelons Value: " + str(self.echelons)

@@ -37,6 +37,7 @@ class ClusterUtil:
         self.fm_edges_dict.clear()
         self.fm_clusters.clear()
         self.fm_nodes.clear()
+        self.fm_edges.clear()
 
     """
     Initializes victim nodes into clusters
