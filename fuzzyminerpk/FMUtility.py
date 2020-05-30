@@ -4,31 +4,25 @@ import Levenshtein
 class FMLogUtils:
     def __init__(self, log):
         self.log = log
-        self.nodes = list()
-        self.nodes = self.get_nodes()
-        self.num_of_nodes = self.get_num_of_nodes()
-        self.node_indices = dict()
-        self.update_node_index()
+        self.nodes = None
+        self.num_of_nodes = None
+        self.node_indices = None
+        self.extract_node_info()
 
     def get_num_of_nodes(self):
         return len(self.nodes)
 
-    def get_nodes(self):
-        temp_set = set()
+    def extract_node_info(self):
+        idx = 0
+        self.node_indices = dict()
         for trace in self.log:
             for event in trace:
-                temp_set.add(event['concept:name'] + "@" + event['lifecycle:transition'])
-        return list(temp_set)
-
-    """
-    This populates the node_indices dictionary from the event classes;
-    """
-
-    def update_node_index(self):
-        idx = 0
-        for node in self.nodes:
-            self.node_indices[node] = idx
-            idx += 1
+                name = event['concept:name'] + "@" + event['lifecycle:transition']
+                if name not in self.node_indices.keys():
+                    self.node_indices[name] = idx
+                    idx += 1
+        self.num_of_nodes = idx
+        self.nodes = list(self.node_indices.keys())
 
 
 def is_standard_key(key):
