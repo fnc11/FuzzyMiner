@@ -39,12 +39,15 @@ def upload(request):
         return HttpResponse(saved_file_url)
 
 
-def get_default_configuration():
-    # defining default configuration
-    node_filter = NodeFilter()
-    # Can specify type of edge filter you want use by giving "Fuzzy Edges" or "Best Edges"
-    edge_filter = EdgeFilter("edge_filter", "Fuzzy Edges", 0.5, 0.5, False, False)
-    concurrency_filter = ConcurrencyFilter("concurrency_filter", True, 0.5, 0.5)
+def get_default_configuration(num=0):
+    if num == 0:
+        node_filter = NodeFilter()
+        edge_filter = EdgeFilter()
+        concurrency_filter = ConcurrencyFilter()
+    else:
+        node_filter = NodeFilter()
+        edge_filter = EdgeFilter(1, 0.75, 1.0)
+        concurrency_filter = ConcurrencyFilter(True, 1.0, 0.7)
     filter_config = FilterConfig(node_filter, edge_filter, concurrency_filter)
     metric_config1 = MetricConfig("frequency_significance_unary", "unary")
     metric_config2 = MetricConfig("routing_significance_unary", "unary")
@@ -118,9 +121,9 @@ def edge_filter(request):
         print('cutoff:', data['cutoff'])
         print('ignore self-loops:', data['ignore_self_loops'])
         print('interpret absolute:', data['interpret_absolute'])
-        edge_filter_obj = EdgeFilter(edge_transform=data['edge_transformer'], sc_ratio=data['s/c_ratio'], cut_off=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
+        edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], cut_off=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
     else:
-        edge_filter_obj = EdgeFilter(edge_transform="Best Edges")
+        edge_filter_obj = EdgeFilter(edge_transform=0)
     graph = GraphPool().get_graph_by_id(data['id'])
     fm_message = graph.apply_edge_filter(edge_filter_obj)
     return to_json(fm_message)

@@ -35,7 +35,7 @@ class MetricConfig:
     weight: Weight of this Metric
     """
 
-    def __init__(self, name, metric_type, include=True, invert=False, weight=0.5):
+    def __init__(self, name, metric_type, include=True, invert=False, weight=1.0):
         self.name = name
         self.metric_type = metric_type
         self.include = include

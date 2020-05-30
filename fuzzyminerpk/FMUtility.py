@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import Levenshtein
 
 
@@ -22,10 +20,10 @@ class FMLogUtils:
                 temp_set.add(event['concept:name'] + "@" + event['lifecycle:transition'])
         return list(temp_set)
 
-
     """
     This populates the node_indices dictionary from the event classes;
     """
+
     def update_node_index(self):
         idx = 0
         for node in self.nodes:
@@ -60,15 +58,29 @@ def cal_proximity_correlation(evt1, evt2):
 def cal_endpoint_correlation(evt1, evt2):
     first_name = evt1['concept:name'] if 'concept:name' in evt1 else "<no name>"
     second_name = evt2['concept:name'] if 'concept:name' in evt2 else "<no name>"
-    # Note this implementation is not same as fuzzy_miner plugin String Similarity mechanism
-    return Levenshtein.ratio(str(first_name), str(second_name))
+    # Can use ratio directly but the implementation is not same as fuzzy_miner plugin String Similarity mechanism
+    # Levenshtein.ratio(str(first_name), str(second_name))
+    # Exact Implementation to Plugin
+    dist = Levenshtein.distance(str(first_name), str(second_name))
+    big_str_len = max(len(str(first_name)), len(str(second_name)))
+    if big_str_len == 0:
+        return 1.0
+    else:
+        return dist / big_str_len
 
 
 def cal_originator_correlation(evt1, evt2):
     first_resource = evt1['org:resource'] if 'org:resource' in evt1 else "<no resource>"
     second_resource = evt2['org:resource'] if 'org:resource' in evt2 else "<no resource>"
-    # Note this implementation is not same as fuzzy_miner plugin String Similarity mechanism
-    return Levenshtein.ratio(str(first_resource), str(second_resource))
+    # Can use ratio directly but the implementation is not same as fuzzy_miner plugin String Similarity mechanism
+    # return Levenshtein.ratio(str(first_resource), str(second_resource))
+    # Exact Implementation to Plugin
+    dist = Levenshtein.distance(str(first_resource), str(second_resource))
+    big_str_len = max(len(first_resource), len(second_resource))
+    if big_str_len == 0:
+        return 1.0
+    else:
+        return dist / big_str_len
 
 
 def cal_datatype_correlation(evt1, evt2):
@@ -111,8 +123,15 @@ def cal_datavalue_correlation(evt1, evt2):
     for key in ref_data_keys:
         if key in fol_data_keys:
             key_overlap += 1
-            val_overlap += Levenshtein.ratio(str(evt1[key]), str(evt2[key]))
-            # Note this implementation is not same as fuzzy_miner plugin String Similarity mechanism
+            # Can use ratio directly but the implementation is not same as fuzzy_miner plugin String Similarity mechanism
+            # val_overlap += Levenshtein.ratio(str(evt1[key]), str(evt2[key]))
+            # Exact Implementation to Plugin
+            dist = Levenshtein.distance(str(evt1[key]), str(evt2[key]))
+            big_str_len = max(len(str(evt1[key])), len(str(evt2[key])))
+            if big_str_len == 0:
+                val_overlap += 1.0
+            else:
+                val_overlap += dist / big_str_len
 
     if key_overlap == 0:
         return 0.0
@@ -135,6 +154,7 @@ def is_valid_matrix2D(lst):
             if lst[i][j] > 0.0:
                 return True
     return False
+
 
 def normalize_matrix1D(lst):
     max_val = 0
