@@ -66,7 +66,7 @@ def cal_endpoint_correlation(evt1, evt2):
     if big_str_len == 0:
         return 1.0
     else:
-        return dist / big_str_len
+        return (big_str_len - dist) / big_str_len
 
 
 def cal_originator_correlation(evt1, evt2):
@@ -80,7 +80,7 @@ def cal_originator_correlation(evt1, evt2):
     if big_str_len == 0:
         return 1.0
     else:
-        return dist / big_str_len
+        return (big_str_len - dist) / big_str_len
 
 
 def cal_datatype_correlation(evt1, evt2):
@@ -97,10 +97,9 @@ def cal_datatype_correlation(evt1, evt2):
     if (len(ref_data_keys) == 0) or (len(fol_data_keys) == 0):
         return 0
     overlap = 0
-    for key1 in ref_data_keys:
-        for key2 in fol_data_keys:
-            if key1 == key2:
-                overlap += 1
+    for key in ref_data_keys:
+        if key in fol_data_keys:
+            overlap += 1
 
     return overlap / len(ref_data_keys)
 
@@ -131,7 +130,7 @@ def cal_datavalue_correlation(evt1, evt2):
             if big_str_len == 0:
                 val_overlap += 1.0
             else:
-                val_overlap += dist / big_str_len
+                val_overlap += (big_str_len - dist) / big_str_len
 
     if key_overlap == 0:
         return 0.0
