@@ -4,7 +4,7 @@ import numpy as np
 from fuzzyminerpk.ClusterUtil import ClusterUtil
 from fuzzyminerpk.FMRepository import DataRepository, FilteredDataRepository
 from fuzzyminerpk.FMStructure import FMMessage
-from fuzzyminerpk.Utility import FMLogUtils
+from fuzzyminerpk.FMUtility import FMLogUtils
 from datetime import datetime
 
 from fuzzyminerpk.VizUtil import VizUtil

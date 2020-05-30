@@ -1,5 +1,5 @@
 from fuzzyminerpk.ClusterUtil import ClusterUtil
-from fuzzyminerpk.Utility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, cal_datavalue_correlation, cal_proximity_correlation
+from fuzzyminerpk.FMUtility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, cal_datavalue_correlation, cal_proximity_correlation
 
 
 class DataRepository:
@@ -726,7 +726,7 @@ class FilteredDataRepository:
         # Initializing an mask for holding true false values
         self.preserve_mask = [[False for x in range(sz)] for y in range(sz)]
         ## Return error if something else was sent other than Fuzzy and Best
-        if edge_filter.edge_transform == "Fuzzy Edges":
+        if edge_filter.edge_transform == 1:
             for i in range(0, sz):
                 self.process_node_edges_fuzzy_filter(i)
         else:
