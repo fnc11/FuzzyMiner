@@ -712,6 +712,8 @@ class FilteredDataRepository:
                 sig_source_out += self.data_repository.binary_weighted_values[x][i]
             if i != y:
                 sig_target_in += self.data_repository.binary_weighted_values[i][x]
+        if sig_source_out == 0.0 or sig_target_in == 0.0:
+            return 0.0
         return (sig_ref / sig_source_out) + (sig_ref / sig_target_in)
 
     """
