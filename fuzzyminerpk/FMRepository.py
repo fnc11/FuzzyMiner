@@ -73,40 +73,40 @@ class DataRepository:
     def init_lists(self):
         self.fill_dicts()
         self.unary_node_frequency_values = [0 for x in range(self.num_of_nodes)]
-        self.unary_node_frequency_normalized_values = [0 for x in range(self.num_of_nodes)]
+        self.unary_node_frequency_normalized_values = [0.0 for x in range(self.num_of_nodes)]
 
         self.binary_edge_frequency_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_edge_frequency_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
+        self.binary_edge_frequency_divisors = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                range(self.num_of_nodes)]
         self.binary_edge_frequency_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                         range(self.num_of_nodes)]
 
-        self.binary_corr_proximity_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_proximity_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
+        self.binary_corr_proximity_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.binary_corr_proximity_divisors = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                range(self.num_of_nodes)]
         self.binary_corr_proximity_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                         range(self.num_of_nodes)]
 
-        self.binary_corr_endpoint_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_endpoint_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
+        self.binary_corr_endpoint_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.binary_corr_endpoint_divisors = [[0.0 for x in range(self.num_of_nodes)] for y in
                                               range(self.num_of_nodes)]
         self.binary_corr_endpoint_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                        range(self.num_of_nodes)]
 
-        self.binary_corr_originator_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_originator_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
+        self.binary_corr_originator_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.binary_corr_originator_divisors = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                 range(self.num_of_nodes)]
         self.binary_corr_originator_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                          range(self.num_of_nodes)]
 
-        self.binary_corr_datatype_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_datatype_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
+        self.binary_corr_datatype_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
+        self.binary_corr_datatype_divisors = [[0.0 for x in range(self.num_of_nodes)] for y in
                                               range(self.num_of_nodes)]
         self.binary_corr_datatype_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                        range(self.num_of_nodes)]
 
         self.binary_corr_datavalue_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_datavalue_divisors = [[1.0 for x in range(self.num_of_nodes)] for y in
+        self.binary_corr_datavalue_divisors = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                range(self.num_of_nodes)]
         self.binary_corr_datavalue_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
                                                         range(self.num_of_nodes)]
