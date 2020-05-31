@@ -699,8 +699,6 @@ class FilteredDataRepository:
                 self.process_node_edges_best_filter(i)
         for i in range(0, sz):
             for j in range(0, sz):
-                if i == j:
-                    continue
                 if not self.preserve_mask[i][j]:
                     self.edge_filter_resultant_binary_values[i][j] = 0.0
                     self.edge_filter_resultant_binary_corr_values[i][j] = 0.0
@@ -723,7 +721,6 @@ class FilteredDataRepository:
             if ignore_self_loops and i == idx:
                 # do nothing
                 continue
-
             # Check for incoming relations
             significance = self.concurrency_filter_resultant_binary_values[i][idx]
             if significance > 0.0:
@@ -736,7 +733,6 @@ class FilteredDataRepository:
                     min_in_val = in_values[i]
             else:
                 in_values[i] = 0.0
-
             # check for outgoing relations
             significance = self.concurrency_filter_resultant_binary_values[idx][i]
             if significance > 0.0:
@@ -758,6 +754,8 @@ class FilteredDataRepository:
         in_limit = max_in_val - (max_in_val - min_in_val) * self.filter_config.edge_filter.cut_off
         out_limit = max_out_val - (max_out_val - min_out_val) * self.filter_config.edge_filter.cut_off
         for i in range(0, sz):
+            if ignore_self_loops and i == idx:
+                continue
             if in_values[i] >= in_limit:
                 self.preserve_mask[i][idx] = True
             if out_values[i] >= out_limit:
