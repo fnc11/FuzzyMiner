@@ -150,10 +150,7 @@ def is_valid_matrix2D(lst):
 
 
 def normalize_matrix1D(lst):
-    max_val = 0
-    for val in lst:
-        if val > max_val:
-            max_val = val
+    max_val = max(lst)
     if max_val == 0:
         return lst
     else:
@@ -164,12 +161,8 @@ def normalize_matrix1D(lst):
 
 
 def normalize_matrix2D(lst):
-    max_val = 0
     sz = len(lst[0])
-    for i in range(0, sz):
-        for j in range(0, sz):
-            if lst[i][j] > max_val:
-                max_val = lst[i][j]
+    max_val = max(map(max, lst))
     if max_val == 0:
         return lst
     else:
@@ -180,3 +173,92 @@ def normalize_matrix2D(lst):
                 temp_list.append(lst[i][j] / max_val)
             norm_list.append(temp_list)
         return norm_list
+
+
+def compensate_frequency(values, divisors):
+    sz = len(values[0])
+    comp_list = list()
+    for i in range(sz):
+        temp_list = list()
+        for j in range(sz):
+            if divisors[i][j] > 0.0:
+                temp_list.append(values[i][j] / divisors[i][j])
+            else:
+                temp_list.append(values[i][j])
+        comp_list.append(temp_list)
+    return comp_list
+
+
+def special_weight_normalize2D(values, divisors, invert, normalize_max):
+    # This is for compensate frequency, special handling in Prom Plugin
+    sz = len(values[0])
+    # it is really the weight which is specified for this metric
+    if normalize_max == 0:
+        norm_list = [[0.0 for i in range(sz)] for j in range(sz)]
+        return norm_list
+    else:
+        comp_list = compensate_frequency(values, divisors)
+        max_value = max(map(max, values))
+        if max_value > 0.0:
+            norm_list = list()
+            for i in range(sz):
+                temp_list = list()
+                for j in range(sz):
+                    val = (comp_list[i][j] * normalize_max) / max_value
+                    if invert:
+                        val = normalize_max - val
+                    temp_list.append(val)
+                norm_list.append(temp_list)
+            return norm_list
+        else:
+            if invert:
+                for i in range(sz):
+                    for j in range(sz):
+                        comp_list[i][j] = normalize_max - comp_list[i][j]
+            return comp_list
+
+
+def weight_normalize1D(lst, invert, normalize_max):
+    sz = len(lst)
+    if normalize_max == 0:
+        return [0.0 for i in range(sz)]
+    else:
+        max_val = max(lst)
+        if max_val > 0.0:
+            norm_list = list()
+            for i in range(sz):
+                val = (lst[i] * normalize_max) / max_val
+                if invert:
+                    val = normalize_max - val
+                norm_list.append(val)
+            return norm_list
+        else:
+            if invert:
+                for i in range(sz):
+                    lst[i] = normalize_max - lst[i]
+            return lst
+
+
+def weight_normalize2D(lst, invert, normalize_max):
+    sz = len(lst[0])
+    if normalize_max == 0:
+        return [[0.0 for i in range(sz)] for j in range(sz)]
+    else:
+        max_val = max(map(max, lst))
+        if max_val > 0.0:
+            norm_list = list()
+            for i in range(sz):
+                temp_list = list()
+                for j in range(sz):
+                    val = (lst[i][j] * normalize_max) / max_val
+                    if invert:
+                        val = normalize_max - val
+                    temp_list.append(val)
+                norm_list.append(temp_list)
+            return norm_list
+        else:
+            if invert:
+                for i in range(sz):
+                    for j in range(sz):
+                        lst[i][j] = normalize_max - lst[i][j]
+            return lst
