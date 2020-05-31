@@ -4,7 +4,7 @@ import numpy as np
 from fuzzyminerpk.ClusterUtil import ClusterUtil
 from fuzzyminerpk.FMRepository import DataRepository, FilteredDataRepository
 from fuzzyminerpk.FMStructure import FMMessage
-from fuzzyminerpk.Utility import FMLogUtils
+from fuzzyminerpk.FMUtility import FMLogUtils
 from datetime import datetime
 
 from fuzzyminerpk.VizUtil import VizUtil
@@ -38,7 +38,7 @@ class Graph:
         self.data_repository.init_lists()
         self.data_repository.extract_primary_metrics()
         self.data_repository.normalize_primary_metrics()
-        self.data_repository.extract_simple_aggregates()
+        self.data_repository.extract_aggregates()
         self.data_repository.extract_derivative_metrics()
         self.data_repository.normalize_derivative_metrics()
         # Final weighted values

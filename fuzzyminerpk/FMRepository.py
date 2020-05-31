@@ -1,7 +1,8 @@
 from fuzzyminerpk.ClusterUtil import ClusterUtil
-from fuzzyminerpk.Utility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, \
+from fuzzyminerpk.FMUtility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, \
     normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, \
-    cal_datavalue_correlation, cal_proximity_correlation
+    cal_datavalue_correlation, cal_proximity_correlation, weight_normalize1D, \
+    special_weight_normalize2D, weight_normalize2D
 
 
 class DataRepository:
@@ -47,7 +48,7 @@ class DataRepository:
         # binary aggregate computation - used frequency significance, will be used in cal routing_significance and distance
         self.binary_simple_aggregate_normalized_values = list()
         # binary aggregate multiple computation - used all binary corr metrics, will be used in cal routing_significance
-        self.binary_simple_multi_aggregate_normalized_values = list()
+        self.binary_multi_aggregate_normalized_values = list()
 
         ###########Derivative metrices######
         self.unary_derivative_routing_values = list()
@@ -58,11 +59,12 @@ class DataRepository:
 
         ###########Weighted metrics######
         self.unary_weighted_values = list()
-        self.binary_weighted_values = list()
+        self.binary_sig_weighted_values = list()
         self.binary_corr_weighted_values = list()
 
         # dictionary to save weights, invert, include
         self.metric_settings = dict()
+
 
     """
     This initializes all the lists which are required to store data to 0 or 0.0, in special cases to 1.0
@@ -117,8 +119,8 @@ class DataRepository:
                                                           range(self.num_of_nodes)]
 
         # binary aggregate multiple computation - used all binary corr metrics, will be used in cal routing_significance
-        self.binary_simple_multi_aggregate_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                                range(self.num_of_nodes)]
+        self.binary_multi_aggregate_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
+                                                         range(self.num_of_nodes)]
 
         ###########Derivative metrices######
         self.unary_derivative_routing_values = [0 for x in range(self.num_of_nodes)]
@@ -131,8 +133,8 @@ class DataRepository:
 
         ########Weighted lists###########
         self.unary_weighted_values = [0 for x in range(self.num_of_nodes)]
-        self.binary_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                       range(self.num_of_nodes)]
+        self.binary_sig_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in
+                                           range(self.num_of_nodes)]
         self.binary_corr_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in
                                             range(self.num_of_nodes)]
 
@@ -181,28 +183,27 @@ class DataRepository:
 
                     # 2 Proximity calculation
                     self.binary_corr_proximity_values[ref_index][follower_index] += cal_proximity_correlation(ref_event,
-                                                                                                              follower_event) * att_factor
+                                                                                                  follower_event) * att_factor
                     self.binary_corr_proximity_divisors[ref_index][follower_index] += att_factor
 
                     # 3 End Point calculation
                     self.binary_corr_endpoint_values[ref_index][follower_index] += cal_endpoint_correlation(ref_event,
-                                                                                                            follower_event) * att_factor
+                                                                                                follower_event) * att_factor
                     self.binary_corr_endpoint_divisors[ref_index][follower_index] += att_factor
 
                     # 4 Originator calculation
-                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(
-                        ref_event,
-                        follower_event) * att_factor
+                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(ref_event,
+                                                                                                    follower_event) * att_factor
                     self.binary_corr_originator_divisors[ref_index][follower_index] += att_factor
 
                     # 5 DataType calculation
                     self.binary_corr_datatype_values[ref_index][follower_index] += cal_datatype_correlation(ref_event,
-                                                                                                            follower_event) * att_factor
+                                                                                                follower_event) * att_factor
                     self.binary_corr_datatype_divisors[ref_index][follower_index] += att_factor
 
                     # 6 DataValue calculation
                     self.binary_corr_datavalue_values[ref_index][follower_index] += cal_datavalue_correlation(ref_event,
-                                                                                                              follower_event) * att_factor
+                                                                                                  follower_event) * att_factor
                     self.binary_corr_datavalue_divisors[ref_index][follower_index] += att_factor
 
     """
@@ -210,10 +211,10 @@ class DataRepository:
     derivative metrics
     """
 
-    def extract_simple_aggregates(self):
+    def extract_aggregates(self):
         self.cal_unary_simple_aggregate()
         self.cal_binary_simple_aggregate()
-        self.cal_binary_simple_multi_aggregate()
+        self.cal_binary_multi_aggregate()
 
     """
     This methods calls other methods to calculate derivative metrics values, routing and distance.
@@ -228,10 +229,9 @@ class DataRepository:
     """
 
     def extract_weighted_metrics(self):
-        self.fill_dicts()
         self.cal_weighted_unary_values()
         self.cal_weighted_binary_values()
-        self.cal_wrighted_binary_corr_values()
+        self.cal_weighted_binary_corr_values()
 
     """
     This function calculates simple sum of unary metrics values/normalized which is used in 
@@ -239,17 +239,16 @@ class DataRepository:
     """
 
     def cal_unary_simple_aggregate(self):
-        ## Caution Use normalized value of all the metrics
-        if is_valid_matrix1D(self.unary_node_frequency_values):
-            ##Caution for this zero value
+        if is_valid_matrix1D(self.unary_node_frequency_normalized_values):
             temp_max = 0
-            for i in range(0, len(self.unary_node_frequency_values)):
-                self.unary_simple_aggregate_normalized_values[i] = self.unary_node_frequency_values[i]
-                if self.unary_node_frequency_values[i] > temp_max:
-                    temp_max = self.unary_node_frequency_values[i]
+            sz = len(self.unary_node_frequency_normalized_values)
+            for i in range(sz):
+                self.unary_simple_aggregate_normalized_values[i] = self.unary_node_frequency_normalized_values[i]
+                if self.unary_node_frequency_normalized_values[i] > temp_max:
+                    temp_max = self.unary_node_frequency_normalized_values[i]
             if temp_max > 0:
-                for i in range(0, len(self.unary_node_frequency_values)):
-                    # Note: Could also fill normalized list self.binary_edge_frequency_normalized_values
+                for i in range(sz):
+                    # Weighted Normalized to 1
                     self.unary_simple_aggregate_normalized_values[i] *= (1 / temp_max)
         else:
             ##Caution: Check if we need to return or do somthing else
@@ -261,16 +260,14 @@ class DataRepository:
     """
 
     def cal_binary_simple_aggregate(self):
-        ## Caution Use normalized value of all the metrics
-        if is_valid_matrix2D(self.binary_edge_frequency_values):
-            ##Caution for this zero value
+        if is_valid_matrix2D(self.binary_edge_frequency_normalized_values):
             temp_max = 0
             sz = self.num_of_nodes
             for i in range(0, sz):
                 for j in range(0, sz):
-                    self.binary_simple_aggregate_normalized_values[i][j] = self.binary_edge_frequency_values[i][j]
-                    if self.binary_edge_frequency_values[i][j] > temp_max:
-                        temp_max = self.binary_edge_frequency_values[i][j]
+                    self.binary_simple_aggregate_normalized_values[i][j] = self.binary_edge_frequency_normalized_values[i][j]
+                    if self.binary_edge_frequency_normalized_values[i][j] > temp_max:
+                        temp_max = self.binary_edge_frequency_normalized_values[i][j]
             if temp_max > 0:
                 for i in range(0, sz):
                     for j in range(0, sz):
@@ -285,9 +282,9 @@ class DataRepository:
     calculating derivative unary metrics (routing significance)
     """
 
-    def cal_binary_simple_multi_aggregate(self):
+    def cal_binary_multi_aggregate(self):
         # Will be used for correlating related metric aggregation
-        ##Reminder Check if these metrics were normalized
+        # Using specially normalized(with frequency compensated) values
         valid_metrics = list()
         if is_valid_matrix2D(self.binary_corr_proximity_normalized_values):
             valid_metrics.append(self.binary_corr_proximity_normalized_values)
@@ -299,7 +296,7 @@ class DataRepository:
             valid_metrics.append(self.binary_corr_datatype_normalized_values)
         if is_valid_matrix2D(self.binary_corr_datavalue_normalized_values):
             valid_metrics.append(self.binary_corr_datavalue_normalized_values)
-        ##Caution for this zero value
+
         temp_max = 0
         if len(valid_metrics) > 0:
             # print("valid metrics are :"+str(len(valid_metrics)))
@@ -312,13 +309,14 @@ class DataRepository:
                         # print("Accessed value: "+str(valid_metrics[k][i][j]))
                         aggregated += valid_metrics[k][i][j]
                     # print("Aggregated sum : "+str(aggregated))
-                    self.binary_simple_multi_aggregate_normalized_values[i][j] = aggregated
+                    self.binary_multi_aggregate_normalized_values[i][j] = aggregated
                     if aggregated > temp_max:
                         temp_max = aggregated
+            # Normalizing the values now , here we are using 1 as max normalize (weight) to join all the metrics
             if temp_max > 0:
                 for i in range(0, sz):
                     for j in range(0, sz):
-                        self.binary_simple_multi_aggregate_normalized_values[i][j] *= (1 / temp_max)
+                        self.binary_multi_aggregate_normalized_values[i][j] *= (1 / temp_max)
         else:
             ##Caution: Check if we need to return or do somthing else
             return
@@ -337,9 +335,9 @@ class DataRepository:
                 if x == i:
                     continue
                 in_value += self.binary_simple_aggregate_normalized_values[x][i] * \
-                            self.binary_simple_multi_aggregate_normalized_values[x][i]
+                            self.binary_multi_aggregate_normalized_values[x][i]
                 out_value += self.binary_simple_aggregate_normalized_values[i][x] * \
-                             self.binary_simple_multi_aggregate_normalized_values[i][x]
+                             self.binary_multi_aggregate_normalized_values[i][x]
             if in_value == 0.0 and out_value == 0.0:
                 quotient = 0.0
             else:
@@ -367,21 +365,21 @@ class DataRepository:
     """
 
     def normalize_primary_metrics(self):
-        self.unary_node_frequency_normalized_values = normalize_matrix1D(self.unary_node_frequency_values)
-        self.binary_edge_frequency_normalized_values = normalize_matrix2D(self.binary_edge_frequency_values)
-        self.binary_corr_proximity_normalized_values = normalize_matrix2D(self.binary_corr_proximity_values)
-        self.binary_corr_endpoint_normalized_values = normalize_matrix2D(self.binary_corr_endpoint_values)
-        self.binary_corr_originator_normalized_values = normalize_matrix2D(self.binary_corr_originator_values)
-        self.binary_corr_datatype_normalized_values = normalize_matrix2D(self.binary_corr_datatype_values)
-        self.binary_corr_datavalue_normalized_values = normalize_matrix2D(self.binary_corr_datavalue_values)
+        self.unary_node_frequency_normalized_values = weight_normalize1D(self.unary_node_frequency_values, self.metric_settings["frequency_significance_unary"][1], self.metric_settings["frequency_significance_unary"][2])
+        self.binary_edge_frequency_normalized_values = weight_normalize2D(self.binary_edge_frequency_values, self.metric_settings["frequency_significance_binary"][1], self.metric_settings["frequency_significance_binary"][2])
+        self.binary_corr_proximity_normalized_values = special_weight_normalize2D(self.binary_corr_proximity_values, self.binary_corr_proximity_divisors, self.metric_settings["proximity_correlation_binary"][1], self.metric_settings["proximity_correlation_binary"][2])
+        self.binary_corr_endpoint_normalized_values = special_weight_normalize2D(self.binary_corr_endpoint_values,self.binary_corr_endpoint_divisors, self.metric_settings["endpoint_correlation_binary"][1], self.metric_settings["endpoint_correlation_binary"][2])
+        self.binary_corr_originator_normalized_values = special_weight_normalize2D(self.binary_corr_originator_values,self.binary_corr_originator_divisors, self.metric_settings["originator_correlation_binary"][1], self.metric_settings["originator_correlation_binary"][2])
+        self.binary_corr_datatype_normalized_values = special_weight_normalize2D(self.binary_corr_datatype_values,self.binary_corr_datatype_divisors, self.metric_settings["datatype_correlation_binary"][1], self.metric_settings["datatype_correlation_binary"][2])
+        self.binary_corr_datavalue_normalized_values = special_weight_normalize2D(self.binary_corr_datavalue_values,self.binary_corr_datavalue_divisors, self.metric_settings["datavalue_correlation_binary"][1], self.metric_settings["datavalue_correlation_binary"][2])
 
     """
     Normalized all the derivative metrics, routing and distance.
     """
 
     def normalize_derivative_metrics(self):
-        self.unary_derivative_routing_normalized_values = normalize_matrix1D(self.unary_derivative_routing_values)
-        self.binary_derivative_distance_normalized_values = normalize_matrix2D(self.binary_derivative_distance_values)
+        self.unary_derivative_routing_normalized_values = weight_normalize1D(self.unary_derivative_routing_values, self.metric_settings["routing_significance_unary"][1], self.metric_settings["routing_significance_unary"][2])
+        self.binary_derivative_distance_normalized_values = weight_normalize2D(self.binary_derivative_distance_values, self.metric_settings["distance_significance_binary"][1], self.metric_settings["distance_significance_binary"][2])
 
     """
     For calculating unary weighted values
@@ -391,27 +389,18 @@ class DataRepository:
     def cal_weighted_unary_values(self):
         inc1 = self.metric_settings["frequency_significance_unary"][0]
         inc2 = self.metric_settings["routing_significance_unary"][0]
-
-        w1 = self.metric_settings["frequency_significance_unary"][2] if inc1 else 0.0
-        w2 = self.metric_settings["routing_significance_unary"][2] if inc2 else 0.0
-
-        inv1 = self.metric_settings["frequency_significance_unary"][1]
-        inv2 = self.metric_settings["routing_significance_unary"][1]
-
+        w1 = self.metric_settings["frequency_significance_unary"][2]
+        w2 = self.metric_settings["routing_significance_unary"][2]
         sz = self.num_of_nodes
-        # if single metrics is selected then weight factor doesn't take effect
-        if w1 + w2 != 0:
-            for i in range(0, sz):
-                val1 = self.unary_node_frequency_normalized_values[i]
-                val2 = self.unary_derivative_routing_normalized_values[i]
-                if inv1 and not inv2:
-                    val1 = 1 - val1
-                elif not inv1 and inv2:
-                    val2 = 1 - val2
-                elif inv1 and inv2:
-                    val1 = 1 - val1
-                    val2 = 1 - val2
-                self.unary_weighted_values = [(val1 * w1 + val2 * w2) / (w1 + w2)]
+        valid_matrices = list()
+        if inc1 and (w1 > 0.0) and is_valid_matrix1D(self.unary_node_frequency_normalized_values):
+            valid_matrices.append(self.unary_node_frequency_normalized_values)
+        if inc2 and (w2 > 0.0) and is_valid_matrix1D(self.unary_derivative_routing_normalized_values):
+            valid_matrices.append(self.unary_derivative_routing_normalized_values)
+        for valid_matrix in valid_matrices:
+            for i in range(sz):
+                self.unary_weighted_values[i] += valid_matrix[i]
+        self.unary_weighted_values = normalize_matrix1D(self.unary_weighted_values)
 
     """
     For calculating binary weighted values
@@ -421,87 +410,56 @@ class DataRepository:
     def cal_weighted_binary_values(self):
         inc1 = self.metric_settings["frequency_significance_binary"][0]
         inc2 = self.metric_settings["distance_significance_binary"][0]
-
-        w1 = self.metric_settings["frequency_significance_binary"][2] if inc1 else 0.0
-        w2 = self.metric_settings["distance_significance_binary"][2] if inc2 else 0.0
-
-        inv1 = self.metric_settings["frequency_significance_binary"][1]
-        inv2 = self.metric_settings["distance_significance_binary"][1]
-
+        w1 = self.metric_settings["frequency_significance_binary"][2]
+        w2 = self.metric_settings["distance_significance_binary"][2]
         sz = self.num_of_nodes
+        valid_matrices = list()
+        if inc1 and (w1 > 0.0) and is_valid_matrix2D(self.binary_edge_frequency_normalized_values):
+            valid_matrices.append(self.binary_edge_frequency_normalized_values)
+        if inc2 and (w2 > 0.0) and is_valid_matrix2D(self.binary_derivative_distance_normalized_values):
+            valid_matrices.append(self.binary_derivative_distance_normalized_values)
 
-        ## if single metrics is selected then weight factor doesn't take effect
-
-        if w1 + w2 != 0.0:
-            binary_weight_values = list()
+        for valid_matrix in valid_matrices:
             for i in range(0, sz):
-                temp_list = list()
                 for j in range(0, sz):
-                    val1 = self.binary_edge_frequency_normalized_values[i][j]
-                    val2 = self.binary_derivative_distance_normalized_values[i][j]
-                    if inv1 and not inv2:
-                        val1 = 1 - val1
-                    elif not inv1 and inv2:
-                        val2 = 1 - val2
-                    elif inv1 and inv2:
-                        val1 = 1 - val1
-                        val2 = 1 - val2
-                    temp_list.append((val1 * w1 + val2 * w2) / (w1 + w2))
-                binary_weight_values.append(temp_list)
-            self.binary_weighted_values = binary_weight_values
+                    self.binary_sig_weighted_values[i][j] += valid_matrix[i][j]
+        self.binary_sig_weighted_values = normalize_matrix2D(self.binary_sig_weighted_values)
 
     """
-    For calculating binary corrleation weighted values
+    For calculating binary correlation weighted values
     Invert functionality still missing
     """
 
-    def cal_wrighted_binary_corr_values(self):
+    def cal_weighted_binary_corr_values(self):
         inc1 = self.metric_settings["proximity_correlation_binary"][0]
         inc2 = self.metric_settings["originator_correlation_binary"][0]
         inc3 = self.metric_settings["endpoint_correlation_binary"][0]
         inc4 = self.metric_settings["datatype_correlation_binary"][0]
         inc5 = self.metric_settings["datavalue_correlation_binary"][0]
-
-        w1 = self.metric_settings["proximity_correlation_binary"][2] if inc1 else 0.0
-        w2 = self.metric_settings["originator_correlation_binary"][2] if inc2 else 0.0
-        w3 = self.metric_settings["endpoint_correlation_binary"][2] if inc3 else 0.0
-        w4 = self.metric_settings["datatype_correlation_binary"][2] if inc4 else 0.0
-        w5 = self.metric_settings["datavalue_correlation_binary"][2] if inc5 else 0.0
-
-        inv1 = self.metric_settings["proximity_correlation_binary"][1]
-        inv2 = self.metric_settings["originator_correlation_binary"][1]
-        inv3 = self.metric_settings["endpoint_correlation_binary"][1]
-        inv4 = self.metric_settings["datatype_correlation_binary"][1]
-        inv5 = self.metric_settings["datavalue_correlation_binary"][1]
+        w1 = self.metric_settings["proximity_correlation_binary"][2]
+        w2 = self.metric_settings["originator_correlation_binary"][2]
+        w3 = self.metric_settings["endpoint_correlation_binary"][2]
+        w4 = self.metric_settings["datatype_correlation_binary"][2]
+        w5 = self.metric_settings["datavalue_correlation_binary"][2]
+        valid_matrices = list()
+        if inc1 and (w1 > 0.0) and is_valid_matrix2D(self.binary_corr_proximity_normalized_values):
+            valid_matrices.append(self.binary_corr_proximity_normalized_values)
+        if inc2 and (w2 > 0.0) and is_valid_matrix2D(self.binary_corr_endpoint_normalized_values):
+            valid_matrices.append(self.binary_corr_endpoint_normalized_values)
+        if inc3 and (w3 > 0.0) and is_valid_matrix2D(self.binary_corr_originator_normalized_values):
+            valid_matrices.append(self.binary_corr_originator_normalized_values)
+        if inc4 and (w4 > 0.0) and is_valid_matrix2D(self.binary_corr_datatype_normalized_values):
+            valid_matrices.append(self.binary_corr_datatype_normalized_values)
+        if inc5 and (w5 > 0.0) and is_valid_matrix2D(self.binary_corr_datavalue_normalized_values):
+            valid_matrices.append(self.binary_corr_datavalue_normalized_values)
 
         sz = self.num_of_nodes
 
-        ## if single metrics is selected then weight factor doesn't take effect
-
-        if w1 + w2 + w3 + w4 + w5 != 0.0:
-            binary_corr_weight_values = list()
+        for valid_matrix in valid_matrices:
             for i in range(0, sz):
-                temp_list = list()
                 for j in range(0, sz):
-                    val1 = self.binary_corr_proximity_normalized_values[i][j]
-                    val2 = self.binary_corr_originator_normalized_values[i][j]
-                    val3 = self.binary_corr_endpoint_normalized_values[i][j]
-                    val4 = self.binary_corr_datatype_normalized_values[i][j]
-                    val5 = self.binary_corr_datavalue_normalized_values[i][j]
-                    if inv1:
-                        val1 = 1 - val1
-                    if inv2:
-                        val2 = 1 - val2
-                    if inv3:
-                        val3 = 1 - val3
-                    if inv4:
-                        val4 = 1 - val4
-                    if inv5:
-                        val5 = 1 - val5
-                    temp_list.append((val1 * w1 + val2 * w2 + val3 * w3 + val4 * w4 + val5 * w5) /
-                                     (w1 + w2 + w3 + w4 + w5))
-                binary_corr_weight_values.append(temp_list)
-            self.binary_corr_weighted_values = binary_corr_weight_values
+                    self.binary_corr_weighted_values[i][j] += valid_matrix[i][j]
+        self.binary_corr_weighted_values = normalize_matrix2D(self.binary_corr_weighted_values)
 
     def debug_print_primary_metric_values(self):
         print("unary frequency_normalized_values")
@@ -594,7 +552,7 @@ class DataRepository:
         sze = self.num_of_nodes
         for i in range(0, sze):
             for j in range(0, sze):
-                print(str(self.binary_simple_multi_aggregate_normalized_values[i][j]), end=" ")
+                print(str(self.binary_multi_aggregate_normalized_values[i][j]), end=" ")
             print()
         print()
 
@@ -622,7 +580,7 @@ class DataRepository:
         sze = self.num_of_nodes
         for i in range(0, sze):
             for j in range(0, sze):
-                print(str(self.binary_weighted_values[i][j]), end=" ")
+                print(str(self.binary_sig_weighted_values[i][j]), end=" ")
             print()
         print()
         print("weighted_binary_corr_values")
@@ -658,7 +616,7 @@ class FilteredDataRepository:
 
     def apply_concurrency_filter(self, concurrency_filter):
         self.filter_config.concurrency_filter = concurrency_filter
-        self.concurrency_filter_resultant_binary_values = self.data_repository.binary_weighted_values
+        self.concurrency_filter_resultant_binary_values = self.data_repository.binary_sig_weighted_values
         self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
         if self.filter_config.concurrency_filter.filter_concurrency:
             sz = self.num_of_nodes
@@ -671,8 +629,8 @@ class FilteredDataRepository:
     """
 
     def process_relation_pair(self, x, y):
-        sig_fwd = self.data_repository.binary_weighted_values[x][y]
-        sig_bwd = self.data_repository.binary_weighted_values[y][x]
+        sig_fwd = self.data_repository.binary_sig_weighted_values[x][y]
+        sig_bwd = self.data_repository.binary_sig_weighted_values[y][x]
         if sig_fwd > 0.0 and sig_bwd > 0.0:
             # need to do conflict resolution
             rel_imp_AB = self.get_relative_imp(x, y)
@@ -702,16 +660,16 @@ class FilteredDataRepository:
     """
 
     def get_relative_imp(self, x, y):
-        sig_ref = self.data_repository.binary_weighted_values[x][y]
+        sig_ref = self.data_repository.binary_sig_weighted_values[x][y]
         sig_source_out = 0.0
         sig_target_in = 0.0
         sz = self.num_of_nodes
         # We reverse the order, need to check if it makes a difference
         for i in range(0, sz):
             if i != x:
-                sig_source_out += self.data_repository.binary_weighted_values[x][i]
+                sig_source_out += self.data_repository.binary_sig_weighted_values[x][i]
             if i != y:
-                sig_target_in += self.data_repository.binary_weighted_values[i][x]
+                sig_target_in += self.data_repository.binary_sig_weighted_values[i][x]
         return (sig_ref / sig_source_out) + (sig_ref / sig_target_in)
 
     """
@@ -726,7 +684,7 @@ class FilteredDataRepository:
         # Initializing an mask for holding true false values
         self.preserve_mask = [[False for x in range(sz)] for y in range(sz)]
         ## Return error if something else was sent other than Fuzzy and Best
-        if edge_filter.edge_transform == "Fuzzy Edges":
+        if edge_filter.edge_transform == 1:
             for i in range(0, sz):
                 self.process_node_edges_fuzzy_filter(i)
         else:
@@ -810,11 +768,11 @@ class FilteredDataRepository:
         for i in range(0, sz):
             if i == idx:
                 continue
-            pre_sig = self.data_repository.binary_weighted_values[i][idx]
+            pre_sig = self.data_repository.binary_sig_weighted_values[i][idx]
             if pre_sig > best_pre_sig:
                 best_pre_sig = pre_sig
                 best_pre = i
-            succ_sig = self.data_repository.binary_weighted_values[idx][i]
+            succ_sig = self.data_repository.binary_sig_weighted_values[idx][i]
             if succ_sig > best_succ_sig:
                 best_succ_sig = succ_sig
                 best_succ = i
