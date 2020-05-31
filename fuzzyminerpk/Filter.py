@@ -35,7 +35,7 @@ class EdgeFilter(Filter):
                 self.sc_ratio) + " Cut Off: " + str(self.cut_off) + " Ignore Self Loops: " + str(
                 self.ignore_self_loops) + " Interpret Absolute: " + str(self.interpret_abs)
         else:
-            return super().__str__() + "Edge Transform: " + self.edge_transform
+            return super().__str__() + "Edge Transform: " + str(self.edge_transform)
 
 
 class ConcurrencyFilter(Filter):
