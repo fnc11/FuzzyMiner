@@ -1,9 +1,11 @@
+import sys
+
 from fuzzyminerpk.ClusterUtil import ClusterUtil
 from fuzzyminerpk.FMUtility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, \
     normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, \
     cal_datavalue_correlation, cal_proximity_correlation, weight_normalize1D, \
     special_weight_normalize2D, weight_normalize2D
-
+import copy
 
 class DataRepository:
     def __init__(self, log):
@@ -617,8 +619,8 @@ class FilteredDataRepository:
 
     def apply_concurrency_filter(self, concurrency_filter):
         self.filter_config.concurrency_filter = concurrency_filter
-        self.concurrency_filter_resultant_binary_values = self.data_repository.binary_sig_weighted_values
-        self.concurrency_filter_resultant_binary_corr_values = self.data_repository.binary_corr_weighted_values
+        self.concurrency_filter_resultant_binary_values = copy.deepcopy(self.data_repository.binary_sig_weighted_values)
+        self.concurrency_filter_resultant_binary_corr_values = copy.deepcopy(self.data_repository.binary_corr_weighted_values)
         if self.filter_config.concurrency_filter.filter_concurrency:
             sz = self.num_of_nodes
             for i in range(0, sz):
@@ -679,13 +681,17 @@ class FilteredDataRepository:
 
     def apply_edge_filter(self, edge_filter):
         self.filter_config.edge_filter = edge_filter
-        self.edge_filter_resultant_binary_values = self.concurrency_filter_resultant_binary_values
-        self.edge_filter_resultant_binary_corr_values = self.concurrency_filter_resultant_binary_corr_values
+        self.edge_filter_resultant_binary_values = copy.deepcopy(self.concurrency_filter_resultant_binary_values)
+        self.edge_filter_resultant_binary_corr_values = copy.deepcopy(self.concurrency_filter_resultant_binary_corr_values)
         sz = self.num_of_nodes
         # Initializing an mask for holding true false values
         self.preserve_mask = [[False for x in range(sz)] for y in range(sz)]
         ## Return error if something else was sent other than Fuzzy and Best
-        if edge_filter.edge_transform == 1:
+        if self.filter_config.edge_filter.edge_transform == 1:
+            # Cut_off value can't be zero for filter to generate sensible results, so changing it 0.001 if it is specified zero
+            if self.filter_config.edge_filter.cut_off == 0.0:
+                self.filter_config.edge_filter.cut_off = 0.001
+
             for i in range(0, sz):
                 self.process_node_edges_fuzzy_filter(i)
         else:
@@ -705,10 +711,10 @@ class FilteredDataRepository:
 
     def process_node_edges_fuzzy_filter(self, idx):
         sz = self.num_of_nodes
-        min_in_val = float('inf')
-        max_in_val = float('-inf')
-        min_out_val = float('inf')
-        max_out_val = float('-inf')
+        min_in_val = sys.float_info.max
+        max_in_val = sys.float_info.min
+        min_out_val = sys.float_info.max
+        max_out_val = sys.float_info.min
         in_values = [0.0 for i in range(0, sz)]
         out_values = [0.0 for i in range(0, sz)]
         ignore_self_loops = self.filter_config.edge_filter.ignore_self_loops
@@ -723,6 +729,7 @@ class FilteredDataRepository:
             if significance > 0.0:
                 correlation = self.concurrency_filter_resultant_binary_corr_values[i][idx]
                 in_values[i] = significance * sc_ratio + correlation * (1.0 - sc_ratio)
+                # Setting these outside in order to update the values in any case, so that in_limit doesn't become not defined
                 if in_values[i] > max_in_val:
                     max_in_val = in_values[i]
                 if in_values[i] < min_in_val:
@@ -735,6 +742,7 @@ class FilteredDataRepository:
             if significance > 0.0:
                 correlation = self.concurrency_filter_resultant_binary_corr_values[idx][i]
                 out_values[i] = significance * sc_ratio + correlation * (1.0 - sc_ratio)
+                # Setting these outside in order to update the values in any case, so that out_limit doesn't become not defined
                 if out_values[i] > max_out_val:
                     max_out_val = out_values[i]
                 if out_values[i] < min_out_val:
@@ -745,7 +753,7 @@ class FilteredDataRepository:
         if self.filter_config.edge_filter.interpret_abs:
             max_in_val = max(max_in_val, max_out_val)
             max_out_val = max_in_val
-            min_in_val = max(min_in_val, min_out_val)
+            min_in_val = min(min_in_val, min_out_val)
             min_out_val = min_in_val
         in_limit = max_in_val - (max_in_val - min_in_val) * self.filter_config.edge_filter.cut_off
         out_limit = max_out_val - (max_out_val - min_out_val) * self.filter_config.edge_filter.cut_off
@@ -783,8 +791,8 @@ class FilteredDataRepository:
             self.preserve_mask[idx][best_succ] = True
 
     def apply_node_filter(self, node_filter):
-        self.node_filter_resultant_binary_values = self.edge_filter_resultant_binary_values
-        self.node_filter_resultant_binary_corr_values = self.edge_filter_resultant_binary_corr_values
+        self.node_filter_resultant_binary_values = copy.deepcopy(self.edge_filter_resultant_binary_values)
+        self.node_filter_resultant_binary_corr_values = copy.deepcopy(self.edge_filter_resultant_binary_corr_values)
         self.cluster_util.clusterize(self.filter_config.node_filter, self.fm_log_util, self.data_repository, self)
 
     def debug_concurrency_filter_values(self):
