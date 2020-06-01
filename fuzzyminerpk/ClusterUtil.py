@@ -230,7 +230,10 @@ class ClusterUtil:
         predecessors = set()
         for prim_idx in cluster.get_primitives():
             predecessors = predecessors.union(self.get_predecessors_of_node(prim_idx))
+        # Remove the primitives from predecessors if any
         predecessors -= set(cluster.get_primitives())
+        # Discard the index of cluster itself if included
+        predecessors.discard(index)
         return predecessors
 
     """
@@ -241,7 +244,10 @@ class ClusterUtil:
         successors = set()
         for prim_idx in cluster.get_primitives():
             successors = successors.union(self.get_successors_of_node(prim_idx))
+        # Remove the primitives from successors if any
         successors -= set(cluster.get_primitives())
+        # Discard the index of cluster itself if included
+        successors.discard(index)
         return successors
 
     """
