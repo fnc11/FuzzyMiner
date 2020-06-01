@@ -123,7 +123,7 @@ def edge_filter(request):
         print('interpret absolute:', data['interpret_absolute'])
         edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], preserve=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
     else:
-        edge_filter_obj = EdgeFilter(edge_transform=0)
+        edge_filter_obj = EdgeFilter(edge_transform=0, ignore_self_loops=data['ignore_self_loops'])
     graph = GraphPool().get_graph_by_id(data['id'])
     fm_message = graph.apply_edge_filter(edge_filter_obj)
     return to_json(fm_message)

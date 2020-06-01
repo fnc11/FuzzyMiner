@@ -793,15 +793,13 @@ class FilteredDataRepository:
         sz = self.num_of_nodes
 
         for i in range(0, sz):
-            if i == idx:
+            if i == idx and self.filter_config.edge_filter.ignore_self_loops:
                 continue
             pre_sig = self.concurrency_filter_resultant_binary_values[i][idx]
             if pre_sig > best_pre_sig:
                 best_pre_sig = pre_sig
                 best_pre = i
-
             succ_sig = self.concurrency_filter_resultant_binary_values[idx][i]
-
             if succ_sig > best_succ_sig:
                 best_succ_sig = succ_sig
                 best_succ = i
