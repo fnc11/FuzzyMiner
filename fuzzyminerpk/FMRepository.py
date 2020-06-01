@@ -672,7 +672,7 @@ class FilteredDataRepository:
             if i != x:
                 sig_source_out += self.data_repository.binary_sig_weighted_values[x][i]
             if i != y:
-                sig_target_in += self.data_repository.binary_sig_weighted_values[i][x]
+                sig_target_in += self.data_repository.binary_sig_weighted_values[i][y]
         return (sig_ref / sig_source_out) + (sig_ref / sig_target_in)
 
     """
@@ -775,11 +775,11 @@ class FilteredDataRepository:
         for i in range(0, sz):
             if i == idx:
                 continue
-            pre_sig = self.data_repository.binary_sig_weighted_values[i][idx]
+            pre_sig = self.concurrency_filter_resultant_binary_values[i][idx]
             if pre_sig > best_pre_sig:
                 best_pre_sig = pre_sig
                 best_pre = i
-            succ_sig = self.data_repository.binary_sig_weighted_values[idx][i]
+            succ_sig = self.concurrency_filter_resultant_binary_values[idx][i]
             if succ_sig > best_succ_sig:
                 best_succ_sig = succ_sig
                 best_succ = i
