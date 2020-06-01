@@ -331,7 +331,7 @@ class ClusterUtil:
                 for j in range(0, sz):
                     significance = self.filtered_data_repository.node_filter_resultant_binary_values[i][j]
                     correlation = self.filtered_data_repository.node_filter_resultant_binary_corr_values[i][j]
-                    if significance > 0.001:
+                    if significance > 0.0:
                         # Checking if the edge has at least the minimum significance to show in the graph
                         if i == j:
                             # same index will be mapped to same cluster if it is indeed mapped to cluster
