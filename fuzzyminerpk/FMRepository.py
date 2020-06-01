@@ -672,7 +672,7 @@ class FilteredDataRepository:
             if i != x:
                 sig_source_out += self.data_repository.binary_sig_weighted_values[x][i]
             if i != y:
-                sig_target_in += self.data_repository.binary_sig_weighted_values[i][y]
+                sig_target_in += self.data_repository.binary_sig_weighted_values[i][x]
         return (sig_ref / sig_source_out) + (sig_ref / sig_target_in)
 
     """
@@ -773,7 +773,7 @@ class FilteredDataRepository:
         best_succ_sig = 0.0
         sz = self.num_of_nodes
         for i in range(0, sz):
-            if i == idx:
+            if i == idx and self.filter_config.edge_filter.ignore_self_loops:
                 continue
             pre_sig = self.concurrency_filter_resultant_binary_values[i][idx]
             if pre_sig > best_pre_sig:
