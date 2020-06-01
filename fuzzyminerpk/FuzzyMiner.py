@@ -23,12 +23,12 @@ class Graph:
         self.fm_edges = None
         self.fm_message = FMMessage()
 
-    """
-    This method is to be called when entire config object is changed, for e.g. during the initiation phase
-    or when user changes config in the interface
-    """
-
     def apply_config(self, config):
+        """ Applies concurrency filter.
+
+        This method is to be called when entire config object is changed, for e.g. during the initiation phase
+        or when user changes config in the interface
+        """
         print("Apply Config called with the following config: ")
         print(config.filter_config)
         for metric_config in config.metric_configs:
@@ -63,36 +63,36 @@ class Graph:
         # self.filtered_data_repository.debug_node_filter_values()
         # Debug block ends
 
-    """
-    For applying concurrency filter, can be called directly from front end when user changes value in
-    concurrency filter, due to order, it'll call edge filter inherently
-    """
-
     def apply_concurrency_filter(self, concurrency_filter):
+        """ Returns a FMMessage.
+
+        For applying concurrency filter, can be called directly from front end when user changes value in
+        concurrency filter, due to order, it'll call edge filter inherently
+        """
         print("Apply Concurrency filter is called with following values: ")
         print(concurrency_filter)
         self.config.filter_config.concurrency_filter = concurrency_filter
         self.filtered_data_repository.apply_concurrency_filter(concurrency_filter)
         return self.apply_edge_filter(self.config.filter_config.edge_filter)
 
-    """
-    For applying edge filter, can be called directly from front end when user changes value in
-    edge filter, due to order, it'll call node filter inherently
-    """
-
     def apply_edge_filter(self, edge_filter):
+        """ Returns a FMMessage.
+
+        For applying edge filter, can be called directly from front end when user changes value in
+        edge filter, due to order, it'll call node filter inherently
+        """
         print("Apply Edge filter is called with following values: ")
         print(edge_filter)
         self.config.filter_config.edge_filter = edge_filter
         self.filtered_data_repository.apply_edge_filter(edge_filter)
         return self.apply_node_filter(self.config.filter_config.node_filter)
 
-    """
-    For applying node filter, can be called directly from front end when user changes value in
-    node filter
-    """
-
     def apply_node_filter(self, node_filter):
+        """ Returns a FMMessage.
+
+        For applying node filter, can be called directly from front end when user changes value in
+        node filter
+        """
         print("Apply Node filter is called with following values: " + "\n")
         print(node_filter)
         self.config.filter_config.node_filter = node_filter
