@@ -689,8 +689,8 @@ class FilteredDataRepository:
         ## Return error if something else was sent other than Fuzzy and Best
         if self.filter_config.edge_filter.edge_transform == 1:
             # Cut_off value can't be zero for filter to generate sensible results, so changing it 0.001 if it is specified zero
-            if self.filter_config.edge_filter.cut_off == 0.0:
-                self.filter_config.edge_filter.cut_off = 0.001
+            if self.filter_config.edge_filter.preserve == 0.0:
+                self.filter_config.edge_filter.preserve = 0.001
 
             for i in range(0, sz):
                 self.process_node_edges_fuzzy_filter(i)
@@ -751,8 +751,8 @@ class FilteredDataRepository:
             max_out_val = max_in_val
             min_in_val = min(min_in_val, min_out_val)
             min_out_val = min_in_val
-        in_limit = max_in_val - (max_in_val - min_in_val) * self.filter_config.edge_filter.cut_off
-        out_limit = max_out_val - (max_out_val - min_out_val) * self.filter_config.edge_filter.cut_off
+        in_limit = max_in_val - (max_in_val - min_in_val) * self.filter_config.edge_filter.preserve
+        out_limit = max_out_val - (max_out_val - min_out_val) * self.filter_config.edge_filter.preserve
         for i in range(0, sz):
             if ignore_self_loops and i == idx:
                 continue

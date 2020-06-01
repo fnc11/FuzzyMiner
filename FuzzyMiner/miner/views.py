@@ -118,10 +118,10 @@ def edge_filter(request):
     print('edge transformer:', data['edge_transformer'])
     if data['edge_transformer'] == 'Fuzzy Edges':
         print('s/c ratio:', data['s/c_ratio'])
-        print('cutoff:', data['cutoff'])
+        print('Preserve:', data['cutoff'])
         print('ignore self-loops:', data['ignore_self_loops'])
         print('interpret absolute:', data['interpret_absolute'])
-        edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], cut_off=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
+        edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], preserve=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
     else:
         edge_filter_obj = EdgeFilter(edge_transform=0)
     graph = GraphPool().get_graph_by_id(data['id'])
