@@ -59,11 +59,11 @@ class VizUtil:
             label = " sig: " + self.format(edge.significance) + "\n" + " cor: " + self.format(edge.correlation)
             pen_width = self.pen_width(edge.significance)
             dot.edge(str(edge.source), str(edge.target), label=label, constraint='true', penwidth=pen_width)
-        print(dot.source)
+        # print(dot.source)
         # dot.render(view=True)
         dot.render()
         graph_path = ''.join(['/', GRAPH_PATH, filename, '.', GRAPH_FORMAT])
-        print(graph_path)
+        # print(graph_path)
         return graph_path
 
     def pen_width(self, significance):
