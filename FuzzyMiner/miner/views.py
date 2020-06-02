@@ -68,11 +68,20 @@ def get_default_configuration(num=0):
 
 
 def launch_filter(log_file_path, ip, port):
+    start = time.perf_counter()
     log = xes_import_factory.apply(log_file_path)
+    finish = time.perf_counter()
+    print(f'XES import factory took {round(finish - start, 3)} seconds')
     default_fuzzy_config = get_default_configuration()
+    start = time.perf_counter()
     graph = Graph(log)
+    finish = time.perf_counter()
+    print(f'Graph creation took {round(finish - start, 3)} seconds')
+    start = time.perf_counter()
     pool = GraphPool()
     id = pool.update_graph(ip, port, graph)
+    finish = time.perf_counter()
+    print(f'Graph pooling took {round(finish - start, 3)} seconds')
     start = time.perf_counter()
     fm_message = graph.apply_config(default_fuzzy_config)
     finish = time.perf_counter()

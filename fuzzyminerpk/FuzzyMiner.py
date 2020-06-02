@@ -36,14 +36,28 @@ class Graph:
         start = time.perf_counter()
         self.config = config
         self.data_repository.config = config
+        finish = time.perf_counter()
         self.data_repository.init_lists()
+        print(f'Created initial lists in {round(time.perf_counter() - finish, 3)} seconds')
+        finish = time.perf_counter()
         self.data_repository.extract_primary_metrics()
+        print(f'Extracted primary metrics in {round(time.perf_counter() - finish, 3)} seconds')
+        finish = time.perf_counter()
         self.data_repository.normalize_primary_metrics()
+        print(f'Normalized primary metrics in {round(time.perf_counter() - finish, 3)} seconds')
+        finish = time.perf_counter()
         self.data_repository.extract_aggregates()
+        print(f'Extracted aggregated metrics in {round(time.perf_counter() - finish, 3)} seconds')
+        finish = time.perf_counter()
         self.data_repository.extract_derivative_metrics()
+        print(f'Extracted derivative metrics in {round(time.perf_counter() - finish, 3)} seconds')
+        finish = time.perf_counter()
         self.data_repository.normalize_derivative_metrics()
+        print(f'Normalized derivative metrics in {round(time.perf_counter() - finish, 3)} seconds')
+        finish = time.perf_counter()
         # Final weighted values
         self.data_repository.extract_weighted_metrics()
+        print(f'Extracted weighted metrics in {round(time.perf_counter() - finish, 3)} seconds')
         finish = time.perf_counter()
         print(f'Extracted Data in {round(finish-start, 3)} seconds')
 
