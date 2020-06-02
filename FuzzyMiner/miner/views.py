@@ -13,17 +13,19 @@ from fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
 from fuzzyminerpk.Filter import NodeFilter, EdgeFilter, ConcurrencyFilter
 from fuzzyminerpk.FuzzyMiner import Graph
 
+
 # Create your views here.
 
-""" Saves uploaded log file and returns its path (/log/example.xes) """
-
 def get_ip_port(request):
+    """ Saves uploaded log file and returns its path (/log/example.xes)
+    """
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')  # Whether using proxy
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]  # Get the real ip according proxy
     else:
         ip = request.META.get('REMOTE_ADDR')  # Get the real ip
     return ip, int(request.META.get('SERVER_PORT'))
+
 
 @csrf_exempt
 def upload(request):
@@ -100,6 +102,7 @@ def show_result(request):
     resp = launch_filter(settings.BASE_DIR + log_file_path, ip, port)
     return resp
 
+
 @csrf_exempt
 def node_filter(request):
     data = json.loads(request.body)
@@ -121,7 +124,9 @@ def edge_filter(request):
         print('Preserve:', data['cutoff'])
         print('ignore self-loops:', data['ignore_self_loops'])
         print('interpret absolute:', data['interpret_absolute'])
-        edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], preserve=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
+        edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], preserve=data['cutoff'],
+                                     ignore_self_loops=data['ignore_self_loops'],
+                                     interpret_abs=data['interpret_absolute'])
     else:
         edge_filter_obj = EdgeFilter(edge_transform=0)
     graph = GraphPool().get_graph_by_id(data['id'])
@@ -136,7 +141,8 @@ def concurrency_filter(request):
     print('filter concurrency:', data['filter_concurrency'])
     print('preserve:', data['preserve'])
     print('balance:', data['balance'])
-    concurrency_filter_obj = ConcurrencyFilter(filter_concurrency=data['filter_concurrency'], preserve=data['preserve'], offset=data['balance'])
+    concurrency_filter_obj = ConcurrencyFilter(filter_concurrency=data['filter_concurrency'], preserve=data['preserve'],
+                                               offset=data['balance'])
     graph = GraphPool().get_graph_by_id(data['id'])
     fm_message = graph.apply_concurrency_filter(concurrency_filter_obj)
     return to_json(fm_message)

@@ -28,10 +28,9 @@ class ClusterUtil:
         self.finalize_fm_nodes()
         self.finalize_fm_edges()
 
-    """
-    Clean all lists and dictionary of the ClusterUtil object
-    """
     def clean_data_storage(self):
+        """ Cleans all lists and dictionary of the ClusterUtil object
+        """
         self.node_cluster_mapping = [i for i in range(0, self.fm_log_util.get_num_of_nodes())]
         self.cluster_dict.clear()
         self.fm_edges_dict.clear()
@@ -39,10 +38,10 @@ class ClusterUtil:
         self.fm_nodes.clear()
         self.fm_edges.clear()
 
-    """
-    Initializes victim nodes into clusters
-    """
     def initialize_clusters(self, cut_off):
+        """ Initializes victim nodes into clusters
+        """
+
         # list of victim indices
         victims = self.get_victims(cut_off)
         sz = self.fm_log_util.get_num_of_nodes()
@@ -71,11 +70,10 @@ class ClusterUtil:
                 # Do we really need fm_clusters list
                 self.fm_clusters.append(cluster)
 
-    """
-    Returns indices of nodes which didn't survive the node filter cut_off
-    i.e. needs to be clusterize
-    """
     def get_victims(self, cut_off):
+        """ Returns indices of nodes which didn't survive the node filter cut_off
+        i.e. needs to be clusterize
+        """
         sz = self.fm_log_util.get_num_of_nodes()
         victims = list()
         for i in range(0, sz):
@@ -83,11 +81,11 @@ class ClusterUtil:
                 victims.append(i)
         return victims
 
-    """
-    Returns index of most correlated neighbor of the node, takes input as index of the node
-    """
     def get_most_correlated(self, idx):
+        """ Returns index of most correlated neighbor of the node, takes input as index of the node
+        """
         max_corr = 0.0
+
         # check this initialization
         winner_idx = 0
         sz = self.fm_log_util.get_num_of_nodes()
@@ -107,15 +105,15 @@ class ClusterUtil:
                 max_corr = curr_corr
         return winner_idx
 
-    """
-    Returns the target cluster's index from either predecessors or successors,  or None.
-    """
     def get_preferred_merge_target(self, subject_index):
+        """ Returns the target cluster's index from either predecessors or successors,  or None.
+        """
         pre_target = None
         succ_target = None
         max_pre_corr = 0.0
         max_succ_corr = 0.0
         sz = self.fm_log_util.get_num_of_nodes()
+
         # get the indices of all of its predecessors
         pre_decessors = self.get_predecessors_of_cluster(subject_index)
         for pre_decessor in pre_decessors:
@@ -147,10 +145,10 @@ class ClusterUtil:
         else:
             return succ_target
 
-    """
-    This method iterates over all the clusters and checks if they can be merged
-    """
     def merge_clusters(self):
+        """ Iterates over all the clusters and checks if they can be merged
+        """
+
         # Warning code is editing and accessing the same list
         cls_sz = len(self.fm_clusters)
         idx = 0
@@ -164,19 +162,17 @@ class ClusterUtil:
             else:
                 idx += 1
 
-    """
-    Winner cluster devours loser cluster, accepts indices of both the clusters
-    """
     def merge_with(self, winner_index, loser_index):
+        """ Winner cluster devours loser cluster, accepts indices of both the clusters
+        """
         loser_primitive_indices = self.cluster_dict[loser_index].get_primitives()
         for prim_idx in loser_primitive_indices:
             self.cluster_dict[winner_index].add_node(prim_idx)
             self.node_cluster_mapping[prim_idx] = winner_index
 
-    """
-    Removes clusters with no predecessors or successors from the list.
-    """
     def remove_isolated_cluster(self):
+        """ Removes clusters with no predecessors or successors from the list.
+        """
         cls_sz = len(self.fm_clusters)
         idx = 0
         while idx < cls_sz:
@@ -192,10 +188,9 @@ class ClusterUtil:
             else:
                 idx += 1
 
-    """
-    Returns a indices list of the predecessors of a node. Accepts index of the node as input.
-    """
     def get_predecessors_of_node(self, index):
+        """ Returns indices list of the predecessors of a node. Accepts index of the node as input.
+        """
         predecessors = set()
         sz = self.fm_log_util.get_num_of_nodes()
         for i in range(0, sz):
@@ -207,10 +202,9 @@ class ClusterUtil:
                     predecessors.add(self.node_cluster_mapping[i])
         return predecessors
 
-    """
-    Returns a indices list of the successors of a node. Accepts index of the node as input.
-    """
     def get_successors_of_node(self, index):
+        """ Returns indices list of the successors of a node. Accepts index of the node as input.
+        """
         successors = set()
         sz = self.fm_log_util.get_num_of_nodes()
         for i in range(0, sz):
@@ -222,38 +216,39 @@ class ClusterUtil:
                     successors.add(self.node_cluster_mapping[i])
         return successors
 
-    """
-    Returns a indices list of the predecessors of a cluster. Accepts index of the cluster as input.
-    """
     def get_predecessors_of_cluster(self, index):
+        """ Returns a indices list of the predecessors of a cluster. Accepts index of the cluster as input.
+        """
         cluster = self.cluster_dict[index]
         predecessors = set()
         for prim_idx in cluster.get_primitives():
             predecessors = predecessors.union(self.get_predecessors_of_node(prim_idx))
+
         # Remove the primitives from predecessors if any
         predecessors -= set(cluster.get_primitives())
+
         # Discard the index of cluster itself if included
         predecessors.discard(index)
         return predecessors
 
-    """
-    Returns a indices list of the successors of a cluster. Accepts index of the cluster as input.
-    """
     def get_successors_of_cluster(self, index):
+        """ Returns a indices list of the successors of a cluster. Accepts index of the cluster as input.
+        """
         cluster = self.cluster_dict[index]
         successors = set()
         for prim_idx in cluster.get_primitives():
             successors = successors.union(self.get_successors_of_node(prim_idx))
+
         # Remove the primitives from successors if any
         successors -= set(cluster.get_primitives())
+
         # Discard the index of cluster itself if included
         successors.discard(index)
         return successors
 
-    """
-    Removes singular clusters i.e. cluster with size one and connects its predecessors and successors if needed
-    """
     def remove_singular_cluster(self):
+        """ Removes singular clusters i.e. cluster with size one and connects its predecessors and successors if needed
+        """
         cls_sz = len(self.fm_clusters)
         idx = 0
         while idx < cls_sz:
@@ -266,10 +261,9 @@ class ClusterUtil:
             else:
                 idx += 1
 
-    """
-    Returns collective correlation between two clusters, accepts cluster indices
-    """
     def get_aggregate_correlation(self, cluster1_idx, cluster2_idx):
+        """ Returns collective correlation between two clusters, accepts cluster indices
+        """
         cluster1_primitive_indices = self.cluster_dict[cluster1_idx].get_primitives()
         cluster2_primitive_indices = self.cluster_dict[cluster2_idx].get_primitives()
         aggregate_corr = 0.0
@@ -281,11 +275,10 @@ class ClusterUtil:
                     prim1_idx]
         return aggregate_corr
 
-    """
-    Checks if there's no direct connect between the predecessors and successors then it makes one directly 
-    based on the values gathered from the cluster which is going to be removed(in between predecessors and successors)
-    """
     def check_for_direct_connection(self, cluster):
+        """ Checks if there's no direct connect between the predecessors and successors then it makes one directly
+        based on the values gathered from the cluster which is going to be removed(in between predecessors and successors)
+        """
         node_index = cluster.get_primitives()[0]
         own_idx = node_index
         pre_set = self.get_predecessors_of_node(own_idx)
@@ -312,19 +305,17 @@ class ClusterUtil:
                 self.filtered_data_repository.node_filter_resultant_binary_corr_values[own_idx][succ_idx] = 0.0
         self.node_cluster_mapping[own_idx] = -1
 
-    """
-    Creates a list of fm_nodes which survived the Node Filtering and Clusterization process
-    """
     def finalize_fm_nodes(self):
+        """ Creates a list of fm_nodes which survived the Node Filtering and Clusterization process
+        """
         sz = self.fm_log_util.get_num_of_nodes()
         for i in range(0, sz):
             if self.node_cluster_mapping[i] != -1 and self.node_cluster_mapping[i] < sz:
                 self.fm_nodes.append(FMNode(i, self.fm_log_util.nodes[i], self.data_repository.unary_weighted_values[i]))
 
-    """
-    Creates an edge dictionary of FMEdges for both FMNodes and FMClusters.
-    """
     def finalize_fm_edges(self):
+        """ Creates an edge dictionary of FMEdges for both FMNodes and FMClusters.
+        """
         sz = self.fm_log_util.get_num_of_nodes()
         for i in range(0, sz):
             if self.node_cluster_mapping[i] != -1:
@@ -371,10 +362,9 @@ class ClusterUtil:
                                         self.fm_edges_dict[(mapped_i, mapped_j)] = FMEdge(mapped_i, mapped_j, significance, correlation)
         self.populate_fm_edges_from_dict()
 
-    """
-    Populates fm_edges list from the fm_edges_dict
-    """
     def populate_fm_edges_from_dict(self):
+        """ Populates fm_edges list from the fm_edges_dict
+        """
         for key, value in self.fm_edges_dict.items():
             self.fm_edges.append(value)
 
