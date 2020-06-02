@@ -1,68 +1,61 @@
 <template>
-    <el-row class="tac">
+    <div>
+        <el-container>
+            <el-aside>
+                <el-menu
+                        router
+                        :default-active="this.$route.path"
+                        class="el-menu-vertical-demo"
+                        @open="handleOpen"
+                        @close="handleClose">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <h4>Set up guide</h4>
+                        </template>
+                        <el-menu-item index="/help/windows">Installations on Windows</el-menu-item>
+                        <el-menu-item index="/help/mac">Installations on Mac</el-menu-item>
+                        <el-menu-item index="/help/linux">Installations on Linux</el-menu-item>
+                        <el-menu-item index="/help/pycharm">Set up pycharm project</el-menu-item>
+                    </el-submenu>
 
-        <el-col :span="6">
-            <el-menu
-                    default-active="1-1"
-                    class="el-menu-vertical-demo"
-                    @open="handleOpen"
-                    @close="handleClose">
-                <el-submenu index="1">
-                    <template slot="title">
-                        <h4>Set up guide</h4>
-                    </template>
-                    <el-menu-item index="1-1">Installations on Windows</el-menu-item>
-                    <el-menu-item index="1-2">Installations on Mac</el-menu-item>
-                    <el-menu-item index="1-3">Installations on Linux</el-menu-item>
-                    <el-menu-item index="1-4">Set up pycharm project</el-menu-item>
-                </el-submenu>
-
-                <el-submenu index="2">
-                    <template slot="title">
-                        <h4>How to use Fuzzy Web</h4>
-                    </template>
-                    <el-menu-item index="2-1">To generate fuzzy model</el-menu-item>
-                    <el-submenu index="2-2">
-                        <template slot="title">To apply filter configurations</template>
-                        <el-menu-item index="2-2-1">Node Filter</el-menu-item>
-                        <el-menu-item index="2-2-2">Edge Filter</el-menu-item>
-                        <el-menu-item index="2-2-3">Concurrency Filter</el-menu-item>
+                    <el-submenu index="2">
+                        <template slot="title">
+                            <h4>How to use Fuzzy Web</h4>
+                        </template>
+                        <el-menu-item index="/help/generate">To generate fuzzy model</el-menu-item>
+                        <el-submenu index="2-2">
+                            <template slot="title">To apply filter configurations</template>
+                            <el-menu-item index="/help/node">Node Filter</el-menu-item>
+                            <el-menu-item index="/help/edge">Edge Filter</el-menu-item>
+                            <el-menu-item index="/help/concurrency">Concurrency Filter</el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="2-3">
+                            <template slot="title">To apply Metrics configurations</template>
+                            <el-menu-item index="/help/unary">Unary Significance Metrics</el-menu-item>
+                            <el-menu-item index="/help/binary">Binary Significance Metrics</el-menu-item>
+                            <el-menu-item index="/help/correlation">Binary Correlation Metrics</el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="2-4">
+                            <template slot="title">To Modify Attenuation</template>
+                            <el-menu-item index="/help/linear">Linear Attenuation</el-menu-item>
+                            <el-menu-item index="/help/nroot">N(th) Root Attenuation</el-menu-item>
+                        </el-submenu>
+                        <el-menu-item index="/help/snapshot">To save model snapshot
+                        </el-menu-item>
                     </el-submenu>
-                    <el-submenu index="2-3">
-                        <template slot="title">To apply Metrics configurations</template>
-                        <el-menu-item index="2-2-1">Unary Significance Metrics</el-menu-item>
-                        <el-menu-item index="2-2-2">Binary Significance Metrics</el-menu-item>
-                        <el-menu-item index="2-2-3">Binary Correlation Metrics</el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="2-4">
-                        <template slot="title">To Modify Attenuation</template>
-                        <el-menu-item index="2-4-1">Linear Attenuation</el-menu-item>
-                        <el-menu-item index="2-4-2">N(th) Root Attenuation</el-menu-item>
-                    </el-submenu>
-                    <el-menu-item index="2-5">To save model snapshot
+                    <el-menu-item index="/help/video">
+                        <h4>Demo Video</h4>
                     </el-menu-item>
-                </el-submenu>
-                <el-menu-item index="3">
-                    <h4>Demo Video</h4>
-                </el-menu-item>
-                <el-submenu index="4">
-                    <template slot="title">
+                    <el-menu-item index="/help/faqs">
                         <h4>FAQs</h4>
-                    </template>
-                    <el-menu-item index="4-1">How to occlude irrelavant nodes?</el-menu-item>
-                    <el-menu-item index="4-2">How to only visualise only important edges?</el-menu-item>
-                    <el-menu-item index="4-3">How to give higher importance to Resource Correlation?</el-menu-item>
-                    <el-menu-item index="4-4">How to change attenuation from Nth root to Linear?</el-menu-item>
-                    <el-menu-item index="4-5">How to disable concurrency filter?</el-menu-item>
-                </el-submenu>
-            </el-menu>
-        </el-col>
-        <el-col :span="18">
-
-        </el-col>
-
-    </el-row>
-
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+            <el-main>
+                <router-view />
+            </el-main>
+        </el-container>
+    </div>
 </template>
 
 <script>
