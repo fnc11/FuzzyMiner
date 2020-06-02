@@ -50,18 +50,20 @@ class VizUtil:
             dot.node(str(node.index), label=label, penwidth='1.0', fillcolor='blanchedalmond')
 
         for cluster in self.fm_clusters:
-            dot.node(str(cluster.index), label=cluster.label, shape='oval', color='cadetblue1')
+            label = ''.join([cluster.label, ' ', str(cluster.index), ' ~ ', str(len(cluster.primitives)), ' primitives'])
+            label = ''.join([label, '\n mean_sig: ', self.format(cluster.significance)])
+            dot.node(str(cluster.index), label=label, shape='oval', color='cadetblue1')
 
         dot.edge_attr['fontsize'] = '10.0'
         for edge in self.fm_edges:
             label = " sig: " + self.format(edge.significance) + "\n" + " cor: " + self.format(edge.correlation)
             pen_width = self.pen_width(edge.significance)
             dot.edge(str(edge.source), str(edge.target), label=label, constraint='true', penwidth=pen_width)
-        print(dot.source)
+        # print(dot.source)
         # dot.render(view=True)
         dot.render()
         graph_path = ''.join(['/', GRAPH_PATH, filename, '.', GRAPH_FORMAT])
-        print(graph_path)
+        # print(graph_path)
         return graph_path
 
     def pen_width(self, significance):
