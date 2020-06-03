@@ -10,7 +10,7 @@ from fuzzyminerpk.FMUtility import FMLogUtils, is_valid_matrix2D, is_valid_matri
 
 class DataRepository:
     """
-    This class is to hold all the extracted data from the log object.
+    This class object's hold all the extracted data from the log object.
 
     Instance Attributes:
         log: log object
@@ -62,10 +62,10 @@ class DataRepository:
         binary_corr_weighted_values: Holds the final edge correlation values after extracting data according to weights.
     """
 
-    def __init__(self, log):
+    def __init__(self, log, fm_log_util):
         self.log = log
         self.config = None
-        self.fm_log_util = FMLogUtils(log)
+        self.fm_log_util = fm_log_util
         self.nodes = self.fm_log_util.nodes
         self.num_of_nodes = self.fm_log_util.num_of_nodes
         self.node_indices = self.fm_log_util.node_indices
@@ -108,55 +108,56 @@ class DataRepository:
         """
 
         self.fill_dicts()
-        self.unary_node_frequency_values = [0 for x in range(self.num_of_nodes)]
-        self.unary_node_frequency_normalized_values = [0.0 for x in range(self.num_of_nodes)]
+        sz = self.num_of_nodes
+        self.unary_node_frequency_values = [0 for x in range(sz)]
+        self.unary_node_frequency_normalized_values = [0.0 for x in range(sz)]
 
-        self.binary_edge_frequency_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_edge_frequency_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                        range(self.num_of_nodes)]
+        self.binary_edge_frequency_values = [[0 for x in range(sz)] for y in range(sz)]
+        self.binary_edge_frequency_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                        range(sz)]
 
-        self.binary_corr_divisors = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                               range(self.num_of_nodes)]
+        self.binary_corr_divisors = [[0.0 for x in range(sz)] for y in
+                                               range(sz)]
 
-        self.binary_corr_proximity_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_proximity_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                        range(self.num_of_nodes)]
+        self.binary_corr_proximity_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        self.binary_corr_proximity_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                        range(sz)]
 
-        self.binary_corr_endpoint_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_endpoint_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                       range(self.num_of_nodes)]
+        self.binary_corr_endpoint_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        self.binary_corr_endpoint_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                       range(sz)]
 
-        self.binary_corr_originator_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_originator_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                         range(self.num_of_nodes)]
+        self.binary_corr_originator_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        self.binary_corr_originator_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                         range(sz)]
 
-        self.binary_corr_datatype_values = [[0.0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_datatype_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                       range(self.num_of_nodes)]
+        self.binary_corr_datatype_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        self.binary_corr_datatype_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                       range(sz)]
 
-        self.binary_corr_datavalue_values = [[0 for x in range(self.num_of_nodes)] for y in range(self.num_of_nodes)]
-        self.binary_corr_datavalue_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                        range(self.num_of_nodes)]
+        self.binary_corr_datavalue_values = [[0 for x in range(sz)] for y in range(sz)]
+        self.binary_corr_datavalue_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                        range(sz)]
 
-        self.unary_simple_aggregate_normalized_values = [0.0 for x in range(self.num_of_nodes)]
-        self.binary_simple_aggregate_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                          range(self.num_of_nodes)]
-        self.binary_multi_aggregate_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                         range(self.num_of_nodes)]
+        self.unary_simple_aggregate_normalized_values = [0.0 for x in range(sz)]
+        self.binary_simple_aggregate_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                          range(sz)]
+        self.binary_multi_aggregate_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                         range(sz)]
 
-        self.unary_derivative_routing_values = [0 for x in range(self.num_of_nodes)]
-        self.unary_derivative_routing_normalized_values = [0 for x in range(self.num_of_nodes)]
+        self.unary_derivative_routing_values = [0 for x in range(sz)]
+        self.unary_derivative_routing_normalized_values = [0 for x in range(sz)]
 
-        self.binary_derivative_distance_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                                  range(self.num_of_nodes)]
-        self.binary_derivative_distance_normalized_values = [[0.0 for x in range(self.num_of_nodes)] for y in
-                                                             range(self.num_of_nodes)]
+        self.binary_derivative_distance_values = [[0 for x in range(sz)] for y in
+                                                  range(sz)]
+        self.binary_derivative_distance_normalized_values = [[0.0 for x in range(sz)] for y in
+                                                             range(sz)]
 
-        self.unary_weighted_values = [0 for x in range(self.num_of_nodes)]
-        self.binary_sig_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                           range(self.num_of_nodes)]
-        self.binary_corr_weighted_values = [[0 for x in range(self.num_of_nodes)] for y in
-                                            range(self.num_of_nodes)]
+        self.unary_weighted_values = [0 for x in range(sz)]
+        self.binary_sig_weighted_values = [[0 for x in range(sz)] for y in
+                                           range(sz)]
+        self.binary_corr_weighted_values = [[0 for x in range(sz)] for y in
+                                            range(sz)]
 
     def fill_dicts(self):
         """
@@ -682,26 +683,60 @@ class DataRepository:
 
 
 class FilteredDataRepository:
-    def __init__(self, log):
+    """
+    This class object's hold filtered data after applying different filters.
+
+    Instance Attributes:
+        filter_config: Filter configurations
+        data_repository: holds extracted data from the log object
+        fm_log_util: holds basic information about the log object
+        cluster_util: holds ClusterUtil class object to use clusterization functionality and also holds final clusters,
+        nodes and edges after clusterization process.
+        nodes: list of primitive nodes
+        num_of_nodes: number of primitive nodes
+        node_indices: Dictionary to hold primitive node indices
+        preserve_mask: Used in case of Edge Filers to store which edges survived after filtering
+        concurrency_filter_resultant_binary_values: Stores binary edge significance values after applying concurrency
+        filter
+        concurrency_filter_resultant_binary_corr_values: Stores binary edge correlation values after applying
+        concurrency filter
+        edge_filter_resultant_binary_values: Stores binary edge significance values after applying edge filter
+        edge_filter_resultant_binary_corr_values: Stores binary edge correlation values after applying edge filter
+        node_filter_resultant_binary_values: Stores binary edge significance values after applying node filter
+        node_filter_resultant_binary_corr_values: Stores binary edge correlation values after applying node filter
+
+    """
+
+    def __init__(self, fm_log_util):
+        """
+        Instantiate a filtered repository object.
+
+        :param fm_log_util: fm_log_util object which holds basic information about the log object.
+        """
         self.filter_config = None
         self.data_repository = None
-        self.fm_log_util = FMLogUtils(log)
+        self.fm_log_util = fm_log_util
         self.cluster_util = ClusterUtil()
-        self.log = log
         self.nodes = self.fm_log_util.nodes
         self.num_of_nodes = self.fm_log_util.num_of_nodes
         self.node_indices = self.fm_log_util.node_indices
-        self.concurrency_filter_resultant_binary_values = list()
-        self.concurrency_filter_resultant_binary_corr_values = list()
-        self.preserve_mask = list()  # needed in edge_filtering
-        self.edge_filter_resultant_binary_values = list()
-        self.edge_filter_resultant_binary_corr_values = list()
-        self.node_filter_resultant_binary_values = list()
-        self.node_filter_resultant_binary_corr_values = list()
+        # needed in edge_filtering
+        self.preserve_mask = None
+        self.concurrency_filter_resultant_binary_values = None
+        self.concurrency_filter_resultant_binary_corr_values = None
+        self.edge_filter_resultant_binary_values = None
+        self.edge_filter_resultant_binary_corr_values = None
+        self.node_filter_resultant_binary_values = None
+        self.node_filter_resultant_binary_corr_values = None
 
     def apply_concurrency_filter(self, concurrency_filter):
-        """ Applies concurrency_filter and then calls implicitly edge_filter to apply
         """
+        Applies concurrency filter on the data it gets from data_repository and saves the data in the
+        concurrency_filter_resultant_binary_values and concurrency_filter_resultant_binary_corr_values lists.
+        :param concurrency_filter: new concurrency_filter object
+        :return: Nothing
+        """
+
         self.filter_config.concurrency_filter = concurrency_filter
         self.concurrency_filter_resultant_binary_values = copy.deepcopy(self.data_repository.binary_sig_weighted_values)
         self.concurrency_filter_resultant_binary_corr_values = copy.deepcopy(
@@ -713,8 +748,18 @@ class FilteredDataRepository:
                     self.process_relation_pair(i, j)
 
     def process_relation_pair(self, x, y):
-        """ Processes an edge pair for concurrency filter, check according to threshold and ratio values.
         """
+        Processes an edge pair for concurrency filter, check according to threshold and ratio values. First checks the
+        need of conflict resolution than handles three cases if conflict needs to be resolved:
+        1. Both edges are important don't removed any edge.
+        2. One of them is important remove the other one which is less important.
+        3. Remove both as both are insignificant.
+        Saves the values directly in the lists dedicated to store data after applying concurrency filter.
+        :param x: source node index
+        :param y: destination node index
+        :return: Nothing
+        """
+
         sig_fwd = self.data_repository.binary_sig_weighted_values[x][y]
         sig_bwd = self.data_repository.binary_sig_weighted_values[y][x]
         if sig_fwd > 0.0 and sig_bwd > 0.0:
@@ -741,9 +786,14 @@ class FilteredDataRepository:
                     self.concurrency_filter_resultant_binary_corr_values[y][x] = 0.0
 
     def get_relative_imp(self, x, y):
-        """ (Helper method for process_relation_pair) Calculates relative importance
-        between two pair of nodes, when given their indices.
         """
+        Helper method for process_relation_pair it calculates relative importance between two pair of nodes, when given
+        their indices.
+        :param x: source node index
+        :param y: destination node index
+        :return: relative importance value
+        """
+
         sig_ref = self.data_repository.binary_sig_weighted_values[x][y]
         sig_source_out = 0.0
         sig_target_in = 0.0
@@ -757,8 +807,13 @@ class FilteredDataRepository:
         return (sig_ref / sig_source_out) + (sig_ref / sig_target_in)
 
     def apply_edge_filter(self, edge_filter):
-        """ Applies edge_filter according to selected type Fuzzy or Best and then implicitly calls node_filter to apply
         """
+        Applies edge filter on the filtered data generated by concurrency filter. Saves the resultant data after applying
+        edge filter in edge_filter_resultant_binary_values and edge_filter_resultant_binary_corr_values lists.
+        :param edge_filter: new edge_filter object
+        :return: Nothing
+        """
+
         self.filter_config.edge_filter = edge_filter
         self.edge_filter_resultant_binary_values = copy.deepcopy(self.concurrency_filter_resultant_binary_values)
         self.edge_filter_resultant_binary_corr_values = copy.deepcopy(
@@ -771,7 +826,7 @@ class FilteredDataRepository:
         # Return error if something else was sent other than Fuzzy and Best
         if self.filter_config.edge_filter.edge_transform == 1:
 
-            # Cut_off value can't be zero for filter to generate sensible
+            # preserve value can't be zero for filter to generate sensible
             # results, so changing it 0.001 if it is specified zero
             if self.filter_config.edge_filter.preserve == 0.0:
                 self.filter_config.edge_filter.preserve = 0.001
@@ -788,8 +843,13 @@ class FilteredDataRepository:
                     self.edge_filter_resultant_binary_corr_values[i][j] = 0.0
 
     def process_node_edges_fuzzy_filter(self, idx):
-        """ Processes edges of nodes one by one, checks according to sc_ratio, cut_off and other attributes.
         """
+        Process edges of specific node according to fuzzy edges filter algorithm. Fills preserve mask value for the
+        edges to True if the edges survive after the processing.
+        :param idx: index of the node to process
+        :return: Nothing
+        """
+
         sz = self.num_of_nodes
         min_in_val = sys.float_info.max
         max_in_val = sys.float_info.min
@@ -801,7 +861,7 @@ class FilteredDataRepository:
         sc_ratio = self.filter_config.edge_filter.sc_ratio
         for i in range(0, sz):
             if ignore_self_loops and i == idx:
-                continue # do nothing
+                continue
 
             # Check for incoming relations
             significance = self.concurrency_filter_resultant_binary_values[i][idx]
@@ -809,8 +869,6 @@ class FilteredDataRepository:
                 correlation = self.concurrency_filter_resultant_binary_corr_values[i][idx]
                 in_values[i] = significance * sc_ratio + correlation * (1.0 - sc_ratio)
 
-                # Setting these outside in order to update the values in
-                # any case, so that in_limit doesn't become not defined
                 if in_values[i] > max_in_val:
                     max_in_val = in_values[i]
                 if in_values[i] < min_in_val:
@@ -824,8 +882,6 @@ class FilteredDataRepository:
                 correlation = self.concurrency_filter_resultant_binary_corr_values[idx][i]
                 out_values[i] = significance * sc_ratio + correlation * (1.0 - sc_ratio)
 
-                # Setting these outside in order to update the values in
-                # any case, so that out_limit doesn't become not defined
                 if out_values[i] > max_out_val:
                     max_out_val = out_values[i]
                 if out_values[i] < min_out_val:
@@ -850,8 +906,13 @@ class FilteredDataRepository:
             if out_values[i] >= out_limit:
                 self.preserve_mask[idx][i] = True
 
+
     def process_node_edges_best_filter(self, idx):
-        """ Processes edges of nodes one by one for best edge filter
+        """
+        Process edges of specific node according to best edges filter algorithm. Fills preserve mask value for the edges
+        to True if the edges survive after the processing.
+        :param idx: index of the node to process
+        :return: Nothing
         """
 
         # Finding best predecessor and successor of this node
@@ -880,11 +941,24 @@ class FilteredDataRepository:
             self.preserve_mask[idx][best_succ] = True
 
     def apply_node_filter(self, node_filter):
+        """
+        Applies node filter on the data which it gets from previous filter (Edge filter). Basically it does the
+        clustering operation using clusterize method from cluster_util object for nodes whose significance is less than
+        node_filer significance cut_off.
+        :param node_filter: new node_filter object to apply
+        :return: Nothing
+        """
+
         self.node_filter_resultant_binary_values = copy.deepcopy(self.edge_filter_resultant_binary_values)
         self.node_filter_resultant_binary_corr_values = copy.deepcopy(self.edge_filter_resultant_binary_corr_values)
         self.cluster_util.clusterize(self.filter_config.node_filter, self.fm_log_util, self.data_repository, self)
 
     def debug_concurrency_filter_values(self):
+        """
+        Debug method to print new edge significance and correlation values after applying the concurrency filter.
+        :return: Nothing
+        """
+
         print("concurrency filtered values")
         print("concurrency_filter_resultant_binary_values")
         sze = self.num_of_nodes
@@ -902,6 +976,11 @@ class FilteredDataRepository:
         print()
 
     def debug_edge_filter_values(self):
+        """
+        Debug method to print new edge significance and correlation values after applying the edge filter.
+        :return: Nothing
+        """
+
         print("edge filtered values")
         print("edge_filter_resultant_binary_values")
         sze = self.num_of_nodes
@@ -919,4 +998,9 @@ class FilteredDataRepository:
         print()
 
     def debug_node_filter_values(self):
+        """
+        Debug method to print resultant nodes, clusters and edges after node filtering.
+        :return: Nothing
+        """
+        
         pass

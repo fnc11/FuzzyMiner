@@ -14,7 +14,7 @@ class Graph:
     Instance Attributes:
     config: stores the configuration object
     fm_log_util: fm_log_util object contains basic information about activities in the log object
-    cluster_util: used to form clusters log: log object
+    cluster_util: used to form clusters
     data_repository: contains all the metrics data extracted from log object
     filtered_data_repository: contains all the data after applying different filters on the metrics data
     fm_nodes: Holds list of final nodes generated after applying the configuration of metrics and filters
@@ -33,9 +33,8 @@ class Graph:
         self.config = None
         self.fm_log_util = FMLogUtils(log)
         self.cluster_util = ClusterUtil()
-        self.log = log
-        self.data_repository = DataRepository(self.log)
-        self.filtered_data_repository = FilteredDataRepository(self.log)
+        self.data_repository = DataRepository(log, self.fm_log_util)
+        self.filtered_data_repository = FilteredDataRepository(self.fm_log_util)
         self.fm_nodes = None
         self.fm_clusters = None
         self.fm_edges = None
