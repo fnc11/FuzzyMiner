@@ -145,6 +145,52 @@ class Graph:
             self.fm_message.message_type == 2
             self.fm_message.message_desc == "The current config and filter settings resulted either a null graph or one cluster. Please try changing config or filters or both."
 
+    def check_for_attenuation_value(self):
+        if 1 > self.config.attenuation.attenuation_factors > 20 and 1.0 > self.config.attenuation.echelons > 4.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The attenuation value is invalid. Please try changing the values."
+
+    def check_for_metric_values(self):
+        if 0.0 > self.data_repository.metric_settings["frequency_significance_unary"][2] > 1.0 and 0.0 > self.data_repository.metric_settings["routing_significance_unary"][2] > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The current Unary Metric configuration is invalid. Please try changing the values."
+        if 0.0 > self.data_repository.metric_settings["frequency_significance_binary"][2] > 1.0 and 0.0 > self.data_repository.metric_settings["distance_significance_binary"][2] > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The current Binary Metric configuration is invalid. Please try changing the values."
+        if 0.0 > self.data_repository.metric_settings["proximity_correlation_binary"][2] > 1.0 and 0.0 > self.data_repository.metric_settings["originator_correlation_binary"][2] > 1.0 and 0.0 > self.data_repository.metric_settings["endpoint_correlation_binary"][2] > 1.0 and 0.0 > self.data_repository.metric_settings["datatype_correlation_binary"][2] > 1.0 and 0.0 > self.data_repository.metric_settings["datavalue_correlation_binary"][2] > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The current Binary Correlation Metric configuration is invalid. Please try changing the values."
+        if self.data_repository.metric_settings["frequency_significance_unary"][0] == False and self.data_repository.metric_settings["routing_significance_unary"][0] == False:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "You have to select at least 1 metrics amongst the Unary Metrics configuration."
+        if self.data_repository.metric_settings["frequency_significance_binary"][0] == False and self.data_repository.metric_settings["distance_significance_binary"][0] == False:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "You have to select at least 1 metrics amongst the Binary Metrics configuration."
+        if self.data_repository.metric_settings["proximity_correlation_binary"][0] == False and self.data_repository.metric_settings["originator_correlation_binary"][0] == False and self.data_repository.metric_settings["endpoint_correlation_binary"][0] == False and self.data_repository.metric_settings["datatype_correlation_binary"][0] == False and self.data_repository.metric_settings["datavalue_correlation_binary"][0] == False:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "You have to select at least 1 metrics amonigs the Binary Correlation Metrics configuration."
+
+    def check_for_concurrency_filter_values(self):
+        if 0.0 > self.filtered_data_repository.filter_config.concurrency_filter.preserve > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The preserve value for concurrency filter is invalid. Please try changing the values ."
+        if 0 > self.filtered_data_repository.filter_config.concurrency_filter.offset > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The offset for concurrency filter is invalid. Please try changing the values ."
+
+    def check_for_edge_filter_values(self):
+        if 0.0 >= self.filtered_data_repository.filter_config.edge_filter.preserve > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The preserve value for the edge filter is invalid. Please try changing the value."
+        if 0.0 > self.filtered_data_repository.filter_config.edge_filter.cutoff > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The cutoff value for the edge filter is wrong. Please try changing the value."
+
+    def check_for_node_filter_values(self):
+        if 0.0 > self.filtered_data_repository.filter_config.node_filter.cut_off > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The cutoff value for the node filter is wrong. Please try changing the value."
+
     def apply_metrics_config(self, metrics_configs, attenuation, chunk_size):
         # print("Apply Metrics config is called with following values: ")
         # for metrics_config in metrics_configs:
