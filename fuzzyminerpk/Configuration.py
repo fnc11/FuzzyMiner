@@ -6,14 +6,14 @@ class Configuration:
         self.filter_config = filter_config
         self.metric_configs = metric_configs
         self.attenuation = attenuation
-        self.chunk_size = chunk_size
+        self.maximal_distance = chunk_size
 
     def __str__(self):
         metric_info = ""
         for metric in self.metric_configs:
             metric_info += metric.__str__()
         return self.filter_config.__str__()  + "\n"  + metric_info + " Attenuation: " + str(
-            self.attenuation) + " Maximum Distance: " + str(self.chunk_size)
+            self.attenuation) + " Maximum Distance: " + str(self.maximal_distance)
 
 
 class FilterConfig:
