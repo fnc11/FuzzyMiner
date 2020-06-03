@@ -230,7 +230,10 @@ class ClusterUtil:
         predecessors = set()
         for prim_idx in cluster.get_primitives():
             predecessors = predecessors.union(self.get_predecessors_of_node(prim_idx))
+        # Remove the primitives from predecessors if any
         predecessors -= set(cluster.get_primitives())
+        # Discard the index of cluster itself if included
+        predecessors.discard(index)
         return predecessors
 
     """
@@ -241,7 +244,10 @@ class ClusterUtil:
         successors = set()
         for prim_idx in cluster.get_primitives():
             successors = successors.union(self.get_successors_of_node(prim_idx))
+        # Remove the primitives from successors if any
         successors -= set(cluster.get_primitives())
+        # Discard the index of cluster itself if included
+        successors.discard(index)
         return successors
 
     """
@@ -323,59 +329,46 @@ class ClusterUtil:
         for i in range(0, sz):
             if self.node_cluster_mapping[i] != -1:
                 for j in range(0, sz):
-                    if self.node_cluster_mapping[j] != -1 and not (self.node_cluster_mapping[i] == self.node_cluster_mapping[j]):
-                        mapped_i = self.node_cluster_mapping[i]
-                        mapped_j = self.node_cluster_mapping[j]
-                        significance = self.filtered_data_repository.node_filter_resultant_binary_values[i][j]
-                        correlation = self.filtered_data_repository.node_filter_resultant_binary_corr_values[i][j]
-                        # There'll be multiple cases
-                        # Case 1. Either mapping to same cluster or it is same simple
-                        # node, in case of cluster nothing to do
-                        if significance > 0.0:
-                            if i == j and mapped_i < sz:
-                                # Case 1.1 same simple node
-                                # if significance > 0.001: Original code check but unnecessary
-                                if (i, j) in self.fm_edges_dict.keys():
-                                    if self.fm_edges_dict[(i, j)].significance > significance:
-                                        self.fm_edges_dict[(i, j)].significance = significance
-                                        self.fm_edges_dict[(i, j)].correlation = correlation
-                                else:
-                                    self.fm_edges_dict[(i, j)] = FMEdge(i, j, significance, correlation)
-                            elif mapped_i < sz and mapped_j < sz:
-                                # Case 2. Both are simple nodes
-                                if (i, j) in self.fm_edges_dict.keys():
-                                    if self.fm_edges_dict[(i, j)].significance > significance:
-                                        self.fm_edges_dict[(i, j)].significance = significance
-                                        self.fm_edges_dict[(i, j)].correlation = correlation
-                                else:
-                                    self.fm_edges_dict[(i, j)] = FMEdge(i, j, significance, correlation)
+                    significance = self.filtered_data_repository.node_filter_resultant_binary_values[i][j]
+                    correlation = self.filtered_data_repository.node_filter_resultant_binary_corr_values[i][j]
+                    if significance > 0.0:
+                        # Checking if the edge has at least the minimum significance to show in the graph
+                        if i == j:
+                            # same index will be mapped to same cluster if it is indeed mapped to cluster
+                            mapped_idx = self.node_cluster_mapping[i]
+                            # Case 1.1 simple nodes are allowed to show self loop if exists
+                            if mapped_idx != -1:
+                                if mapped_idx < sz:
+                                    if (i, j) in self.fm_edges_dict.keys():
+                                        if self.fm_edges_dict[(i, j)].significance < significance:
+                                            self.fm_edges_dict[(i, j)].significance = significance
+                                            self.fm_edges_dict[(i, j)].correlation = correlation
+                                    else:
+                                        self.fm_edges_dict[(i, j)] = FMEdge(i, j, significance, correlation)
+                            # Case 1.2 Cluster nodes no need to show loops, no need to do special handling
+                        else:
+                            mapped_i = self.node_cluster_mapping[i]
+                            mapped_j = self.node_cluster_mapping[j]
+                            if mapped_i == -1 or mapped_j == -1:
+                                # in case we have removed either of the nodes in clustering process
+                                continue
                             else:
-                                # Case 3. One or both are clusters
-                                if mapped_i > sz and mapped_j > sz:
-                                    # Case 3.1 Both are clusters
+                                # Case 2.1 Both single nodes
+                                # Case 2.2 Both mapped to different cluster Nodes
+                                # Case 2.3 Both mapped to same cluster Nodes ------------> Needs special care
+                                # Case 2.4 One Simple and one Cluster
+
+                                if mapped_i == mapped_j:
+                                    # Case 2.3
+                                    continue
+                                else:
+                                    # Cases 2.1, 2.2, 2.4
                                     if (mapped_i, mapped_j) in self.fm_edges_dict.keys():
-                                        if self.fm_edges_dict[(mapped_i, mapped_j)].significance > significance:
+                                        if self.fm_edges_dict[(mapped_i, mapped_j)].significance < significance:
                                             self.fm_edges_dict[(mapped_i, mapped_j)].significance = significance
                                             self.fm_edges_dict[(mapped_i, mapped_j)].correlation = correlation
                                     else:
-                                        self.fm_edges_dict[(mapped_i, mapped_j)] = FMEdge(mapped_i, mapped_j, significance,
-                                                                                          correlation)
-                                elif mapped_i < sz:
-                                    # Case 3.2 First is simple node, 2nd is cluster
-                                    if (i, mapped_j) in self.fm_edges_dict.keys():
-                                        if self.fm_edges_dict[(i, mapped_j)].significance > significance:
-                                            self.fm_edges_dict[(i, mapped_j)].significance = significance
-                                            self.fm_edges_dict[(i, mapped_j)].correlation = correlation
-                                    else:
-                                        self.fm_edges_dict[(i, mapped_j)] = FMEdge(i, mapped_j, significance, correlation)
-                                else:
-                                    # Case 3.3 First is cluster and 2nd is simple node
-                                    if (mapped_i, j) in self.fm_edges_dict.keys():
-                                        if self.fm_edges_dict[(mapped_i, j)].significance > significance:
-                                            self.fm_edges_dict[(mapped_i, j)].significance = significance
-                                            self.fm_edges_dict[(mapped_i, j)].correlation = correlation
-                                    else:
-                                        self.fm_edges_dict[(mapped_i, j)] = FMEdge(mapped_i, j, significance, correlation)
+                                        self.fm_edges_dict[(mapped_i, mapped_j)] = FMEdge(mapped_i, mapped_j, significance, correlation)
         self.populate_fm_edges_from_dict()
 
     """

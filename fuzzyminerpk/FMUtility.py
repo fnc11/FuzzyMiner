@@ -39,8 +39,8 @@ def cal_proximity_correlation(evt1, evt2):
     time1 = evt1['time:timestamp']
     time2 = evt2['time:timestamp']
     if time1 is not None and time2 is not None:
-        time1 = time1.timestamp()
-        time2 = time2.timestamp()
+        time1 = time1.timestamp()*1000
+        time2 = time2.timestamp()*1000
         if time1 != time2:
             return 1.0 / (time2 - time1)
         else:
@@ -198,7 +198,7 @@ def special_weight_normalize2D(values, divisors, invert, normalize_max):
         return norm_list
     else:
         comp_list = compensate_frequency(values, divisors)
-        max_value = max(map(max, values))
+        max_value = max(map(max, comp_list))
         if max_value > 0.0:
             norm_list = list()
             for i in range(sz):
