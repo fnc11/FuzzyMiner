@@ -48,21 +48,24 @@ class Graph:
         :param config: new configuration which is to be applied on the graph.
         :return: fm_message
         """
-        # print("Apply Config called with the following config: ")
-        # print(config.filter_config)
-        # for metric_config in config.metric_configs:
-        #     print(metric_config)
+
         start = time.perf_counter()
         self.config = config
         self.data_repository.config = config
         self.data_repository.init_lists()
-        self.data_repository.extract_primary_metrics()
-        self.data_repository.normalize_primary_metrics()
-        self.data_repository.extract_aggregates()
-        self.data_repository.extract_derivative_metrics()
-        self.data_repository.normalize_derivative_metrics()
-        # Final weighted values
-        self.data_repository.extract_weighted_metrics()
+        try:
+            self.data_repository.extract_primary_metrics()
+            self.data_repository.normalize_primary_metrics()
+            self.data_repository.extract_aggregates()
+            self.data_repository.extract_derivative_metrics()
+            self.data_repository.normalize_derivative_metrics()
+            self.data_repository.extract_weighted_metrics()
+        except:
+            self.fm_message.message_type = 1
+            self.fm_message.message_desc = "Error happened while extracting data, if error persists then most likely " \
+                                           "the file is corrupt."
+            return self.fm_message
+
         finish = time.perf_counter()
         print(f'Extracted Data in {round(finish - start, 3)} seconds')
 
@@ -97,7 +100,13 @@ class Graph:
         # print("Apply Concurrency filter is called with following values: ")
         # print(concurrency_filter)
         self.config.filter_config.concurrency_filter = concurrency_filter
-        self.filtered_data_repository.apply_concurrency_filter(concurrency_filter)
+        try:
+            self.filtered_data_repository.apply_concurrency_filter(concurrency_filter)
+        except:
+            self.fm_message.message_type = 1
+            self.fm_message.message_desc = "Error happened while applying Concurrency filter on the data."
+            return self.fm_message
+
         return self.apply_edge_filter(self.config.filter_config.edge_filter)
 
     def apply_edge_filter(self, edge_filter):
@@ -110,7 +119,13 @@ class Graph:
         # print("Apply Edge filter is called with following values: ")
         # print(edge_filter)
         self.config.filter_config.edge_filter = edge_filter
-        self.filtered_data_repository.apply_edge_filter(edge_filter)
+        try:
+            self.filtered_data_repository.apply_edge_filter(edge_filter)
+        except:
+            self.fm_message.message_type = 1
+            self.fm_message.message_desc = "Error happened while applying Edge filter on the data."
+            return self.fm_message
+
         return self.apply_node_filter(self.config.filter_config.node_filter)
 
     def apply_node_filter(self, node_filter):
@@ -123,13 +138,24 @@ class Graph:
         # print("Apply Node filter is called with following values: " + "\n")
         # print(node_filter)
         self.config.filter_config.node_filter = node_filter
-        self.filtered_data_repository.apply_node_filter(node_filter)
+        try:
+            self.filtered_data_repository.apply_node_filter(node_filter)
+        except:
+            self.fm_message.message_type = 1
+            self.fm_message.message_desc = "Error happened while applying Node filter on the data."
+            return self.fm_message
+
         self.finalize_graph_data()
         self.check_for_null_graph()
         if self.fm_message.message_type == 0:
             # Generate graph and save the path
             self.viz_util = VizUtil()
-            graph_path = self.viz_util.visualize(self.fm_nodes, self.fm_edges, self.fm_clusters)
+            try:
+                graph_path = self.viz_util.visualize(self.fm_nodes, self.fm_edges, self.fm_clusters)
+            except:
+                self.fm_message.message_type = 1
+                self.fm_message.message_desc = "Error happened while generating graph from the data."
+                return self.fm_message
             self.fm_message.graph_path = graph_path
 
         return self.fm_message
@@ -173,8 +199,10 @@ class Graph:
         :return: None
         """
         if len(self.fm_nodes) + len(self.fm_clusters) <= 1:
-            self.fm_message.message_type == 2
-            self.fm_message.message_desc == "The current config and filter settings resulted either a null graph or one cluster. Please try changing config or filters or both."
+            self.fm_message.message_type = 2
+            self.fm_message.message_desc = "The current config and filter settings resulted either a null graph or one " \
+                                           "cluster. Please try changing config or filters or both. And if that has no " \
+                                           "effect then maybe the data doesn't contain more than one activity type."
 
     def apply_metrics_config(self, metrics_configs, attenuation, maximal_distance):
         """

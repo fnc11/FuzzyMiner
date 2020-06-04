@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class Configuration:
     def __init__(self, filter_config, metric_configs, attenuation, chunk_size):
         self.filter_config = filter_config
@@ -12,7 +9,7 @@ class Configuration:
         metric_info = ""
         for metric in self.metric_configs:
             metric_info += metric.__str__()
-        return self.filter_config.__str__()  + "\n"  + metric_info + " Attenuation: " + str(
+        return self.filter_config.__str__() + "\n" + metric_info + " Attenuation: " + str(
             self.attenuation) + " Maximum Distance: " + str(self.maximal_distance)
 
 
@@ -23,7 +20,7 @@ class FilterConfig:
         self.concurrency_filter = concurrency_filter
 
     def __str__(self):
-        return self.node_filter.__str__()  + "\n" + self.edge_filter.__str__()  + "\n"  + self.concurrency_filter.__str__()
+        return self.node_filter.__str__() + "\n" + self.edge_filter.__str__() + "\n" + self.concurrency_filter.__str__()
 
 
 class MetricConfig:

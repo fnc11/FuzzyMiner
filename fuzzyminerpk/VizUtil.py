@@ -52,13 +52,13 @@ class VizUtil:
         for cluster in self.fm_clusters:
             label = ''.join([cluster.label, ' ', str(cluster.index), ' ~ ', str(len(cluster.primitives)), ' primitives'])
             label = ''.join([label, '\n mean_sig: ', self.format(cluster.significance)])
-            dot.node(str(cluster.index), label=label, shape='oval', color='#a7df40')
+            dot.node(str(cluster.index), label=label, shape='oval', color='aquamarine2')
 
         dot.edge_attr['fontsize'] = '10.0'
         for edge in self.fm_edges:
             label = " sig: " + self.format(edge.significance) + "\n" + " cor: " + self.format(edge.correlation)
             pen_width = self.pen_width(edge.significance)
-            dot.edge(str(edge.source), str(edge.target), label=label, constraint='true', penwidth=pen_width, color = '#f75173')
+            dot.edge(str(edge.source), str(edge.target), label=label, constraint='true', penwidth=pen_width, color = '#FF5F49')
         # print(dot.source)
         # dot.render(view=True)
         dot.render()

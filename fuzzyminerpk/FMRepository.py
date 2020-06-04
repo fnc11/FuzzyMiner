@@ -117,7 +117,7 @@ class DataRepository:
                                                         range(sz)]
 
         self.binary_corr_divisors = [[0.0 for x in range(sz)] for y in
-                                               range(sz)]
+                                     range(sz)]
 
         self.binary_corr_proximity_values = [[0.0 for x in range(sz)] for y in range(sz)]
         self.binary_corr_proximity_normalized_values = [[0.0 for x in range(sz)] for y in
@@ -702,6 +702,8 @@ class FilteredDataRepository:
         concurrency filter
         edge_filter_resultant_binary_values: Stores binary edge significance values after applying edge filter
         edge_filter_resultant_binary_corr_values: Stores binary edge correlation values after applying edge filter
+        node_filter_resultant_unary_values: Stores the node significance values, ClusterUtil object need this
+        information in order to clusterize.
         node_filter_resultant_binary_values: Stores binary edge significance values after applying node filter
         node_filter_resultant_binary_corr_values: Stores binary edge correlation values after applying node filter
 
@@ -726,6 +728,7 @@ class FilteredDataRepository:
         self.concurrency_filter_resultant_binary_corr_values = None
         self.edge_filter_resultant_binary_values = None
         self.edge_filter_resultant_binary_corr_values = None
+        self.node_filter_resultant_unary_values = None
         self.node_filter_resultant_binary_values = None
         self.node_filter_resultant_binary_corr_values = None
 
@@ -906,7 +909,6 @@ class FilteredDataRepository:
             if out_values[i] >= out_limit:
                 self.preserve_mask[idx][i] = True
 
-
     def process_node_edges_best_filter(self, idx):
         """
         Process edges of specific node according to best edges filter algorithm. Fills preserve mask value for the edges
@@ -949,9 +951,11 @@ class FilteredDataRepository:
         :return: Nothing
         """
 
+        self.filter_config.node_filter = node_filter
+        self.node_filter_resultant_unary_values = copy.deepcopy(self.data_repository.unary_weighted_values)
         self.node_filter_resultant_binary_values = copy.deepcopy(self.edge_filter_resultant_binary_values)
         self.node_filter_resultant_binary_corr_values = copy.deepcopy(self.edge_filter_resultant_binary_corr_values)
-        self.cluster_util.clusterize(self.filter_config.node_filter, self.fm_log_util, self.data_repository, self)
+        self.cluster_util.clusterize(node_filter, self.fm_log_util, self)
 
     def debug_concurrency_filter_values(self):
         """
@@ -1002,5 +1006,5 @@ class FilteredDataRepository:
         Debug method to print resultant nodes, clusters and edges after node filtering.
         :return: Nothing
         """
-        
+
         pass
