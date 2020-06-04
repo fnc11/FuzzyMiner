@@ -35,7 +35,7 @@
                                 class="grid-content-configuration el-table--border">
                             <h4 class="text-center-align">Edge</h4>
                             <el-divider class="hidden-sm-and-down"></el-divider>
-                            <label style="font-size: 14px">Edge Transformer</label>
+                            <label style="font-size: 16px">Edge Transformer</label>
                             <el-radio-group v-model="edge" style="position: relative; top:10px;">
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
