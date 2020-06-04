@@ -67,7 +67,14 @@ def get_default_configuration(num=0):
 
 
 def launch_filter(log_file_path, ip, port):
-    log = xes_import_factory.apply(log_file_path)
+    log = None
+    try:
+        log = xes_import_factory.apply(log_file_path)
+    except:
+        return JsonResponse({
+            "message_type": 1,
+            "message_desc": "A wrong log file"
+        })
     default_fuzzy_config = get_default_configuration()
     graph = Graph(log)
     pool = GraphPool()
