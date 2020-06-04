@@ -36,7 +36,7 @@ def upload(request):
             print(uploaded_file.name)
             print(uploaded_file.size)
         fs = FileSystemStorage()
-        saved_file_name = fs.save(uploaded_file.name, uploaded_file)
+        saved_file_name = fs.save(uploaded_file.name.replace(" ", "_"), uploaded_file)
         saved_file_url = fs.url(saved_file_name)
         return HttpResponse(saved_file_url)
 
