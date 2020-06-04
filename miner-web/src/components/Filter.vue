@@ -296,7 +296,6 @@
                         radical: 2.7
                     }
                 },
-                metrics_save: {},
                 value: [],
                 selectTypes: [{
                     value: 'unary',
@@ -308,6 +307,7 @@
                     value: 'binaryCorrelation',
                     label: 'Binary Correlation'
                 }],
+                save: null
             }
         },
         methods: {
@@ -390,9 +390,42 @@
             },
             openConfig() {
                 this.dialog = true;
-                // JSON.parse(JSON.stringify(obj));
+                this.save = JSON.stringify(this.metricsConfig);
             },
             async saveConfig() {
+                if (JSON.stringify(this.metricsConfig) === this.save) {
+                    this.$alert('There are no any changes for this operation.', 'No Changes', {
+                        confirmButtonText: 'Confirm',
+                        type: 'warning'
+                    });
+                    this.cancelConfig();
+                    return;
+                }
+                if (!this.metricsConfig.metrics.unary.frequency.inc && !this.metricsConfig.metrics.unary.frequency.invert
+                    && !this.metricsConfig.metrics.unary.routing.inc && !this.metricsConfig.metrics.unary.routing.invert) {
+                    this.$alert('At least one choise for unary significance.', 'Error', {
+                        confirmButtonText: 'Confirm',
+                        type: 'error'
+                    });
+                    return;
+                } else if (!this.metricsConfig.metrics.binarySignificance.frequency.inc && !this.metricsConfig.metrics.binarySignificance.frequency.invert
+                    && !this.metricsConfig.metrics.binarySignificance.distance.inc && !this.metricsConfig.metrics.binarySignificance.distance.invert) {
+                    this.$alert('At least one choise for binary significance.', 'Error', {
+                        confirmButtonText: 'Confirm',
+                        type: 'error'
+                    });
+                    return;
+                } else if (!this.metricsConfig.metrics.binaryCorrelation.proximity.inc && !this.metricsConfig.metrics.binaryCorrelation.proximity.invert
+                    && !this.metricsConfig.metrics.binaryCorrelation.originator.inc && !this.metricsConfig.metrics.binaryCorrelation.originator.invert
+                    && !this.metricsConfig.metrics.binaryCorrelation.endpoint.inc && !this.metricsConfig.metrics.binaryCorrelation.endpoint.invert
+                    && !this.metricsConfig.metrics.binaryCorrelation.dataType.inc && !this.metricsConfig.metrics.binaryCorrelation.dataType.invert
+                    && !this.metricsConfig.metrics.binaryCorrelation.dataValue.inc && !this.metricsConfig.metrics.binaryCorrelation.dataValue.invert) {
+                    this.$alert('At least one choise for binary correlation.', 'Error', {
+                        confirmButtonText: 'Confirm',
+                        type: 'error'
+                    });
+                    return;
+                }
                 let req = {
                     metrics: {
                         unary_metrics: {
@@ -465,7 +498,9 @@
                 this.progress = false;
             },
             cancelConfig() {
-                this.metrics_save = {};
+                if (JSON.stringify(this.metricsConfig) === this.save)
+                    this.metricsConfig = JSON.parse(this.save);
+                this.save = null;
                 this.dialog = false;
             },
             async loading() {
