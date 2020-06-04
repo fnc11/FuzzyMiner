@@ -6,11 +6,11 @@
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
 <!--                        <img :src="image" alt=""/>-->
-                        <viewer id="viewer" :images="images">
+                        <viewer id="viewer" :images="images" @inited="inited">
                             <img v-for="(item, index) in images" :src="item" :key="index">
                         </viewer>
                     </div>
-                    <el-button type="primary" plain class="button-position" v-model="image" @click="downloadImage">Save
+                    <el-button type="primary" plain class="button-position" @click="downloadImage">Save
                         Snapshot
                     </el-button>
                 </div>
@@ -332,6 +332,9 @@
             }
         },
         methods: {
+            inited(viewer) {
+                viewer.view(this.images.length - 1);
+            },
             progressing() {
                 this.progress = true;
                 this.percentage = 0;
