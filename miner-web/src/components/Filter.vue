@@ -54,7 +54,7 @@
                                     <label>{{ sc }}</label>
                                 </div>
                             </div>
-                            <div>
+                            <div align="center">
                                 <el-checkbox class="el-checkbox__label" style="zoom: 80%" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
                             </div>
                             <div style="position:relative;top:2vh;">
