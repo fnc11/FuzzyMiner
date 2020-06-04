@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-import numpy as np
-
 
 class Attenuation(ABC):
     def __init__(self, buf_size=5, echelons=2.7, attenuation_factors=None):
