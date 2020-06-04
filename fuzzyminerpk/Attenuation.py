@@ -3,8 +3,9 @@ import numpy as np
 
 
 class Attenuation(ABC):
-    def __init__(self, buf_size=10, attenuation_factors=None):
+    def __init__(self, buf_size=5, echelons=2.7, attenuation_factors=None):
         self.buf_size = buf_size
+        self.echelons = echelons
         self.attenuation_factors = attenuation_factors
 
     def attenuate(self, value, distance):
@@ -38,8 +39,7 @@ class Attenuation(ABC):
 class LinearAttenuation(Attenuation):
 
     def __init__(self, buffer_size, num_of_echelons):
-        super().__init__(buffer_size)
-        self.echelons = num_of_echelons
+        super().__init__(buffer_size, num_of_echelons)
 
     def create_attenuation_factor(self, distance):
         if distance == 1:
@@ -58,8 +58,7 @@ class NRootAttenuation(Attenuation):
 
     # Keep in mind the order in java code for buffer_size and num_of_echelon is reverse
     def __init__(self, buffer_size, num_of_echelons):
-        super().__init__(buffer_size)
-        self.echelons = num_of_echelons
+        super().__init__(buffer_size, num_of_echelons)
 
     def create_attenuation_factor(self, distance):
         if distance == 1:

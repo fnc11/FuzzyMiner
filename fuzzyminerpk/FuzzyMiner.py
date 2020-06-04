@@ -52,26 +52,29 @@ class Graph:
         start = time.perf_counter()
         self.config = config
         self.data_repository.config = config
-        finish = time.perf_counter()
-        self.data_repository.init_lists()
-        try:
-            self.data_repository.extract_primary_metrics()
-            self.data_repository.normalize_primary_metrics()
-            self.data_repository.extract_aggregates()
-            self.data_repository.extract_derivative_metrics()
-            self.data_repository.normalize_derivative_metrics()
-            self.data_repository.extract_weighted_metrics()
-        except:
-            self.fm_message.message_type = 1
-            self.fm_message.message_desc = "Error happened while extracting data, if error persists then most likely " \
-                                           "the file is corrupt."
-            return self.fm_message
+        self.check_for_metric_values()
+        self.check_for_attenuation_value()
+        if self.fm_message.message_type == 0:
+            self.data_repository.init_lists()
+            try:
+                self.data_repository.extract_primary_metrics()
+                self.data_repository.normalize_primary_metrics()
+                self.data_repository.extract_aggregates()
+                self.data_repository.extract_derivative_metrics()
+                self.data_repository.normalize_derivative_metrics()
+                self.data_repository.extract_weighted_metrics()
+            except:
+                self.fm_message.message_type = 1
+                self.fm_message.message_desc = "Error happened while extracting data, if error persists then most likely " \
+                                               "the file is corrupt."
+                return self.fm_message
 
-        finish = time.perf_counter()
-        print(f'Extracted Data in {round(finish - start, 3)} seconds')
+            finish = time.perf_counter()
+            print(f'Extracted Data in {round(finish - start, 3)} seconds')
 
-        # apply filters on the data
-        return self.apply_filters()
+            # apply filters on the data
+            return self.apply_filters()
+        return self.fm_message
 
     def apply_filters(self):
         """
@@ -101,14 +104,17 @@ class Graph:
         # print("Apply Concurrency filter is called with following values: ")
         # print(concurrency_filter)
         self.config.filter_config.concurrency_filter = concurrency_filter
-        try:
-            self.filtered_data_repository.apply_concurrency_filter(concurrency_filter)
-        except:
-            self.fm_message.message_type = 1
-            self.fm_message.message_desc = "Error happened while applying Concurrency filter on the data."
-            return self.fm_message
+        self.check_for_concurrency_filter_values()
+        if self.fm_message.message_type == 0:
+            try:
+                self.filtered_data_repository.apply_concurrency_filter(concurrency_filter)
+            except:
+                self.fm_message.message_type = 1
+                self.fm_message.message_desc = "Error happened while applying Concurrency filter on the data."
+                return self.fm_message
 
-        return self.apply_edge_filter(self.config.filter_config.edge_filter)
+            return self.apply_edge_filter(self.config.filter_config.edge_filter)
+        return self.fm_message
 
     def apply_edge_filter(self, edge_filter):
         """
@@ -120,14 +126,17 @@ class Graph:
         # print("Apply Edge filter is called with following values: ")
         # print(edge_filter)
         self.config.filter_config.edge_filter = edge_filter
-        try:
-            self.filtered_data_repository.apply_edge_filter(edge_filter)
-        except:
-            self.fm_message.message_type = 1
-            self.fm_message.message_desc = "Error happened while applying Edge filter on the data."
-            return self.fm_message
+        self.check_for_edge_filter_values()
+        if self.fm_message.message_type == 0:
+            try:
+                self.filtered_data_repository.apply_edge_filter(edge_filter)
+            except:
+                self.fm_message.message_type = 1
+                self.fm_message.message_desc = "Error happened while applying Edge filter on the data."
+                return self.fm_message
 
-        return self.apply_node_filter(self.config.filter_config.node_filter)
+            return self.apply_node_filter(self.config.filter_config.node_filter)
+        return self.fm_message
 
     def apply_node_filter(self, node_filter):
         """
@@ -148,6 +157,7 @@ class Graph:
 
         self.finalize_graph_data()
         self.check_for_null_graph()
+        self.check_for_node_filter_values()
         if self.fm_message.message_type == 0:
             # Generate graph and save the path
             self.viz_util = VizUtil()
@@ -204,6 +214,52 @@ class Graph:
             self.fm_message.message_desc = "The current config and filter settings resulted either a null graph or one " \
                                            "cluster. Please try changing config or filters or both. And if that has no " \
                                            "effect then maybe the data doesn't contain more than one activity type."
+
+    def check_for_attenuation_value(self):
+        if 1 > self.config.attenuation.buf_size > 20 and 1.0 > self.config.attenuation.echelons > 4.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The attenuation value is invalid. Please try changing the values."
+
+    def check_for_metric_values(self):
+        if 0.0 > self.config.metric_configs[0].weight > 1.0 and 0.0 > self.config.metric_configs[1].weight > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The current Unary Metric configuration is invalid. Please try changing the values."
+        if 0.0 > self.config.metric_configs[2].weight > 1.0 and 0.0 > self.config.metric_configs[3].weight > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The current Binary Metric configuration is invalid. Please try changing the values."
+        if 0.0 > self.config.metric_configs[4].weight > 1.0 and 0.0 > self.config.metric_configs[5].weight > 1.0 and 0.0 > self.config.metric_configs[6].weight > 1.0 and 0.0 > self.config.metric_configs[7].weight > 1.0 and 0.0 > self.config.metric_configs[8].weight > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The current Binary Correlation Metric configuration is invalid. Please try changing the values."
+        if self.config.metric_configs[0].include == False and self.config.metric_configs[1].include == False:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "You have to select at least 1 metrics amongst the Unary Metrics configuration."
+        if self.config.metric_configs[2].include == False and self.config.metric_configs[3].include == False:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "You have to select at least 1 metrics amongst the Binary Metrics configuration."
+        if self.config.metric_configs[4].include == False and self.config.metric_configs[5].include == False and self.config.metric_configs[6].include == False and self.config.metric_configs[7].include == False and self.config.metric_configs[8].include == False:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "You have to select at least 1 metrics amonigs the Binary Correlation Metrics configuration."
+
+    def check_for_concurrency_filter_values(self):
+        if 0.0 > self.filtered_data_repository.filter_config.concurrency_filter.preserve > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The preserve value for concurrency filter is invalid. Please try changing the values ."
+        if 0 > self.filtered_data_repository.filter_config.concurrency_filter.offset > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The offset for concurrency filter is invalid. Please try changing the values ."
+
+    def check_for_edge_filter_values(self):
+        if 0.0 >= self.filtered_data_repository.filter_config.edge_filter.preserve > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The preserve value for the edge filter is invalid. Please try changing the value."
+        if 0.0 > self.filtered_data_repository.filter_config.edge_filter.sc_ratio > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The cutoff value for the edge filter is wrong. Please try changing the value."
+
+    def check_for_node_filter_values(self):
+        if 0.0 > self.filtered_data_repository.filter_config.node_filter.cut_off > 1.0:
+            self.fm_message.message_type == 2
+            self.fm_message.message_desc == "The cutoff value for the node filter is wrong. Please try changing the value."
 
     def apply_metrics_config(self, metrics_configs, attenuation, maximal_distance):
         """
