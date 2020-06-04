@@ -111,8 +111,12 @@
                                 <div>
                                     <h4>{{ value.label }}</h4>
                                     <div style="display: flex">
-                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
-                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
+                                        <el-radio-group v-model="value.selection" size="small">
+                                            <el-radio :label="1" border>Include</el-radio>
+                                            <el-radio :label="2" border>Invert the significance</el-radio>
+                                        </el-radio-group>
+<!--                                        <el-checkbox v-model="value.inc">Include</el-checkbox>-->
+<!--                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>-->
                                     </div>
                                     <br>
                                     <div class="horizontal-align">
@@ -129,8 +133,12 @@
                                 <el-divider></el-divider>
                                 <h4>{{ value.label }}</h4>
                                 <div style="display: flex">
-                                    <el-checkbox v-model="value.inc">Include</el-checkbox>
-                                    <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
+                                    <el-radio-group v-model="value.selection" size="small">
+                                        <el-radio :label="1" border>Include</el-radio>
+                                        <el-radio :label="2" border>Invert the significance</el-radio>
+                                    </el-radio-group>
+<!--                                    <el-checkbox v-model="value.inc">Include</el-checkbox>-->
+<!--                                    <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>-->
                                 </div>
                                 <br>
                                 <div class="horizontal-align">
@@ -146,8 +154,12 @@
                                 <div>
                                     <h4>{{ value.label }}</h4>
                                     <div style="display: flex">
-                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
-                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
+                                        <el-radio-group v-model="value.selection" size="small">
+                                            <el-radio :label="1" border>Include</el-radio>
+                                            <el-radio :label="2" border>Invert the significance</el-radio>
+                                        </el-radio-group>
+<!--                                        <el-checkbox v-model="value.inc">Include</el-checkbox>-->
+<!--                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>-->
                                     </div>
                                     <br>
                                     <div class="horizontal-align">
@@ -232,60 +244,69 @@
                         unary: {
                             frequency: {
                                 label: 'Frequency Significance Metric',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             },
                             routing: {
                                 label: 'Routing Significance',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             }
                         },
                         binarySignificance: {
                             frequency: {
                                 label: 'Frequency Significance Metric',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             },
                             distance: {
                                 label: 'Distance Significance',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             }
                         },
                         binaryCorrelation: {
                             proximity: {
                                 label: 'Proximity Correlation',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             },
                             endpoint: {
                                 label: 'Endpoint Correlation',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             },
                             originator: {
                                 label: 'Originator Correlation',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             },
                             dataType: {
                                 label: 'Data Type Correlation',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             },
                             dataValue: {
                                 label: 'Data Value Correlation',
-                                inc: true,
-                                invert: false,
+                                // inc: true,
+                                // invert: false,
+                                selection: 1,
                                 weight: 0.5
                             }
                         },
@@ -394,52 +415,52 @@
                     metrics: {
                         unary_metrics: {
                             frequency_significance_unary: {
-                                include: this.metricsConfig.metrics.unary.frequency.inc,
-                                invert: this.metricsConfig.metrics.unary.frequency.invert,
+                                include: this.metricsConfig.metrics.unary.frequency.selection === 1,
+                                invert: this.metricsConfig.metrics.unary.frequency.selection === 2,
                                 weight: this.metricsConfig.metrics.unary.frequency.weight
                             },
                             routing_significance_unary: {
-                                include: this.metricsConfig.metrics.unary.routing.inc,
-                                invert: this.metricsConfig.metrics.unary.routing.invert,
+                                include: this.metricsConfig.metrics.unary.routing.selection === 1,
+                                invert: this.metricsConfig.metrics.unary.routing.selection === 2,
                                 weight: this.metricsConfig.metrics.unary.routing.weight
                             }
                         },
                         binary_significance: {
                             frequency_significance_binary: {
-                                include: this.metricsConfig.metrics.binarySignificance.frequency.inc,
-                                invert: this.metricsConfig.metrics.binarySignificance.frequency.invert,
+                                include: this.metricsConfig.metrics.binarySignificance.frequency.selection === 1,
+                                invert: this.metricsConfig.metrics.binarySignificance.frequency.selection === 2,
                                 weight: this.metricsConfig.metrics.binarySignificance.frequency.weight
                             },
                             distance_significance_binary: {
-                                include: this.metricsConfig.metrics.binarySignificance.distance.inc,
-                                invert: this.metricsConfig.metrics.binarySignificance.distance.invert,
+                                include: this.metricsConfig.metrics.binarySignificance.distance.selection === 1,
+                                invert: this.metricsConfig.metrics.binarySignificance.distance.selection === 2,
                                 weight: this.metricsConfig.metrics.binarySignificance.distance.weight
                             }
                         },
                         binary_correlation: {
                             proximity: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.proximity.inc,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.proximity.invert,
+                                include: this.metricsConfig.metrics.binaryCorrelation.proximity.selection === 1,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.proximity.selection === 2,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.proximity.weight
                             },
                             endpoint: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.endpoint.inc,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.endpoint.invert,
+                                include: this.metricsConfig.metrics.binaryCorrelation.endpoint.selection === 1,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.endpoint.selection === 2,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.endpoint.weight
                             },
                             originator: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.originator.inc,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.originator.invert,
+                                include: this.metricsConfig.metrics.binaryCorrelation.originator.selection === 1,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.originator.selection === 2,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.originator.weight
                             },
                             datatype_correlation_binary: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.dataType.inc,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.dataType.invert,
+                                include: this.metricsConfig.metrics.binaryCorrelation.dataType.selection === 1,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.dataType.selection === 2,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.dataType.weight
                             },
                             datavalue_correlation_binary: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.dataValue.inc,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.dataValue.invert,
+                                include: this.metricsConfig.metrics.binaryCorrelation.dataValue.selection === 1,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.dataValue.selection === 2,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.dataValue.weight
                             }
                         }
