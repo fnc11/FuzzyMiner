@@ -7,7 +7,7 @@ from graphviz import Digraph
 GRAPH_PATH = 'media/graphs/'
 GRAPH_FORMAT = 'png'
 NODE_COLORS = ['#c4ecf2', '#a9e8f2', '#6bd9ec', '#54d6ea', '#0cb6d1', '#0cb6d1']
-CLUSTER_COLORS = ['', '', '', '', '', '']
+CLUSTER_COLORS = ['#92efd0', '#79e5c1', '#4bedb7', '#0adb95', '#0adb95','#0adb95']
 
 class VizUtil:
 
@@ -53,7 +53,7 @@ class VizUtil:
         for cluster in self.fm_clusters:
             label = ''.join([cluster.label, ' ', str(cluster.index), ' ~ ', str(len(cluster.primitives)), ' primitives'])
             label = ''.join([label, '\n mean_sig: ', self.format(cluster.significance)])
-            dot.node(str(cluster.index), label=label, shape='oval', color='#a7df40')
+            dot.node(str(cluster.index), label=label, shape='oval', color=CLUSTER_COLORS[int(cluster.significance*5)])
 
         dot.edge_attr['fontsize'] = '10.0'
         for edge in self.fm_edges:
