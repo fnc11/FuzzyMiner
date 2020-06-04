@@ -23,6 +23,11 @@
                 <el-col :span="2.5">
                     <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate</el-button>
                 </el-col>
+                <el-col :span="2.5">
+                    <el-tooltip effect="dark" placement="top-end" content="This generates a model based on an example log, you can find out more in Help Page.">
+                        <el-button @click="generateDemo">Generate Example Model</el-button>
+                    </el-tooltip>
+                </el-col>
             </el-row>
             <br><br><br>
             <el-row class="file-list" justify="center" type="flex">
@@ -38,6 +43,7 @@
                     </li>
                 </ul>
             </el-row>
+            <br><br><br>
         </div>
         <!--
     <div>
@@ -96,8 +102,11 @@
                 this.generated = false;
                 this.percentage = 0;
             },
-            async generate() {
+            generate() {
                 this.$router.push({name: 'Filter', params: {path: this.path}});
+            },
+            generateDemo() {
+                this.$router.push({name: 'Filter', params: {path: '/media/Road50.xes'}});
             },
             uploadSuccess(response, file) {
                 this.$message({

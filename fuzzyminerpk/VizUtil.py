@@ -6,7 +6,8 @@ from graphviz import Digraph
 
 GRAPH_PATH = 'media/graphs/'
 GRAPH_FORMAT = 'png'
-
+NODE_COLORS = ['#c4ecf2', '#a9e8f2', '#6bd9ec', '#54d6ea', '#0cb6d1', '#0cb6d1']
+CLUSTER_COLORS = ['#92efd0', '#79e5c1', '#4bedb7', '#0adb95', '#0adb95','#0adb95']
 
 class VizUtil:
 
@@ -47,18 +48,18 @@ class VizUtil:
             else:
                 label = tokens[0]
             label += "\n" + self.format(node.significance)
-            dot.node(str(node.index), label=label, penwidth='1.0', fillcolor='#6bd9ec')
+            dot.node(str(node.index), label=label, penwidth='1.0', fillcolor=NODE_COLORS[int(node.significance*5)])
 
         for cluster in self.fm_clusters:
             label = ''.join([cluster.label, ' ', str(cluster.index), ' ~ ', str(len(cluster.primitives)), ' primitives'])
             label = ''.join([label, '\n mean_sig: ', self.format(cluster.significance)])
-            dot.node(str(cluster.index), label=label, shape='oval', color='aquamarine2')
+            dot.node(str(cluster.index), label=label, shape='oval', color=CLUSTER_COLORS[int(cluster.significance*5)])
 
         dot.edge_attr['fontsize'] = '10.0'
         for edge in self.fm_edges:
             label = " sig: " + self.format(edge.significance) + "\n" + " cor: " + self.format(edge.correlation)
             pen_width = self.pen_width(edge.significance)
-            dot.edge(str(edge.source), str(edge.target), label=label, constraint='true', penwidth=pen_width, color = '#FF5F49')
+            dot.edge(str(edge.source), str(edge.target), label=label, constraint='true', penwidth=pen_width, color ='#FF5F49')
         # print(dot.source)
         # dot.render(view=True)
         dot.render()

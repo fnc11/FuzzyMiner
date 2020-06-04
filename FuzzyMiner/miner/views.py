@@ -69,7 +69,14 @@ def get_default_configuration(num=0):
 
 def launch_filter(log_file_path, ip, port):
     start = time.perf_counter()
-    log = xes_import_factory.apply(log_file_path)
+    log = None
+    try:
+        log = xes_import_factory.apply(log_file_path)
+    except:
+        return JsonResponse({
+            "message_type": 1,
+            "message_desc": "A wrong log file"
+        })
     finish = time.perf_counter()
     print(f'XES import factory took {round(finish - start, 3)} seconds')
     default_fuzzy_config = get_default_configuration()
@@ -136,12 +143,10 @@ def edge_filter(request):
     print('edge transformer:', data['edge_transformer'])
     if data['edge_transformer'] == 'Fuzzy Edges':
         print('s/c ratio:', data['s/c_ratio'])
-        print('Preserve:', data['cutoff'])
+        print('Preserve:', data['preserve'])
         print('ignore self-loops:', data['ignore_self_loops'])
         print('interpret absolute:', data['interpret_absolute'])
-        edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], preserve=data['cutoff'],
-                                     ignore_self_loops=data['ignore_self_loops'],
-                                     interpret_abs=data['interpret_absolute'])
+        edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], preserve=data['preserve'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
     else:
         edge_filter_obj = EdgeFilter(edge_transform=0, ignore_self_loops=data['ignore_self_loops'])
     graph = GraphPool().get_graph_by_id(data['id'])
