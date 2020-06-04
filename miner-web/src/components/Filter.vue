@@ -54,8 +54,10 @@
                                     <label>{{ sc }}</label>
                                 </div>
                             </div>
-                            <div style="position:relative;top:2vh;">
+                            <div>
                                 <el-checkbox class="el-checkbox__label" style="zoom: 80%" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
+                            </div>
+                            <div style="position:relative;top:2vh;">
                                 <el-checkbox class="el-checkbox__label" v-model="loops">Ignore Self-Loops</el-checkbox>
                             </div>
                         </el-col>
@@ -73,8 +75,8 @@
                                     <h5>Preserve</h5>
                                     <el-slider vertical v-model="preserve" height="30vh" :disabled="!concurrency"
                                                @change="preserveChanged"
-                                               :min="0.0" :max="1.0" :step="0.001"/>
-                                    <label>{{ preserve }}</label>
+                                               :min="0.0" :max="1.0" :step="0.01" :format-tooltip="() => { return Math.pow(this.preserve, 4).toFixed(3); }" />
+                                    <label>{{ concurrencyPreserve }}</label>
                                 </div>
                                 <div align="center">
                                     <h5>Balance</h5>
@@ -365,7 +367,7 @@
                 this.progressing();
                 const data = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
-                    'preserve': value,
+                    'preserve': Math.pow(value, 4),
                     'balance': this.balance,
                     'id': this.$store.getters.id
                 });
@@ -377,7 +379,7 @@
                 this.progressing();
                 const data = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
-                    'preserve': this.preserve,
+                    'preserve': Math.pow(this.preserve, 4),
                     'balance': value,
                     'id': this.$store.getters.id
                 });
@@ -618,7 +620,7 @@
                     return;
                 const data = await concurrencyFilter({
                     'filter_concurrency': now,
-                    'preserve': this.preserve,
+                    'preserve': Math.pow(this.preserve, 4),
                     'balance': this.balance,
                     'id': this.$store.getters.id
                 });
@@ -626,6 +628,11 @@
                 this.handleResponse(data);
                 this.progress = false;
             },
+        },
+        computed: {
+            concurrencyPreserve() {
+                return Math.pow(this.preserve, 4).toFixed(3);
+            }
         },
         mounted() {
             this.$el.querySelector('#viewer').addEventListener('viewed', (e) => {
