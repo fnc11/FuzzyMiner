@@ -27,8 +27,8 @@
                             <div class="slider-adjustment1">
                                 <h5>Significance Cutoff</h5>
                                 <el-slider align="middle" vertical v-model="node" height="30vh"
-                                           :format-tooltip="slider_format" @change="nodeChanged"/>
-                                <label> {{ node / 100 }}</label>
+                                           @change="nodeChanged" :min="0.0" :max="1.0" :step="0.001"/>
+                                <label> {{ node }}</label>
                             </div>
                         </el-col>
                         <el-col :xl="8" :lg="8" :md="9" :sm="9" :xs="9"
@@ -44,18 +44,18 @@
                                 <div align="center">
                                     <h5>S/C Ratio</h5>
                                     <el-slider vertical v-model="sc" height="30vh" :disabled="edge === 1"
-                                               :format-tooltip="slider_format" @change="scChanged"/>
-                                    <label>{{ sc / 100 }}</label>
+                                               @change="scChanged" :min="0.0" :max="1.0" :step="0.001"/>
+                                    <label>{{ sc }}</label>
                                 </div>
                                 <div align="center">
-                                    <h5>Cutoff</h5>
+                                    <h5>Preserve</h5>
                                     <el-slider vertical v-model="cutoff" height="30vh" :disabled="edge === 1"
-                                               :format-tooltip="slider_format" @change="cutoffChanged"/>
-                                    <label>{{ cutoff / 100 }}</label>
+                                               @change="cutoffChanged" :min="0.001" :max="1.0" :step="0.001"/>
+                                    <label>{{ cutoff }}</label>
                                 </div>
                             </div>
                             <div style="position:relative;top:2vh;">
-                                <el-checkbox class="el-checkbox__label" v-model="loops" :disabled="edge === 1">Ignore Self-Loops</el-checkbox>
+                                <el-checkbox class="el-checkbox__label" v-model="loops">Ignore Self-Loops</el-checkbox>
                                 <el-checkbox class="el-checkbox__label" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
                             </div>
                         </el-col>
@@ -72,15 +72,16 @@
                                 <div align="center">
                                     <h5>Preserve</h5>
                                     <el-slider vertical v-model="preserve" height="30vh" :disabled="!concurrency"
-                                               :format-tooltip="slider_format"
-                                               @change="preserveChanged"/>
-                                    <label>{{ preserve / 100 }}</label>
+                                               @change="preserveChanged"
+                                               :min="0.0" :max="1.0" :step="0.001"/>
+                                    <label>{{ preserve }}</label>
                                 </div>
                                 <div align="center">
                                     <h5>Balance</h5>
                                     <el-slider vertical v-model="balance" height="30vh" :disabled="!concurrency"
-                                               :format-tooltip="slider_format" @change="balanceChanged"/>
-                                    <label>{{ balance / 100 }}</label>
+                                               @change="balanceChanged"
+                                               :min="0.0" :max="1.0" :step="0.001"/>
+                                    <label>{{ balance }}</label>
                                 </div>
                             </div>
 
@@ -117,7 +118,7 @@
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
                                         <el-slider class="adjust-slider-width" v-model="value.weight"
-                                                   :format-tooltip="slider_format"/>
+                                                   :min="0.0" :max="1.0" :step="0.01"/>
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +136,7 @@
                                 <div class="horizontal-align">
                                     <label class="slider-label">Weight</label>
                                     <el-slider class="adjust-slider-width" v-model="value.weight"
-                                               :format-tooltip="slider_format"/>
+                                               :min="0.0" :max="1.0" :step="0.01"/>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +153,7 @@
                                     <div class="horizontal-align">
                                         <label class="slider-label">Weight</label>
                                         <el-slider class="adjust-slider-width" v-model="value.weight"
-                                                   :format-tooltip="slider_format"/>
+                                                   :min="0.0" :max="1.0" :step="0.01"/>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +175,7 @@
                             </el-radio-group>
                             <el-slider v-model="metricsConfig.attenuation.radical"
                                        :disabled="metricsConfig.attenuation.seleted === 1" :min="1" :max="4"
-                                       step="0.01"/>
+                                       :step="0.01"/>
                         </div>
 
                     </el-tab-pane>
@@ -212,10 +213,10 @@
                 percentage: 0,
                 node: 0,
                 edge: 2,
-                sc: 75,
-                cutoff: 20,
-                preserve: 60,
-                balance: 70,
+                sc: 0.75,
+                cutoff: 0.2,
+                preserve: 0.6,
+                balance: 0.7,
                 loops: true,
                 absolute: false,
                 concurrency: true,
@@ -233,13 +234,13 @@
                                 label: 'Frequency Significance Metric',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             },
                             routing: {
                                 label: 'Routing Significance',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             }
                         },
                         binarySignificance: {
@@ -247,13 +248,13 @@
                                 label: 'Frequency Significance Metric',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             },
                             distance: {
                                 label: 'Distance Significance',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             }
                         },
                         binaryCorrelation: {
@@ -261,31 +262,31 @@
                                 label: 'Proximity Correlation',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             },
                             endpoint: {
                                 label: 'Endpoint Correlation',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             },
                             originator: {
                                 label: 'Originator Correlation',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             },
                             dataType: {
                                 label: 'Data Type Correlation',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             },
                             dataValue: {
                                 label: 'Data Value Correlation',
                                 inc: true,
                                 invert: false,
-                                weight: 50
+                                weight: 0.5
                             }
                         },
                     },
@@ -310,9 +311,6 @@
             }
         },
         methods: {
-            slider_format(value) {
-                return value / 100;
-            },
             progressing() {
                 this.progress = true;
                 this.percentage = 0;
@@ -320,15 +318,15 @@
                     this.percentage += 1;
                     if (this.percentage >= 100 || this.progress === false)
                         clearInterval(obj);
-                }, 300);
+                }, 600);
             },
             async nodeChanged(value) {
                 this.progressing();
                 const data = await nodeFilter({
-                    'cutoff': value / 100,
+                    'cutoff': value,
                     'id': this.$store.getters.id
                 });
-                console.log('change node filter with cutoff: ' + String(value / 100));
+                console.log('change node filter with cutoff: ' + String(value));
                 this.handleResponse(data);
                 this.progress = false;
             },
@@ -336,13 +334,13 @@
                 this.progressing();
                 const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
-                    's/c_ratio': value / 100,
-                    'cutoff': this.cutoff / 100,
+                    's/c_ratio': value,
+                    'preserve': this.cutoff,
                     'ignore_self_loops': this.loops,
                     'interpret_absolute': this.absolute,
                     'id': this.$store.getters.id
                 });
-                console.log('change edge filter with s/c ratio: ' + String(value / 100));
+                console.log('change edge filter with s/c ratio: ' + String(value));
                 this.handleResponse(data);
                 this.progress = false;
             },
@@ -350,13 +348,13 @@
                 this.progressing();
                 const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
-                    's/c_ratio': this.sc / 100,
-                    'cutoff': value / 100,
+                    's/c_ratio': this.sc,
+                    'preserve': value,
                     'ignore_self_loops': this.loops,
                     'interpret_absolute': this.absolute,
                     'id': this.$store.getters.id
                 });
-                console.log('change edge filter with cutoff: ' + String(value / 100));
+                console.log('change edge filter with cutoff: ' + String(value));
                 this.handleResponse(data);
                 this.progress = false;
             },
@@ -364,11 +362,11 @@
                 this.progressing();
                 const data = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
-                    'preserve': value / 100,
-                    'balance': this.balance / 100,
+                    'preserve': value,
+                    'balance': this.balance,
                     'id': this.$store.getters.id
                 });
-                console.log('change concurrency filter with preserve: ' + String(value / 100));
+                console.log('change concurrency filter with preserve: ' + String(value));
                 this.handleResponse(data);
                 this.progress = false;
             },
@@ -376,11 +374,11 @@
                 this.progressing();
                 const data = await concurrencyFilter({
                     'filter_concurrency': this.concurrency,
-                    'preserve': this.preserve / 100,
-                    'balance': value / 100,
+                    'preserve': this.preserve,
+                    'balance': value,
                     'id': this.$store.getters.id
                 });
-                console.log('change concurrency filter with balance: ' + String(value / 100));
+                console.log('change concurrency filter with balance: ' + String(value));
                 this.handleResponse(data);
                 this.progress = false;
             },
@@ -398,51 +396,51 @@
                             frequency_significance_unary: {
                                 include: this.metricsConfig.metrics.unary.frequency.inc,
                                 invert: this.metricsConfig.metrics.unary.frequency.invert,
-                                weight: this.metricsConfig.metrics.unary.frequency.weight / 100
+                                weight: this.metricsConfig.metrics.unary.frequency.weight
                             },
                             routing_significance_unary: {
                                 include: this.metricsConfig.metrics.unary.routing.inc,
                                 invert: this.metricsConfig.metrics.unary.routing.invert,
-                                weight: this.metricsConfig.metrics.unary.routing.weight / 100
+                                weight: this.metricsConfig.metrics.unary.routing.weight
                             }
                         },
                         binary_significance: {
                             frequency_significance_binary: {
                                 include: this.metricsConfig.metrics.binarySignificance.frequency.inc,
                                 invert: this.metricsConfig.metrics.binarySignificance.frequency.invert,
-                                weight: this.metricsConfig.metrics.binarySignificance.frequency.weight / 100
+                                weight: this.metricsConfig.metrics.binarySignificance.frequency.weight
                             },
                             distance_significance_binary: {
                                 include: this.metricsConfig.metrics.binarySignificance.distance.inc,
                                 invert: this.metricsConfig.metrics.binarySignificance.distance.invert,
-                                weight: this.metricsConfig.metrics.binarySignificance.distance.weight / 100
+                                weight: this.metricsConfig.metrics.binarySignificance.distance.weight
                             }
                         },
                         binary_correlation: {
                             proximity: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.proximity.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.proximity.invert,
-                                weight: this.metricsConfig.metrics.binaryCorrelation.proximity.weight / 100
+                                weight: this.metricsConfig.metrics.binaryCorrelation.proximity.weight
                             },
                             endpoint: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.endpoint.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.endpoint.invert,
-                                weight: this.metricsConfig.metrics.binaryCorrelation.endpoint.weight / 100
+                                weight: this.metricsConfig.metrics.binaryCorrelation.endpoint.weight
                             },
                             originator: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.originator.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.originator.invert,
-                                weight: this.metricsConfig.metrics.binaryCorrelation.originator.weight / 100
+                                weight: this.metricsConfig.metrics.binaryCorrelation.originator.weight
                             },
                             datatype_correlation_binary: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.dataType.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.dataType.invert,
-                                weight: this.metricsConfig.metrics.binaryCorrelation.dataType.weight / 100
+                                weight: this.metricsConfig.metrics.binaryCorrelation.dataType.weight
                             },
                             datavalue_correlation_binary: {
                                 include: this.metricsConfig.metrics.binaryCorrelation.dataValue.inc,
                                 invert: this.metricsConfig.metrics.binaryCorrelation.dataValue.invert,
-                                weight: this.metricsConfig.metrics.binaryCorrelation.dataValue.weight / 100
+                                weight: this.metricsConfig.metrics.binaryCorrelation.dataValue.weight
                             }
                         }
                     },
@@ -510,13 +508,14 @@
                 if (now === 1) {
                     resp = await edgeFilter({
                         'edge_transformer': 'Best Edges',
+                        'ignore_self_loops': this.loops,
                         'id': this.$store.getters.id
                     });
                 } else {
                     resp = await edgeFilter({
                         'edge_transformer': 'Fuzzy Edges',
-                        's/c_ratio': this.sc / 100,
-                        'cutoff': this.cutoff / 100,
+                        's/c_ratio': this.sc,
+                        'preserve': this.cutoff,
                         'ignore_self_loops': this.loops,
                         'interpret_absolute': this.absolute,
                         'id': this.$store.getters.id
@@ -530,14 +529,23 @@
                 this.progressing();
                 if (now === old)
                     return;
-                const data = await edgeFilter({
-                    'edge_transformer': 'Fuzzy Edges',
-                    's/c_ratio': this.sc / 100,
-                    'cutoff': this.cutoff / 100,
-                    'ignore_self_loops': now,
-                    'interpret_absolute': this.absolute,
-                    'id': this.$store.getters.id
-                });
+                let data;
+                if (this.edge === 1) {
+                    data = await edgeFilter({
+                        'edge_transformer': 'Best Edges',
+                        'ignore_self_loops': now,
+                        'id': this.$store.getters.id
+                    });
+                } else {
+                    data = await edgeFilter({
+                        'edge_transformer': 'Fuzzy Edges',
+                        's/c_ratio': this.sc,
+                        'preserve': this.cutoff,
+                        'ignore_self_loops': now,
+                        'interpret_absolute': this.absolute,
+                        'id': this.$store.getters.id
+                    });
+                }
                 console.log('change edge filter with ignore self-loops: ' + String(now));
                 this.handleResponse(data);
                 this.progress = false;
@@ -548,8 +556,8 @@
                     return;
                 const data = await edgeFilter({
                     'edge_transformer': 'Fuzzy Edges',
-                    's/c_ratio': this.sc / 100,
-                    'cutoff': this.cutoff / 100,
+                    's/c_ratio': this.sc,
+                    'preserve': this.cutoff,
                     'ignore_self_loops': this.loops,
                     'interpret_absolute': now,
                     'id': this.$store.getters.id
@@ -564,8 +572,8 @@
                     return;
                 const data = await concurrencyFilter({
                     'filter_concurrency': now,
-                    'preserve': this.preserve / 100,
-                    'balance': this.balance / 100,
+                    'preserve': this.preserve,
+                    'balance': this.balance,
                     'id': this.$store.getters.id
                 });
                 console.log('change concurrency filter with filter concurrency: ' + String(now));
