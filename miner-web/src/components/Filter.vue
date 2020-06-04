@@ -35,13 +35,11 @@
                                 class="grid-content-configuration el-table--border">
                             <h4 class="text-center-align">Edge</h4>
                             <el-divider class="hidden-sm-and-down"></el-divider>
+                            <label style="font-size: 16px">Edge Transformer</label>
                             <el-radio-group v-model="edge" style="position: relative; top:10px;">
                                 <el-radio :label="1">Best Edges</el-radio>
                                 <el-radio :label="2">Fuzzy Edges</el-radio>
                             </el-radio-group>
-                            <div align="center">
-                                <el-checkbox class="el-checkbox__label" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
-                            </div>
                             <div class="slider-adjustment2">
                                 <div align="center">
                                     <h5>Preserve</h5>
@@ -55,6 +53,9 @@
                                                @change="scChanged" :min="0.0" :max="1.0" :step="0.001"/>
                                     <label>{{ sc }}</label>
                                 </div>
+                            </div>
+                            <div align="center">
+                                <el-checkbox class="el-checkbox__label" style="zoom: 80%" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
                             </div>
                             <div style="position:relative;top:2vh;">
                                 <el-checkbox class="el-checkbox__label" v-model="loops">Ignore Self-Loops</el-checkbox>
@@ -232,7 +233,7 @@
                     metrics: {
                         unary: {
                             frequency: {
-                                label: 'Frequency Significance',
+                                label: 'Frequency Significance Metric',
                                 inc: true,
                                 invert: false,
                                 weight: 0.5
@@ -246,7 +247,7 @@
                         },
                         binarySignificance: {
                             frequency: {
-                                label: 'Frequency Significance',
+                                label: 'Frequency Significance Metric',
                                 inc: true,
                                 invert: false,
                                 weight: 0.5
@@ -402,33 +403,27 @@
                     this.cancelConfig();
                     return;
                 }
-                let errors = [];
                 if (!this.metricsConfig.metrics.unary.frequency.inc && !this.metricsConfig.metrics.unary.frequency.invert
                     && !this.metricsConfig.metrics.unary.routing.inc && !this.metricsConfig.metrics.unary.routing.invert) {
-                    errors.push('unary significance');
-                }
-                if (!this.metricsConfig.metrics.binarySignificance.frequency.inc && !this.metricsConfig.metrics.binarySignificance.frequency.invert
+                    this.$alert('At least one choise for unary significance.', 'Error', {
+                        confirmButtonText: 'Confirm',
+                        type: 'error'
+                    });
+                    return;
+                } else if (!this.metricsConfig.metrics.binarySignificance.frequency.inc && !this.metricsConfig.metrics.binarySignificance.frequency.invert
                     && !this.metricsConfig.metrics.binarySignificance.distance.inc && !this.metricsConfig.metrics.binarySignificance.distance.invert) {
-                    errors.push('binary significance');
-                }
-                if (!this.metricsConfig.metrics.binaryCorrelation.proximity.inc && !this.metricsConfig.metrics.binaryCorrelation.proximity.invert
+                    this.$alert('At least one choise for binary significance.', 'Error', {
+                        confirmButtonText: 'Confirm',
+                        type: 'error'
+                    });
+                    return;
+                } else if (!this.metricsConfig.metrics.binaryCorrelation.proximity.inc && !this.metricsConfig.metrics.binaryCorrelation.proximity.invert
                     && !this.metricsConfig.metrics.binaryCorrelation.originator.inc && !this.metricsConfig.metrics.binaryCorrelation.originator.invert
                     && !this.metricsConfig.metrics.binaryCorrelation.endpoint.inc && !this.metricsConfig.metrics.binaryCorrelation.endpoint.invert
                     && !this.metricsConfig.metrics.binaryCorrelation.dataType.inc && !this.metricsConfig.metrics.binaryCorrelation.dataType.invert
                     && !this.metricsConfig.metrics.binaryCorrelation.dataValue.inc && !this.metricsConfig.metrics.binaryCorrelation.dataValue.invert) {
-                    errors.push('binary correlation');
-                }
-                if (errors.length >= 1) {
-                    let msg = 'Choose at least one metric for ';
-                    for (let i = 0; i < errors.length; i++) {
-                        if (i)
-                            msg += ', ' + errors[i];
-                        else
-                            msg += errors[i];
-                    }
-                    msg += '.';
-                    this.$alert(msg, 'Error', {
-                        confirmButtonText: 'OK',
+                    this.$alert('At least one choise for binary correlation.', 'Error', {
+                        confirmButtonText: 'Confirm',
                         type: 'error'
                     });
                     return;
