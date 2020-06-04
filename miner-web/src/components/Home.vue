@@ -24,7 +24,9 @@
                     <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate</el-button>
                 </el-col>
                 <el-col :span="2.5">
-                    <el-button @click="generateDemo">Example Model</el-button>
+                    <el-tooltip effect="dark" placement="top-end" content="This generates a model based on an example log, you can find out more in Help Page.">
+                        <el-button @click="generateDemo">Generate Example Model</el-button>
+                    </el-tooltip>
                 </el-col>
             </el-row>
             <br><br><br>

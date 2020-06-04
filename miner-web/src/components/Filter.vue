@@ -42,21 +42,21 @@
                             </el-radio-group>
                             <div class="slider-adjustment2">
                                 <div align="center">
-                                    <h5>S/C Ratio</h5>
-                                    <el-slider vertical v-model="sc" height="30vh" :disabled="edge === 1"
-                                               @change="scChanged" :min="0.0" :max="1.0" :step="0.001"/>
-                                    <label>{{ sc }}</label>
-                                </div>
-                                <div align="center">
                                     <h5>Preserve</h5>
                                     <el-slider vertical v-model="cutoff" height="30vh" :disabled="edge === 1"
                                                @change="cutoffChanged" :min="0.001" :max="1.0" :step="0.001"/>
                                     <label>{{ cutoff }}</label>
                                 </div>
+                                <div align="center">
+                                    <h5>S/C Ratio</h5>
+                                    <el-slider vertical v-model="sc" height="30vh" :disabled="edge === 1"
+                                               @change="scChanged" :min="0.0" :max="1.0" :step="0.001"/>
+                                    <label>{{ sc }}</label>
+                                </div>
                             </div>
                             <div style="position:relative;top:2vh;">
+                                <el-checkbox class="el-checkbox__label" style="zoom: 80%" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
                                 <el-checkbox class="el-checkbox__label" v-model="loops">Ignore Self-Loops</el-checkbox>
-                                <el-checkbox class="el-checkbox__label" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
                             </div>
                         </el-col>
                         <el-col :xl="8" :lg="8" :md="9" :sm="9" :xs="9"
@@ -111,12 +111,8 @@
                                 <div>
                                     <h4>{{ value.label }}</h4>
                                     <div style="display: flex">
-                                        <el-radio-group v-model="value.selection" size="small">
-                                            <el-radio :label="1" border>Include</el-radio>
-                                            <el-radio :label="2" border>Invert the significance</el-radio>
-                                        </el-radio-group>
-<!--                                        <el-checkbox v-model="value.inc">Include</el-checkbox>-->
-<!--                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>-->
+                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
                                     </div>
                                     <br>
                                     <div class="horizontal-align">
@@ -133,12 +129,8 @@
                                 <el-divider></el-divider>
                                 <h4>{{ value.label }}</h4>
                                 <div style="display: flex">
-                                    <el-radio-group v-model="value.selection" size="small">
-                                        <el-radio :label="1" border>Include</el-radio>
-                                        <el-radio :label="2" border>Invert the significance</el-radio>
-                                    </el-radio-group>
-<!--                                    <el-checkbox v-model="value.inc">Include</el-checkbox>-->
-<!--                                    <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>-->
+                                    <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                    <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
                                 </div>
                                 <br>
                                 <div class="horizontal-align">
@@ -154,12 +146,8 @@
                                 <div>
                                     <h4>{{ value.label }}</h4>
                                     <div style="display: flex">
-                                        <el-radio-group v-model="value.selection" size="small">
-                                            <el-radio :label="1" border>Include</el-radio>
-                                            <el-radio :label="2" border>Invert the significance</el-radio>
-                                        </el-radio-group>
-<!--                                        <el-checkbox v-model="value.inc">Include</el-checkbox>-->
-<!--                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>-->
+                                        <el-checkbox v-model="value.inc">Include</el-checkbox>
+                                        <el-checkbox v-model="value.invert">Invert the significance</el-checkbox>
                                     </div>
                                     <br>
                                     <div class="horizontal-align">
@@ -244,69 +232,60 @@
                         unary: {
                             frequency: {
                                 label: 'Frequency Significance Metric',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             },
                             routing: {
                                 label: 'Routing Significance',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             }
                         },
                         binarySignificance: {
                             frequency: {
                                 label: 'Frequency Significance Metric',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             },
                             distance: {
                                 label: 'Distance Significance',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             }
                         },
                         binaryCorrelation: {
                             proximity: {
                                 label: 'Proximity Correlation',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             },
                             endpoint: {
                                 label: 'Endpoint Correlation',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             },
                             originator: {
                                 label: 'Originator Correlation',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             },
                             dataType: {
                                 label: 'Data Type Correlation',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             },
                             dataValue: {
                                 label: 'Data Value Correlation',
-                                // inc: true,
-                                // invert: false,
-                                selection: 1,
+                                inc: true,
+                                invert: false,
                                 weight: 0.5
                             }
                         },
@@ -342,7 +321,7 @@
                     this.percentage += 1;
                     if (this.percentage >= 100 || this.progress === false)
                         clearInterval(obj);
-                }, 600);
+                }, 450);
             },
             async nodeChanged(value) {
                 this.progressing();
@@ -418,52 +397,52 @@
                     metrics: {
                         unary_metrics: {
                             frequency_significance_unary: {
-                                include: this.metricsConfig.metrics.unary.frequency.selection === 1,
-                                invert: this.metricsConfig.metrics.unary.frequency.selection === 2,
+                                include: this.metricsConfig.metrics.unary.frequency.inc,
+                                invert: this.metricsConfig.metrics.unary.frequency.invert,
                                 weight: this.metricsConfig.metrics.unary.frequency.weight
                             },
                             routing_significance_unary: {
-                                include: this.metricsConfig.metrics.unary.routing.selection === 1,
-                                invert: this.metricsConfig.metrics.unary.routing.selection === 2,
+                                include: this.metricsConfig.metrics.unary.routing.inc,
+                                invert: this.metricsConfig.metrics.unary.routing.invert,
                                 weight: this.metricsConfig.metrics.unary.routing.weight
                             }
                         },
                         binary_significance: {
                             frequency_significance_binary: {
-                                include: this.metricsConfig.metrics.binarySignificance.frequency.selection === 1,
-                                invert: this.metricsConfig.metrics.binarySignificance.frequency.selection === 2,
+                                include: this.metricsConfig.metrics.binarySignificance.frequency.inc,
+                                invert: this.metricsConfig.metrics.binarySignificance.frequency.invert,
                                 weight: this.metricsConfig.metrics.binarySignificance.frequency.weight
                             },
                             distance_significance_binary: {
-                                include: this.metricsConfig.metrics.binarySignificance.distance.selection === 1,
-                                invert: this.metricsConfig.metrics.binarySignificance.distance.selection === 2,
+                                include: this.metricsConfig.metrics.binarySignificance.distance.inc,
+                                invert: this.metricsConfig.metrics.binarySignificance.distance.invert,
                                 weight: this.metricsConfig.metrics.binarySignificance.distance.weight
                             }
                         },
                         binary_correlation: {
                             proximity: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.proximity.selection === 1,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.proximity.selection === 2,
+                                include: this.metricsConfig.metrics.binaryCorrelation.proximity.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.proximity.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.proximity.weight
                             },
                             endpoint: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.endpoint.selection === 1,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.endpoint.selection === 2,
+                                include: this.metricsConfig.metrics.binaryCorrelation.endpoint.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.endpoint.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.endpoint.weight
                             },
                             originator: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.originator.selection === 1,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.originator.selection === 2,
+                                include: this.metricsConfig.metrics.binaryCorrelation.originator.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.originator.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.originator.weight
                             },
                             datatype_correlation_binary: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.dataType.selection === 1,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.dataType.selection === 2,
+                                include: this.metricsConfig.metrics.binaryCorrelation.dataType.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.dataType.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.dataType.weight
                             },
                             datavalue_correlation_binary: {
-                                include: this.metricsConfig.metrics.binaryCorrelation.dataValue.selection === 1,
-                                invert: this.metricsConfig.metrics.binaryCorrelation.dataValue.selection === 2,
+                                include: this.metricsConfig.metrics.binaryCorrelation.dataValue.inc,
+                                invert: this.metricsConfig.metrics.binaryCorrelation.dataValue.invert,
                                 weight: this.metricsConfig.metrics.binaryCorrelation.dataValue.weight
                             }
                         }
