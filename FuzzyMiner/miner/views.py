@@ -13,17 +13,19 @@ from fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
 from fuzzyminerpk.Filter import NodeFilter, EdgeFilter, ConcurrencyFilter
 from fuzzyminerpk.FuzzyMiner import Graph
 
+import time
 # Create your views here.
 
-""" Saves uploaded log file and returns its path (/log/example.xes) """
-
 def get_ip_port(request):
+    """ Saves uploaded log file and returns its path (/log/example.xes)
+    """
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')  # Whether using proxy
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]  # Get the real ip according proxy
     else:
         ip = request.META.get('REMOTE_ADDR')  # Get the real ip
     return ip, int(request.META.get('SERVER_PORT'))
+
 
 @csrf_exempt
 def upload(request):
@@ -39,12 +41,15 @@ def upload(request):
         return HttpResponse(saved_file_url)
 
 
-def get_default_configuration():
-    # defining default configuration
-    node_filter = NodeFilter()
-    # Can specify type of edge filter you want use by giving "Fuzzy Edges" or "Best Edges"
-    edge_filter = EdgeFilter("edge_filter", "Fuzzy Edges", 0.5, 0.5, False, False)
-    concurrency_filter = ConcurrencyFilter("concurrency_filter", True, 0.5, 0.5)
+def get_default_configuration(num=0):
+    if num == 0:
+        node_filter = NodeFilter()
+        edge_filter = EdgeFilter()
+        concurrency_filter = ConcurrencyFilter()
+    else:
+        node_filter = NodeFilter()
+        edge_filter = EdgeFilter(1, 0.75, 1.0)
+        concurrency_filter = ConcurrencyFilter(True, 1.0, 0.7)
     filter_config = FilterConfig(node_filter, edge_filter, concurrency_filter)
     metric_config1 = MetricConfig("frequency_significance_unary", "unary")
     metric_config2 = MetricConfig("routing_significance_unary", "unary")
@@ -63,12 +68,24 @@ def get_default_configuration():
 
 
 def launch_filter(log_file_path, ip, port):
+    start = time.perf_counter()
     log = xes_import_factory.apply(log_file_path)
+    finish = time.perf_counter()
+    print(f'XES import factory took {round(finish - start, 3)} seconds')
     default_fuzzy_config = get_default_configuration()
+    start = time.perf_counter()
     graph = Graph(log)
+    finish = time.perf_counter()
+    print(f'Graph creation took {round(finish - start, 3)} seconds')
+    start = time.perf_counter()
     pool = GraphPool()
     id = pool.update_graph(ip, port, graph)
+    finish = time.perf_counter()
+    print(f'Graph pooling took {round(finish - start, 3)} seconds')
+    start = time.perf_counter()
     fm_message = graph.apply_config(default_fuzzy_config)
+    finish = time.perf_counter()
+    print(f'Initial config change took {round(finish - start, 3)} seconds')
     return JsonResponse({
         "message_type": fm_message.message_type,
         "message_desc": fm_message.message_desc,
@@ -97,6 +114,7 @@ def show_result(request):
     resp = launch_filter(settings.BASE_DIR + log_file_path, ip, port)
     return resp
 
+
 @csrf_exempt
 def node_filter(request):
     data = json.loads(request.body)
@@ -104,7 +122,10 @@ def node_filter(request):
     print('cutoff:', data['cutoff'])
     node_filter_obj = NodeFilter(cut_off=data['cutoff'])
     graph = GraphPool().get_graph_by_id(data["id"])
+    start = time.perf_counter()
     fm_message = graph.apply_node_filter(node_filter_obj)
+    finish = time.perf_counter()
+    print(f'Node filter took {round(finish - start, 3)} seconds')
     return to_json(fm_message)
 
 
@@ -115,14 +136,19 @@ def edge_filter(request):
     print('edge transformer:', data['edge_transformer'])
     if data['edge_transformer'] == 'Fuzzy Edges':
         print('s/c ratio:', data['s/c_ratio'])
-        print('cutoff:', data['cutoff'])
+        print('Preserve:', data['cutoff'])
         print('ignore self-loops:', data['ignore_self_loops'])
         print('interpret absolute:', data['interpret_absolute'])
-        edge_filter_obj = EdgeFilter(edge_transform=data['edge_transformer'], sc_ratio=data['s/c_ratio'], cut_off=data['cutoff'], ignore_self_loops=data['ignore_self_loops'], interpret_abs=data['interpret_absolute'])
+        edge_filter_obj = EdgeFilter(edge_transform=1, sc_ratio=data['s/c_ratio'], preserve=data['cutoff'],
+                                     ignore_self_loops=data['ignore_self_loops'],
+                                     interpret_abs=data['interpret_absolute'])
     else:
-        edge_filter_obj = EdgeFilter(edge_transform="Best Edges")
+        edge_filter_obj = EdgeFilter(edge_transform=0, ignore_self_loops=data['ignore_self_loops'])
     graph = GraphPool().get_graph_by_id(data['id'])
+    start = time.perf_counter()
     fm_message = graph.apply_edge_filter(edge_filter_obj)
+    finish = time.perf_counter()
+    print(f'Edge filter took {round(finish - start, 3)} seconds')
     return to_json(fm_message)
 
 
@@ -133,9 +159,13 @@ def concurrency_filter(request):
     print('filter concurrency:', data['filter_concurrency'])
     print('preserve:', data['preserve'])
     print('balance:', data['balance'])
-    concurrency_filter_obj = ConcurrencyFilter(filter_concurrency=data['filter_concurrency'], preserve=data['preserve'], offset=data['balance'])
+    concurrency_filter_obj = ConcurrencyFilter(filter_concurrency=data['filter_concurrency'], preserve=data['preserve'],
+                                               offset=data['balance'])
     graph = GraphPool().get_graph_by_id(data['id'])
+    start = time.perf_counter()
     fm_message = graph.apply_concurrency_filter(concurrency_filter_obj)
+    finish = time.perf_counter()
+    print(f'Concurrency filter took {round(finish - start, 3)} seconds')
     return to_json(fm_message)
 
 
@@ -165,5 +195,8 @@ def metrics_changed(request):
         attenuation = LinearAttenuation(attenuation_data['maximal_event_distance'],
                                         attenuation_data['maximal_event_distance'])
     graph = GraphPool().get_graph_by_id(data['id'])
+    start = time.perf_counter()
     fm_message = graph.apply_metrics_config(metrics_configs, attenuation, attenuation_data['maximal_event_distance'])
+    finish = time.perf_counter()
+    print(f'Metrics config change took {round(finish - start, 3)} seconds')
     return to_json(fm_message)

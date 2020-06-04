@@ -1,12 +1,16 @@
-import numpy as np
-
-
 class Configuration:
     def __init__(self, filter_config, metric_configs, attenuation, chunk_size):
         self.filter_config = filter_config
         self.metric_configs = metric_configs
         self.attenuation = attenuation
-        self.chunk_size = chunk_size
+        self.maximal_distance = chunk_size
+
+    def __str__(self):
+        metric_info = ""
+        for metric in self.metric_configs:
+            metric_info += metric.__str__()
+        return self.filter_config.__str__() + "\n" + metric_info + " Attenuation: " + str(
+            self.attenuation) + " Maximum Distance: " + str(self.maximal_distance)
 
 
 class FilterConfig:
@@ -14,6 +18,9 @@ class FilterConfig:
         self.node_filter = node_filter
         self.edge_filter = edge_filter
         self.concurrency_filter = concurrency_filter
+
+    def __str__(self):
+        return self.node_filter.__str__() + "\n" + self.edge_filter.__str__() + "\n" + self.concurrency_filter.__str__()
 
 
 class MetricConfig:
@@ -24,14 +31,14 @@ class MetricConfig:
     invert: Invert the meaning
     weight: Weight of this Metric
     """
-    def __init__(self, name, metric_type, include=True, invert=False, weight=0.5):
+
+    def __init__(self, name, metric_type, include=True, invert=False, weight=1.0):
         self.name = name
         self.metric_type = metric_type
         self.include = include
         self.invert = invert
         self.weight = weight
 
-
-class AggregateMetric:
-    def __init__(self, name):
-        self.name = name
+    def __str__(self):
+        return "Metric Name: " + self.name + " Metric Type: " + self.metric_type + " Included: " + str(
+            self.include) + " Inverted: " + str(self.invert) + " Weight: " + str(self.weight)
