@@ -126,6 +126,7 @@ class ClusterUtil:
         """
 
         max_corr = 0.0
+
         # check this initialization
         winner_idx = 0
         sz = self.fm_log_util.get_num_of_nodes()
@@ -161,6 +162,7 @@ class ClusterUtil:
         max_pre_corr = 0.0
         max_succ_corr = 0.0
         sz = self.fm_log_util.get_num_of_nodes()
+
         # get the indices of all of its predecessors
         pre_decessors = self.get_predecessors_of_cluster(subject_index)
         for pre_decessor in pre_decessors:
@@ -295,8 +297,10 @@ class ClusterUtil:
         predecessors = set()
         for prim_idx in cluster.get_primitives():
             predecessors = predecessors.union(self.get_predecessors_of_node(prim_idx))
+
         # Remove the primitives from predecessors if any
         predecessors -= set(cluster.get_primitives())
+
         # Discard the index of cluster itself if included
         predecessors.discard(index)
         return predecessors
@@ -311,8 +315,10 @@ class ClusterUtil:
         successors = set()
         for prim_idx in cluster.get_primitives():
             successors = successors.union(self.get_successors_of_node(prim_idx))
+
         # Remove the primitives from successors if any
         successors -= set(cluster.get_primitives())
+
         # Discard the index of cluster itself if included
         successors.discard(index)
         return successors

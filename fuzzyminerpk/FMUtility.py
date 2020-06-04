@@ -132,19 +132,27 @@ def cal_datavalue_correlation(evt1, evt2):
         return val_overlap / key_overlap
 
 
-# To check if values are correct
 def is_valid_matrix1D(lst):
+    """
+    Checks if values are correct
+    :param lst: list of elements
+    :return: true if all values are non-zero, false otherwise
+    """
     for i in range(0, len(lst)):
         if lst[i] > 0.0:
             return True
     return False
 
 
-# To check if values are correct
-def is_valid_matrix2D(lst):
-    for i in range(0, len(lst[0])):
-        for j in range(0, len(lst[0])):
-            if lst[i][j] > 0.0:
+def is_valid_matrix2D(dic):
+    """
+    check if values are correct
+    :param dic: dictionary of elements
+    :return: true if all values are non-zero, false otherwise
+    """
+    for i in range(0, len(dic[0])):
+        for j in range(0, len(dic[0])):
+            if dic[i][j] > 0.0:
                 return True
     return False
 
@@ -190,7 +198,7 @@ def compensate_frequency(values, divisors):
 
 
 def special_weight_normalize2D(values, divisors, invert, normalize_max):
-    # This is for compensate frequency, special handling in Prom Plugin
+    # This is to compensate frequency, special handling in Prom Plugin
     sz = len(values[0])
     # it is really the weight which is specified for this metric
     if normalize_max == 0:
