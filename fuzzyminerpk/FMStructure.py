@@ -94,7 +94,7 @@ class FMMessage:
         """
         Instantiates FMMessage object with default values.
         """
-        
+
         self.message_type = 0
         self.message_desc = "Graph generated successfully"
         self.graph_path = None
