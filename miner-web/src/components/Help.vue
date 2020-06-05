@@ -21,38 +21,42 @@
                         <template slot="title">
                             <h4>2.Get Started</h4>
                         </template>
-                        <el-submenu index="2-2">
+                        <el-submenu>
                             <template slot="title">2.1 Overview of the user interface</template>
                             <el-menu-item index="/help/home">2.1.1 Home Screen</el-menu-item>
-                            <el-menu-item index="/help/filter">2.1.2 Graph View Screen </el-menu-item>
-                            <el-menu-item index="/help/metrics">2.1.3 Metrics Configuration Dialog </el-menu-item>
+                            <el-menu-item index="/help/filter">2.1.2 Fuzzy Model Screen</el-menu-item>
+                            <el-menu-item index="/help/metrics">2.1.3 Metrics Configuration</el-menu-item>
                         </el-submenu>
-                        <el-submenu index="2-3">
-                            <template slot="title">2.2 To apply filter configurations</template>
-                            <el-menu-item index="/help/node">2.2.1 Node Filter</el-menu-item>
-                            <el-menu-item index="/help/edge">2.2.2 Edge Filter</el-menu-item>
-                            <el-menu-item index="/help/concurrency">2.2.3 Concurrency Filter</el-menu-item>
-                        </el-submenu>
-                        <el-submenu index="2-3">
-                            <template slot="title">2.3 To apply Metrics configurations</template>
-                            <el-menu-item index="/help/unary">2.3.1 Unary Significance Metrics</el-menu-item>
-                            <el-menu-item index="/help/binary">2.3.2 Binary Significance Metrics</el-menu-item>
-                            <el-menu-item index="/help/correlation">2.3.3 Binary Correlation Metrics</el-menu-item>
-                        </el-submenu>
-                        <el-submenu index="2-4">
-                            <template slot="title">2.4 To Modify Attenuation</template>
-                            <el-menu-item index="/help/linear">2.4.1 Linear Attenuation</el-menu-item>
-                            <el-menu-item index="/help/nroot">2.4.2 N(th) Root Attenuation</el-menu-item>
-                        </el-submenu>
-                        <el-menu-item index="/help/snapshot">2.5 To save model snapshot
-                        </el-menu-item>
                     </el-submenu>
-                    <el-menu-item index="/help/video">
-                        <h4>3. Demo Video</h4>
-                    </el-menu-item>
-                    <el-menu-item index="/help/faqs">
-                        <h4>4. FAQs</h4>
-                    </el-menu-item>
+                        <el-menu-item index="/help/generate">
+                            <h4>3. How To generate fuzzy model</h4>
+                        </el-menu-item>
+                        <el-submenu index="3">
+                            <template slot="title"><h4>4. Filter configuration</h4></template>
+                            <el-menu-item index="/help/node">3.1 Node Filter</el-menu-item>
+                            <el-menu-item index="/help/edge">3.2 Edge Filter</el-menu-item>
+                            <el-menu-item index="/help/concurrency">3.3 Concurrency Filter</el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="4">
+                            <template slot="title"><h4>4. To apply Metrics configurations</h4></template>
+                            <el-menu-item index="/help/unary">4.1 Unary Significance Metrics</el-menu-item>
+                            <el-menu-item index="/help/binary">4.2 Binary Significance Metrics</el-menu-item>
+                            <el-menu-item index="/help/correlation">4.3 Binary Correlation Metrics</el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="5">
+                            <template slot="title"><h4>5. To Modify Attenuation</h4></template>
+                            <el-menu-item index="/help/linear">5.1 Linear Attenuation</el-menu-item>
+                            <el-menu-item index="/help/nroot">5.2 N(th) Root Attenuation</el-menu-item>
+                        </el-submenu>
+                        <el-menu-item index="/help/snapshot"><h4>6. To save model snapshot</h4>
+                        </el-menu-item>
+
+                        <el-menu-item index="/help/video">
+                            <h4>3. Demo Video</h4>
+                        </el-menu-item>
+                        <el-menu-item index="/help/faqs">
+                            <h4>4. FAQs</h4>
+                        </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-main>
@@ -83,17 +87,15 @@
         font-weight: normal;
         line-height: 16px;
         padding: 8px 0;
-
-
         overflow:hidden;
         word-wrap: break-word;
 
     }
 
-    .el-aside{
+    .el-aside {
         border-right: groove;
         overflow-x: hidden;
-        height: max-content;
+        position: page;
     }
 
 
