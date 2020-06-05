@@ -2,7 +2,22 @@ import Levenshtein
 
 
 class FMLogUtils:
+    """
+    This class's objects are used to extract and hold basic information about log object supplied to the Fuzzy Miner.
+
+    Instance Attributes:
+        log: log object supplied to it\n
+        node: list of nodes present in the log object\n
+        num_of_nodes: number of nodes\n
+        node_indices: Dictionary to map node names to their index values\n
+    """
     def __init__(self, log):
+        """
+        Instantiates the object and calls extract_node_info method which basically updates all the values of this
+        object.
+        :param log: log object\n
+        """
+
         self.log = log
         self.nodes = None
         self.num_of_nodes = None
@@ -10,9 +25,21 @@ class FMLogUtils:
         self.extract_node_info()
 
     def get_num_of_nodes(self):
+        """
+        To get number of nodes.
+        :return: number of nodes\n
+        """
+
         return len(self.nodes)
 
     def extract_node_info(self):
+        """
+        Extracts unique node names from the log object and saved them in a node_indices dictionary with name + @ +
+        transition as the key and order of discovery (index) as value. Then later saves all the different node keys in
+        the nodes list.
+        :return: Nothing
+        """
+
         idx = 0
         self.node_indices = dict()
         for trace in self.log:
@@ -26,6 +53,13 @@ class FMLogUtils:
 
 
 def is_standard_key(key):
+    """
+    Function to determine whether the supplied key is one of the common/standard keys.\n
+
+    :param key: key to check
+    :return: True if standard key otherwise False
+    """
+
     if key.find("concept") != -1 or key.find("lifecycle") != -1 or key.find("org") != -1 or key.find(
             "time") != -1 or key.find("semantic") != -1:
         return True
@@ -34,6 +68,14 @@ def is_standard_key(key):
 
 
 def cal_proximity_correlation(evt1, evt2):
+    """
+    Function to calculate proximity between two events according to their timestamp values.
+
+    :param evt1: event 1
+    :param evt2: event 2
+    :return: value between 0 to 1, 0 means huge time difference, 1 means they happened at the same time.
+    """
+
     if 'time:timestamp' not in evt1 or 'time:timestamp' not in evt2:
         return 0.0
     time1 = evt1['time:timestamp']
@@ -50,6 +92,14 @@ def cal_proximity_correlation(evt1, evt2):
 
 
 def cal_endpoint_correlation(evt1, evt2):
+    """
+    Function to calculate similarity between two events based on their activity names.
+
+    :param evt1: event 1
+    :param evt2: event 2
+    :return: value between 0 to 1, 0 means not at all similar, 1 means same activity names.
+    """
+
     first_name = evt1['concept:name'] if 'concept:name' in evt1 else "<no name>"
     second_name = evt2['concept:name'] if 'concept:name' in evt2 else "<no name>"
     # Can use ratio directly but the implementation is not same as fuzzy_miner plugin String Similarity mechanism
@@ -64,6 +114,14 @@ def cal_endpoint_correlation(evt1, evt2):
 
 
 def cal_originator_correlation(evt1, evt2):
+    """
+    Function to calculate similarity between two events based on their resource names.
+
+    :param evt1: event 1
+    :param evt2: event 2
+    :return: value between 0 to 1, 0 means not at all similar, 1 means same resource names.
+    """
+
     first_resource = evt1['org:resource'] if 'org:resource' in evt1 else "<no resource>"
     second_resource = evt2['org:resource'] if 'org:resource' in evt2 else "<no resource>"
     # Can use ratio directly but the implementation is not same as fuzzy_miner plugin String Similarity mechanism
@@ -78,6 +136,14 @@ def cal_originator_correlation(evt1, evt2):
 
 
 def cal_datatype_correlation(evt1, evt2):
+    """
+    Function to calculate similarity between two events based on how many non-standard keys overlap in both events.
+
+    :param evt1: event 1
+    :param evt2: event 2
+    :return: value between 0 to 1, 0 means no keys matched, 1 means all keys matched.
+    """
+
     ref_data_keys = list()
     fol_data_keys = list()
     for key in evt1:
@@ -99,6 +165,16 @@ def cal_datatype_correlation(evt1, evt2):
 
 
 def cal_datavalue_correlation(evt1, evt2):
+    """
+    Function to calculate correlation between two events based on the similarities between values of matched
+    non-standard keys in both events.
+
+    :param evt1: event 1
+    :param evt2: event 2
+    :return: value between 0 to 1, 0 means no keys matched or the values of matched keys are too different from each
+    other, 1 means all the values are same for the matched keys.
+    """
+
     ref_data_keys = list()
     fol_data_keys = list()
     for key in evt1:
@@ -134,30 +210,42 @@ def cal_datavalue_correlation(evt1, evt2):
 
 def is_valid_matrix1D(lst):
     """
-    Checks if values are correct
+    Checks if there is at least one positive value in the given 1 dimensional list.
+
     :param lst: list of elements
-    :return: true if all values are non-zero, false otherwise
+    :return: True if at least one positive value exist otherwise false.
     """
+
     for i in range(0, len(lst)):
         if lst[i] > 0.0:
             return True
     return False
 
 
-def is_valid_matrix2D(dic):
+def is_valid_matrix2D(lst):
     """
-    check if values are correct
-    :param dic: dictionary of elements
-    :return: true if all values are non-zero, false otherwise
+    Checks if there is at least one positive value in the given 2 dimensional list.
+
+    :param lst: list of elements
+    :return: True if at least one positive value exist otherwise false.
     """
-    for i in range(0, len(dic[0])):
-        for j in range(0, len(dic[0])):
-            if dic[i][j] > 0.0:
+
+    sz = len(lst[0])
+    for i in range(0, sz):
+        for j in range(0, sz):
+            if lst[i][j] > 0.0:
                 return True
     return False
 
 
 def normalize_matrix1D(lst):
+    """
+    Normalizes a given 1 dimensional list.
+
+    :param lst: list of items
+    :return: normalized list
+    """
+
     max_val = max(lst)
     if max_val == 0:
         return lst
@@ -169,6 +257,13 @@ def normalize_matrix1D(lst):
 
 
 def normalize_matrix2D(lst):
+    """
+    Normalizes a given 2 dimensional list.
+
+    :param lst: list of items
+    :return: normalized list
+    """
+
     sz = len(lst[0])
     max_val = max(map(max, lst))
     if max_val == 0:
@@ -184,6 +279,14 @@ def normalize_matrix2D(lst):
 
 
 def compensate_frequency(values, divisors):
+    """
+    Helper method used for special_weight_normalize2D to compensate frequency (for correlation values only), basically
+    it receives 2 lists and it divides the values of one using the values of other.
+
+    :param values: 2 dimensional list of values which will be divided.
+    :param divisors: 2 dimensional list of values which will be used to divide the other.
+    :return: Resultant 2 dimensional list of values after the operation.
+    """
     sz = len(values[0])
     comp_list = list()
     for i in range(sz):
@@ -198,6 +301,17 @@ def compensate_frequency(values, divisors):
 
 
 def special_weight_normalize2D(values, divisors, invert, normalize_max):
+    """
+    Used for binary correlation values to normalize according to given normalize_max value (weight of that metric). Also
+    takes care if the values need to be interpret in inverted manner.
+
+    :param values: 2 dimensional list of correlation values
+    :param divisors: 2 dimensional list of divisors used for compensating frequency.
+    :param invert: Whether to invert the values of not.
+    :param normalize_max: weight of that metric, used to normalize all the values to this weight
+    :return: 2D normalized values
+    """
+
     # This is to compensate frequency, special handling in Prom Plugin
     sz = len(values[0])
     # it is really the weight which is specified for this metric
@@ -227,6 +341,16 @@ def special_weight_normalize2D(values, divisors, invert, normalize_max):
 
 
 def weight_normalize1D(lst, invert, normalize_max):
+    """
+    Used to normalize 1 dimensional list (unary values) according to their weight (normalize_max) and also takes into
+    inversion into account while returning.
+
+    :param lst: 1D list of items.
+    :param invert: boolean variable, invert the values or not
+    :param normalize_max: weight of this metric
+    :return: normalized 1D list
+    """
+
     sz = len(lst)
     if normalize_max == 0:
         return [0.0 for i in range(sz)]
@@ -248,6 +372,16 @@ def weight_normalize1D(lst, invert, normalize_max):
 
 
 def weight_normalize2D(lst, invert, normalize_max):
+    """
+    Used to normalize 2 dimensional list (binary values) according to their weight (normalize_max) and also takes into
+    inversion into account while returning.
+
+    :param lst: 2D list of items.
+    :param invert: boolean variable, invert the values or not
+    :param normalize_max: weight of this metric
+    :return: normalized 2D list
+    """
+
     sz = len(lst[0])
     if normalize_max == 0:
         return [[0.0 for i in range(sz)] for j in range(sz)]

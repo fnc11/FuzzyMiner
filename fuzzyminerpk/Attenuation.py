@@ -1,6 +1,16 @@
 from abc import ABC, abstractmethod
 
+
 class Attenuation(ABC):
+    """
+    Abstract class to hold attributes and methods to provide guidelines for the classes which extend this class.
+
+    Attributes:
+        buf_size: Buffer size to hold attenuation values, default is 5
+        echelons: echelons value used to calculated attenuation factors, default is 2.7
+        attenuation factors: Attenuation factors, list to store calculated attenuation factors upto the buffer size
+        length
+    """
     def __init__(self, buf_size=5, echelons=2.7, attenuation_factors=None):
         self.buf_size = buf_size
         self.echelons = echelons

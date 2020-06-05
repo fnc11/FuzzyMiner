@@ -241,23 +241,23 @@ class Graph:
             self.fm_message.message_desc = "You have to select at least 1 metrics amonigs the Binary Correlation Metrics configuration."
 
     def check_for_concurrency_filter_values(self):
-        if 0.0 > self.filtered_data_repository.filter_config.concurrency_filter.preserve > 1.0:
+        if 0.0 > self.config.filter_config.concurrency_filter.preserve > 1.0:
             self.fm_message.message_type = 2
             self.fm_message.message_desc = "The preserve value for concurrency filter is invalid. Please try changing the values ."
-        if 0 > self.filtered_data_repository.filter_config.concurrency_filter.offset > 1.0:
+        if 0 > self.config.filter_config.concurrency_filter.offset > 1.0:
             self.fm_message.message_type = 2
             self.fm_message.message_desc = "The offset for concurrency filter is invalid. Please try changing the values ."
 
     def check_for_edge_filter_values(self):
-        if 0.0 >= self.filtered_data_repository.filter_config.edge_filter.preserve > 1.0:
+        if 0.0 >= self.config.filter_config.edge_filter.preserve > 1.0:
             self.fm_message.message_type = 2
             self.fm_message.message_desc = "The preserve value for the edge filter is invalid. Please try changing the value."
-        if 0.0 > self.filtered_data_repository.filter_config.edge_filter.sc_ratio > 1.0:
+        if 0.0 > self.config.filter_config.edge_filter.sc_ratio > 1.0:
             self.fm_message.message_type = 2
             self.fm_message.message_desc = "The cutoff value for the edge filter is wrong. Please try changing the value."
 
     def check_for_node_filter_values(self):
-        if 0.0 > self.filtered_data_repository.filter_config.node_filter.cut_off > 1.0:
+        if 0.0 > self.config.filter_config.node_filter.cut_off > 1.0:
             self.fm_message.message_type = 2
             self.fm_message.message_desc = "The cutoff value for the node filter is wrong. Please try changing the value."
 

@@ -55,11 +55,11 @@ def get_default_configuration(num=0):
     metric_config2 = MetricConfig("routing_significance_unary", "unary")
     metric_config3 = MetricConfig("frequency_significance_binary", "binary")
     metric_config4 = MetricConfig("distance_significance_binary", "binary")
-    metric_config5 = MetricConfig("proximity_correlation_binary", "binary")
-    metric_config6 = MetricConfig("originator_correlation_binary", "binary")
-    metric_config7 = MetricConfig("endpoint_correlation_binary", "binary")
-    metric_config8 = MetricConfig("datatype_correlation_binary", "binary")
-    metric_config9 = MetricConfig("datavalue_correlation_binary", "binary")
+    metric_config5 = MetricConfig("proximity_correlation_binary", "binary_correlation")
+    metric_config6 = MetricConfig("originator_correlation_binary", "binary_correlation")
+    metric_config7 = MetricConfig("endpoint_correlation_binary", "binary_correlation")
+    metric_config8 = MetricConfig("datatype_correlation_binary", "binary_correlation")
+    metric_config9 = MetricConfig("datavalue_correlation_binary", "binary_correlation")
     metric_configs = [metric_config1, metric_config2, metric_config3, metric_config4, metric_config5, metric_config6
         , metric_config7, metric_config8, metric_config9]
     attenuation = NRootAttenuation(5, 2.7)
@@ -192,7 +192,7 @@ def metrics_changed(request):
         metric = MetricConfig(key, "binary", value['include'], value['invert'], value['weight'])
         metrics_configs.append(metric)
     for key, value in binary_correlation_metrics.items():
-        metric = MetricConfig(key, "binary", value['include'], value['invert'], value['weight'])
+        metric = MetricConfig(key, "binary_correlation", value['include'], value['invert'], value['weight'])
         metrics_configs.append(metric)
     if attenuation_data['selected'] == "N root with radical":
         attenuation = NRootAttenuation(attenuation_data['maximal_event_distance'], attenuation_data['radical'])
