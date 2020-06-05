@@ -108,56 +108,43 @@ class DataRepository:
         """
 
         self.fill_dicts()
+
         sz = self.num_of_nodes
         self.unary_node_frequency_values = [0 for x in range(sz)]
         self.unary_node_frequency_normalized_values = [0.0 for x in range(sz)]
-
         self.binary_edge_frequency_values = [[0 for x in range(sz)] for y in range(sz)]
-        self.binary_edge_frequency_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                        range(sz)]
+        self.binary_edge_frequency_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
 
-        self.binary_corr_divisors = [[0.0 for x in range(sz)] for y in
-                                     range(sz)]
+        self.binary_corr_divisors = [[0.0 for x in range(sz)] for y in range(sz)]
 
-        self.binary_corr_proximity_values = [[0.0 for x in range(sz)] for y in range(sz)]
-        self.binary_corr_proximity_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                        range(sz)]
-
-        self.binary_corr_endpoint_values = [[0.0 for x in range(sz)] for y in range(sz)]
-        self.binary_corr_endpoint_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                       range(sz)]
-
-        self.binary_corr_originator_values = [[0.0 for x in range(sz)] for y in range(sz)]
-        self.binary_corr_originator_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                         range(sz)]
-
-        self.binary_corr_datatype_values = [[0.0 for x in range(sz)] for y in range(sz)]
-        self.binary_corr_datatype_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                       range(sz)]
-
-        self.binary_corr_datavalue_values = [[0 for x in range(sz)] for y in range(sz)]
-        self.binary_corr_datavalue_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                        range(sz)]
+        if self.metric_settings["proximity_correlation_binary"][0]:
+            self.binary_corr_proximity_values = [[0.0 for x in range(sz)] for y in range(sz)]
+            self.binary_corr_proximity_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        if self.metric_settings["endpoint_correlation_binary"][0]:
+            self.binary_corr_endpoint_values = [[0.0 for x in range(sz)] for y in range(sz)]
+            self.binary_corr_endpoint_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        if self.metric_settings["originator_correlation_binary"][0]:
+            self.binary_corr_originator_values = [[0.0 for x in range(sz)] for y in range(sz)]
+            self.binary_corr_originator_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        if self.metric_settings["datatype_correlation_binary"][0]:
+            self.binary_corr_datatype_values = [[0.0 for x in range(sz)] for y in range(sz)]
+            self.binary_corr_datatype_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        if self.metric_settings["datavalue_correlation_binary"][0]:
+            self.binary_corr_datavalue_values = [[0 for x in range(sz)] for y in range(sz)]
+            self.binary_corr_datavalue_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
 
         self.unary_simple_aggregate_normalized_values = [0.0 for x in range(sz)]
-        self.binary_simple_aggregate_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                          range(sz)]
-        self.binary_multi_aggregate_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                         range(sz)]
+        self.binary_simple_aggregate_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        self.binary_multi_aggregate_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
 
         self.unary_derivative_routing_values = [0 for x in range(sz)]
         self.unary_derivative_routing_normalized_values = [0 for x in range(sz)]
-
-        self.binary_derivative_distance_values = [[0 for x in range(sz)] for y in
-                                                  range(sz)]
-        self.binary_derivative_distance_normalized_values = [[0.0 for x in range(sz)] for y in
-                                                             range(sz)]
+        self.binary_derivative_distance_values = [[0 for x in range(sz)] for y in range(sz)]
+        self.binary_derivative_distance_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
 
         self.unary_weighted_values = [0 for x in range(sz)]
-        self.binary_sig_weighted_values = [[0 for x in range(sz)] for y in
-                                           range(sz)]
-        self.binary_corr_weighted_values = [[0 for x in range(sz)] for y in
-                                            range(sz)]
+        self.binary_sig_weighted_values = [[0 for x in range(sz)] for y in range(sz)]
+        self.binary_corr_weighted_values = [[0 for x in range(sz)] for y in range(sz)]
 
     def fill_dicts(self):
         """
@@ -203,21 +190,26 @@ class DataRepository:
                     # 1 Edge frequency metric
                     self.binary_edge_frequency_values[ref_index][follower_index] += 1.0 * att_factor
                     # 2 Proximity calculation
-                    self.binary_corr_proximity_values[ref_index][follower_index] += cal_proximity_correlation(ref_event,
-                                                                                                              follower_event) * att_factor
+                    if self.metric_settings["proximity_correlation_binary"][0]:
+                        self.binary_corr_proximity_values[ref_index][follower_index] += cal_proximity_correlation(
+                            ref_event, follower_event) * att_factor
                     # 3 End Point calculation
-                    self.binary_corr_endpoint_values[ref_index][follower_index] += cal_endpoint_correlation(ref_event,
-                                                                                                            follower_event) * att_factor
+                    if self.metric_settings["endpoint_correlation_binary"][0]:
+                        self.binary_corr_endpoint_values[ref_index][follower_index] += cal_endpoint_correlation(
+                            ref_event, follower_event) * att_factor
                     # 4 Originator calculation
-                    self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(
-                        ref_event,
-                        follower_event) * att_factor
+                    if self.metric_settings["originator_correlation_binary"][0]:
+                        self.binary_corr_originator_values[ref_index][follower_index] += cal_originator_correlation(
+                            ref_event, follower_event) * att_factor
                     # 5 DataType calculation
-                    self.binary_corr_datatype_values[ref_index][follower_index] += cal_datatype_correlation(ref_event,
-                                                                                                            follower_event) * att_factor
+                    if self.metric_settings["datatype_correlation_binary"][0]:
+                        self.binary_corr_datatype_values[ref_index][follower_index] += cal_datatype_correlation(
+                            ref_event, follower_event) * att_factor
                     # 6 DataValue calculation
-                    self.binary_corr_datavalue_values[ref_index][follower_index] += cal_datavalue_correlation(ref_event,
-                                                                                                              follower_event) * att_factor
+                    if self.metric_settings["datavalue_correlation_binary"][0]:
+                        self.binary_corr_datavalue_values[ref_index][follower_index] += cal_datavalue_correlation(
+                            ref_event,
+                            follower_event) * att_factor
                     # Since the divisor values are same for all we can just store them once
                     self.binary_corr_divisors[ref_index][follower_index] += att_factor
 
@@ -306,19 +298,25 @@ class DataRepository:
         """
         Calculates sum of binary correlation normalized values and normalizes them to map max_value to 1. These values
         will be used in calculating derivative unary metrics (routing significance)
+
         :return: Nothing
         """
 
+        inc1 = self.metric_settings["proximity_correlation_binary"][0]
+        inc2 = self.metric_settings["endpoint_correlation_binary"][0]
+        inc3 = self.metric_settings["originator_correlation_binary"][0]
+        inc4 = self.metric_settings["datatype_correlation_binary"][0]
+        inc5 = self.metric_settings["datavalue_correlation_binary"][0]
         valid_metrics = list()
-        if is_valid_matrix2D(self.binary_corr_proximity_normalized_values):
+        if inc1 and is_valid_matrix2D(self.binary_corr_proximity_normalized_values):
             valid_metrics.append(self.binary_corr_proximity_normalized_values)
-        if is_valid_matrix2D(self.binary_corr_endpoint_normalized_values):
+        if inc2 and is_valid_matrix2D(self.binary_corr_endpoint_normalized_values):
             valid_metrics.append(self.binary_corr_endpoint_normalized_values)
-        if is_valid_matrix2D(self.binary_corr_originator_normalized_values):
+        if inc3 and is_valid_matrix2D(self.binary_corr_originator_normalized_values):
             valid_metrics.append(self.binary_corr_originator_normalized_values)
-        if is_valid_matrix2D(self.binary_corr_datatype_normalized_values):
+        if inc4 and is_valid_matrix2D(self.binary_corr_datatype_normalized_values):
             valid_metrics.append(self.binary_corr_datatype_normalized_values)
-        if is_valid_matrix2D(self.binary_corr_datavalue_normalized_values):
+        if inc5 and is_valid_matrix2D(self.binary_corr_datavalue_normalized_values):
             valid_metrics.append(self.binary_corr_datavalue_normalized_values)
 
         temp_max = 0
@@ -400,39 +398,36 @@ class DataRepository:
                                                                               "frequency_significance_binary"][1],
                                                                           self.metric_settings[
                                                                               "frequency_significance_binary"][2])
-        self.binary_corr_proximity_normalized_values = special_weight_normalize2D(self.binary_corr_proximity_values,
-                                                                                  self.binary_corr_divisors,
-                                                                                  self.metric_settings[
-                                                                                      "proximity_correlation_binary"][
-                                                                                      1], self.metric_settings[
-                                                                                      "proximity_correlation_binary"][
-                                                                                      2])
-        self.binary_corr_endpoint_normalized_values = special_weight_normalize2D(self.binary_corr_endpoint_values,
-                                                                                 self.binary_corr_divisors,
-                                                                                 self.metric_settings[
-                                                                                     "endpoint_correlation_binary"][1],
-                                                                                 self.metric_settings[
-                                                                                     "endpoint_correlation_binary"][2])
-        self.binary_corr_originator_normalized_values = special_weight_normalize2D(self.binary_corr_originator_values,
-                                                                                   self.binary_corr_divisors,
-                                                                                   self.metric_settings[
-                                                                                       "originator_correlation_binary"][
-                                                                                       1], self.metric_settings[
-                                                                                       "originator_correlation_binary"][
-                                                                                       2])
-        self.binary_corr_datatype_normalized_values = special_weight_normalize2D(self.binary_corr_datatype_values,
-                                                                                 self.binary_corr_divisors,
-                                                                                 self.metric_settings[
-                                                                                     "datatype_correlation_binary"][1],
-                                                                                 self.metric_settings[
-                                                                                     "datatype_correlation_binary"][2])
-        self.binary_corr_datavalue_normalized_values = special_weight_normalize2D(self.binary_corr_datavalue_values,
-                                                                                  self.binary_corr_divisors,
-                                                                                  self.metric_settings[
-                                                                                      "datavalue_correlation_binary"][
-                                                                                      1], self.metric_settings[
-                                                                                      "datavalue_correlation_binary"][
-                                                                                      2])
+        inc1 = self.metric_settings["proximity_correlation_binary"][0]
+        inc2 = self.metric_settings["originator_correlation_binary"][0]
+        inc3 = self.metric_settings["endpoint_correlation_binary"][0]
+        inc4 = self.metric_settings["datatype_correlation_binary"][0]
+        inc5 = self.metric_settings["datavalue_correlation_binary"][0]
+        inv1 = self.metric_settings["proximity_correlation_binary"][1]
+        inv2 = self.metric_settings["originator_correlation_binary"][1]
+        inv3 = self.metric_settings["endpoint_correlation_binary"][1]
+        inv4 = self.metric_settings["datatype_correlation_binary"][1]
+        inv5 = self.metric_settings["datavalue_correlation_binary"][1]
+        w1 = self.metric_settings["proximity_correlation_binary"][2]
+        w2 = self.metric_settings["originator_correlation_binary"][2]
+        w3 = self.metric_settings["endpoint_correlation_binary"][2]
+        w4 = self.metric_settings["datatype_correlation_binary"][2]
+        w5 = self.metric_settings["datavalue_correlation_binary"][2]
+        if inc1:
+            self.binary_corr_proximity_normalized_values = special_weight_normalize2D(
+                self.binary_corr_proximity_values, self.binary_corr_divisors, inv1, w1)
+        if inc2:
+            self.binary_corr_endpoint_normalized_values = special_weight_normalize2D(
+                self.binary_corr_endpoint_values, self.binary_corr_divisors, inv2, w2)
+        if inc3:
+            self.binary_corr_originator_normalized_values = special_weight_normalize2D(
+                self.binary_corr_originator_values, self.binary_corr_divisors, inv3, w3)
+        if inc4:
+            self.binary_corr_datatype_normalized_values = special_weight_normalize2D(
+                self.binary_corr_datatype_values, self.binary_corr_divisors, inv4, w4)
+        if inc5:
+            self.binary_corr_datavalue_normalized_values = special_weight_normalize2D(
+                self.binary_corr_datavalue_values, self.binary_corr_divisors, inv5, w5)
 
     def normalize_derivative_metrics(self):
         """

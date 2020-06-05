@@ -48,7 +48,7 @@ class VizUtil:
     GRAPH_PATH = 'media/graphs/'
     GRAPH_FORMAT = 'png'
     NODE_COLORS = ['#c4ecf2', '#a9e8f2', '#6bd9ec', '#54d6ea', '#0cb6d1', '#0cb6d1']
-    CLUSTER_COLORS = ['#92efd0', '#79e5c1', '#4bedb7', '#0adb95', '#0adb95', '#0adb95']
+    CLUSTER_COLORS = ['#92efd0', '#79e5c1', '#4bedb7', '#27e8a7', '#0adb95', '#0adb95']
 
     def __init__(self):
         """
