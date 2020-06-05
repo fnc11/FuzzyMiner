@@ -75,7 +75,7 @@ After starting the installer, one of two options may be selected:
 - The standard library can be pre-compiled to bytecode
 - If selected, the install directory will be added to the system PATH
 - Shortcuts are available for all users
-
+<br>
 2. Install Node.js
 ```
 pip install nodejs
