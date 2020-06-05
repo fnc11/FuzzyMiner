@@ -89,7 +89,7 @@ pip install npm
 
 #### Linux
 
-##Creating a Virtual Environment
+## Creating a Virtual Environment
 1. The virtualenv package is required to create virtual environments. You can install it with pip:
 ```
 pip install virtualenv
