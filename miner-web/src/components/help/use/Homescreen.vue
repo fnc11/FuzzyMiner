@@ -2,8 +2,8 @@
     <div>
         <U><h1>Fuzzy Web Home Screen</h1></U>
         <div class="block">
-        <el-image :src="src"></el-image>
-            </div>
+            <el-image src="/static/img/Home.PNG" alt="" />
+        </div>
     </div>
 
 </template>
@@ -13,7 +13,6 @@
         name: "Homescreen",
         data(){
             return{
-                src : "../assets/Home.PNG"
             }
         }
     }

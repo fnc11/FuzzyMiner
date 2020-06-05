@@ -6,7 +6,11 @@
 
 <script>
     export default {
-        name: "SnapShot"
+        name: "SnapShot",
+        data() {
+            return {
+            }
+        }
     }
 </script>
 
