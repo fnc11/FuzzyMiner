@@ -9,8 +9,9 @@
             <el-image  src="/static/img/filter.PNG" alt="" />
         </div>
         <p><b>Fuzzy Model : </b>Image shows the generated fuzzy model for the log file you uploaded. Initially model image is generated based on the default values set for filter configuration and metrics configuration.
-            Image can be zoomed in, zoomed out, rotated and mirrored.
-        <p><b>Filter Configurations : </b>Node, edge and concurrency filters can be configured here.On changing each of the filter values, new model is generated and rendered.</p>
+            Image can be zoomed in, zoomed out, rotated and mirrored with a
+        <p><b>Filter Configurations : </b>Node, edge and concurrency filters can be configured here.On changing each of the filter values, new model is generated and rendered.
+    To know in detail about filter configuration select <a src="/help/overview">here</a></p>
         <p><b>Save Snapshot :</b></p>
         <p><b>Metrics Configuration :</b></p>
 

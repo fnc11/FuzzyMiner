@@ -27,35 +27,37 @@
                             <el-menu-item index="/help/filter">2.1.2 Fuzzy Model Screen</el-menu-item>
                             <el-menu-item index="/help/metrics">2.1.3 Metrics Configuration</el-menu-item>
                         </el-submenu>
+                        <el-menu-item index="/help/home">2.2 How to generate example model</el-menu-item>
+                          <el-menu-item index="/help/snapshot">2.3 How to save model snapshot
+                        </el-menu-item>
                     </el-submenu>
                         <el-menu-item index="/help/generate">
-                            <h4>3. How To generate fuzzy model</h4>
+                            <h4>3. Generate a fuzzy model</h4>
                         </el-menu-item>
                         <el-submenu index="3">
-                            <template slot="title"><h4>4. Filter configuration</h4></template>
-                            <el-menu-item index="/help/node">3.1 Node Filter</el-menu-item>
-                            <el-menu-item index="/help/edge">3.2 Edge Filter</el-menu-item>
-                            <el-menu-item index="/help/concurrency">3.3 Concurrency Filter</el-menu-item>
+                            <template slot="title"><h4>4. Configure Filters</h4></template>
+                            <el-menu-item index="/help/node">4.1 Node Filter</el-menu-item>
+                            <el-menu-item index="/help/edge">4.2 Edge Filter</el-menu-item>
+                            <el-menu-item index="/help/concurrency">4.3 Concurrency Filter</el-menu-item>
                         </el-submenu>
                         <el-submenu index="4">
-                            <template slot="title"><h4>4. To apply Metrics configurations</h4></template>
-                            <el-menu-item index="/help/unary">4.1 Unary Significance Metrics</el-menu-item>
-                            <el-menu-item index="/help/binary">4.2 Binary Significance Metrics</el-menu-item>
-                            <el-menu-item index="/help/correlation">4.3 Binary Correlation Metrics</el-menu-item>
+                            <template slot="title"><h4>5. Configure Metrics</h4></template>
+                            <el-menu-item index="/help/unary">5.1 Unary Significance Metrics</el-menu-item>
+                            <el-menu-item index="/help/binary">5.2 Binary Significance Metrics</el-menu-item>
+                            <el-menu-item index="/help/correlation">5.3 Binary Correlation Metrics</el-menu-item>
                         </el-submenu>
                         <el-submenu index="5">
-                            <template slot="title"><h4>5. To Modify Attenuation</h4></template>
-                            <el-menu-item index="/help/linear">5.1 Linear Attenuation</el-menu-item>
-                            <el-menu-item index="/help/nroot">5.2 N(th) Root Attenuation</el-menu-item>
+                            <template slot="title"><h4>6. Modify Attenuation</h4></template>
+                            <el-menu-item index="/help/linear">6.1 Linear Attenuation</el-menu-item>
+                            <el-menu-item index="/help/nroot">6.2 N(th) Root Attenuation</el-menu-item>
                         </el-submenu>
-                        <el-menu-item index="/help/snapshot"><h4>6. To save model snapshot</h4>
-                        </el-menu-item>
+
 
                         <el-menu-item index="/help/video">
-                            <h4>3. Demo Video</h4>
+                            <h4>7. Demo Video</h4>
                         </el-menu-item>
                         <el-menu-item index="/help/faqs">
-                            <h4>4. FAQs</h4>
+                            <h4>8. FAQs</h4>
                         </el-menu-item>
                 </el-menu>
             </el-aside>
