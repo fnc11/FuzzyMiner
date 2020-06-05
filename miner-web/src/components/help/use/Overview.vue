@@ -1,12 +1,10 @@
 <template>
-    <div>
-        <h2>Overview of the user interface</h2>
-    </div>
+    <h2>Overview of the user interface</h2>
 </template>
 
 <script>
     export default {
-        name: "Generate"
+        name: "Overview"
     }
 </script>
 

@@ -35,12 +35,14 @@
                                 class="grid-content-configuration el-table--border">
                             <h4 class="text-center-align">Edge</h4>
                             <el-divider class="hidden-sm-and-down"></el-divider>
-                            <el-radio-group v-model="edge" style="position: relative; top:10px;">
-                                <el-radio :label="1">Best Edges</el-radio>
-                                <el-radio :label="2">Fuzzy Edges</el-radio>
+                            <el-radio-group v-model="edge">
+                                <el-radio :label="1" style="color: black;">Best Edges</el-radio>
+                                <el-radio :label="2" style="color: black;">Fuzzy Edges</el-radio>
                             </el-radio-group>
-                            <div align="center">
-                                <el-checkbox class="el-checkbox__label" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
+                            <div align="center" style="position: relative;top:6px;">
+                                <el-checkbox class="el-checkbox__label1" v-model="absolute" :disabled="edge === 1"
+                                             style="font-size: 8px;">Interpret Absolute
+                                </el-checkbox>
                             </div>
                             <div class="slider-adjustment2">
                                 <div align="center">
@@ -713,7 +715,7 @@
 
     .slider-adjustment1 {
         position: relative;
-        top: 13%;
+        top: 12.5%;
     }
 
     .slider-adjustment2 {
@@ -768,8 +770,13 @@
         padding-left: 0;
 
     }
-    h3{
+
+    h3 {
         color: darkorange;
     }
+    .el-radio__label{
+        font-size: 16px;
+    }
+
 
 </style>

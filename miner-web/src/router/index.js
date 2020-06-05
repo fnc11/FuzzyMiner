@@ -83,7 +83,11 @@ export default new Router({
                 path: 'faqs',
                 name: 'Faqs',
                 component: () => import('@/components/help/Faqs')
-            }]
+            }, {
+                path:'overview',
+                name:'Overview',
+                component:() => import('@/components/help/use/Overview')
+                }]
         }
     ]
 })

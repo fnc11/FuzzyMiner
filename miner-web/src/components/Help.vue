@@ -10,7 +10,7 @@
                         @close="handleClose">
                     <el-submenu index="1">
                         <template slot="title">
-                            <h4>1.Set up guide</h4>
+                            <h4>1.Installation Guide</h4>
                         </template>
                         <el-menu-item index="/help/windows">1.1 Installations on Windows</el-menu-item>
                         <el-menu-item index="/help/mac">1.2 Installations on Mac</el-menu-item>
@@ -19,10 +19,15 @@
 
                     <el-submenu index="2">
                         <template slot="title">
-                            <h4>2. How to use Fuzzy Web</h4>
+                            <h4>2.Get Started</h4>
                         </template>
-                        <el-menu-item index="/help/generate">2.1 To generate fuzzy model</el-menu-item>
                         <el-submenu index="2-2">
+                            <template slot="title">2.1 Overview of the user interface</template>
+                            <el-menu-item index="/help/home">2.1.1 Home Screen</el-menu-item>
+                            <el-menu-item index="/help/filter">2.1.2 Graph View Screen </el-menu-item>
+                            <el-menu-item index="/help/metrics">2.1.3 Metrics Configuration Dialog </el-menu-item>
+                        </el-submenu>
+                        <el-submenu index="2-3">
                             <template slot="title">2.2 To apply filter configurations</template>
                             <el-menu-item index="/help/node">2.2.1 Node Filter</el-menu-item>
                             <el-menu-item index="/help/edge">2.2.2 Edge Filter</el-menu-item>
@@ -79,15 +84,18 @@
         line-height: 16px;
         padding: 8px 0;
 
-    display: inline-block;
+
         overflow:hidden;
         word-wrap: break-word;
 
     }
 
-    .el-col-6 {
-
+    .el-aside{
+        border-right: groove;
+        overflow-x: hidden;
+        height: max-content;
     }
+
 
     .el-sub-menu {
         
