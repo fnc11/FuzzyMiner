@@ -17,13 +17,23 @@
                             :on-success="uploadSuccess"
                             :on-error="uploadError">
                         <el-button type="primary" class="button-primary">Upload Logs</el-button>
-                        <div slot="tip" class="el-upload__tip" style="color: slategrey">Accepted file format is .xes.</div>
+                        <div slot="tip" class="el-upload__tip" style="color: slategrey">Accepted file format is .xes.
+                        </div>
                     </el-upload>
                 </el-col>
                 <el-col :span="2.5">
-                    <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate</el-button>
+                    <el-button type="success" class="button-success" @click="generate" :disabled="generated">Generate
+                    </el-button>
                 </el-col>
 
+            </el-row>
+            <el-row justify="right">
+                <div style="position: relative;top: 16vh;text-align: center">
+                    <el-tooltip effect="dark" placement="bottom-end"
+                                content="This generates a model based on an example log, you can find out more in Help Page.">
+                        <el-link @click="generateDemo" style="font-size: 18px;color: lightseagreen;"><u>Generate Example Model</u></el-link>
+                    </el-tooltip>
+                </div>
             </el-row>
             <br><br><br>
             <el-row class="file-list" justify="center" type="flex">
@@ -57,6 +67,7 @@
             <i class="el-icon-loading" />
             <label v-if="percentage === 100">Please hold on, the server is running.</label>
         </el-dialog>
+
     </div>
 </template>
 
@@ -171,9 +182,10 @@
 
 
     .file-list {
-        text-align: center;
+        text-align: left;
         position: relative;
-        top:20px;
+        top: 18px;
+        color: limegreen;
     }
 
     .wrapper {
