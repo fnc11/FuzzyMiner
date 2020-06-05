@@ -87,7 +87,23 @@ export default new Router({
                 path:'overview',
                 name:'Overview',
                 component:() => import('@/components/help/use/Overview')
-                }]
-        }
+                },
+                {
+                path:'home',
+                name:'Homescreen',
+                component:() => import('@/components/help/use/Homescreen')
+                },{
+                path:'filter',
+                name:'Filterscreen',
+                component:() => import('@/components/help/use/Filterscreen')
+                },{
+                path:'metrics',
+                name:'Metrics',
+                component:() => import('@/components/help/use/Metrics')
+
+                }
+            ]
+        },
+
     ]
 })
