@@ -138,7 +138,7 @@ python3 manage.py runserver
 Please refer to the <b>Help</b> page of the web application when you run it.
 
 ## Contributors
-Built with ❤by:
+Built with ❤ by:
 
 * [Praveen Yadav](https://github.com/fnc11) 
 * [Pruthvi Hegde](https://github.com/pruthvi11) 
@@ -147,6 +147,6 @@ Built with ❤by:
 * [Yongzhao Li](https://github.com/Pireirik) 
 
 
-## Credits
+## Reference
 * Madhavi Shankar Narayana
 * [ Business Process Management: 5th International Conference, BPM 2007, Brisbane, Australia, September 24-28, 2007. Proceedings](https://www.researchgate.net/publication/221586306_Fuzzy_Mining_-_Adaptive_Process_Simplification_Based_on_Multi-perspective_Metrics)
