@@ -12,13 +12,14 @@
       alt="API stability" />
   </a>
   <a href="https://github.com/fnc11/FuzzyMiner/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/fnc11/FuzzyMiner"></a>
-  
-  ![GitHub repo size](https://img.shields.io/github/repo-size/fnc11/fuzzyminer)
   <!-- Standard -->
   <a href="https://standardjs.com">
     <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square"
       alt="Standard" />
   </a>
+  
+  ![GitHub repo size](https://img.shields.io/github/repo-size/fnc11/fuzzyminer)
+  
 </div>
 
 ## Table of Contents
@@ -48,8 +49,9 @@
 <b>Tested with</b>
 - [PyUnit](https://docs.python.org/2/library/unittest.html)
 
-##Installation requirements
-####Windows
+## Installation requirements
+
+#### Windows
 1. Install Python from [here](https://www.python.org/). <br> <br>
 Four Python 3.6 installers are available for download - two each for the 32-bit and 64-bit versions of the interpreter. The web installer is a small initial download, and it will automatically download the required components as necessary. <br>
 <br>
@@ -83,9 +85,9 @@ pip install nodejs
 pip install npm
 ```
 
-####MacOS
+#### MacOS
 
-####Linux
+#### Linux
 
 ##Creating a Virtual Environment
 1. The virtualenv package is required to create virtual environments. You can install it with pip:
@@ -97,17 +99,17 @@ pip install virtualenv
 virtualenv mypython
 ```
 3.You can activate the python environment by running the following:
-#####Windows command
+##### Windows command
 ```
 mypthon\Scripts\activate
 ```
-#####MacOS/Linux command
+##### MacOS/Linux command
 ```
 source mypython/bin/activate
 ```
 You should see the name of your virtual environment in brackets on your terminal line e.g. (mypython). Any python commands you use will now work with your virtual environment
 
-##Running the project
+## Running the project
 1. Clone the repository:
 ```
 git clone URL
@@ -131,11 +133,11 @@ python3 secret.py
 ```
 python3 manage.py runserver
 ```
-##How to use?
+## How to use?
 Please refer to the <b>Help</b> page of the web application when you run it.
 
-##Contributors
-<sub>Built with ❤by:
+## Contributors
+Built with ❤by:
 
 * [Praveen Yadav](https://github.com/fnc11) 
 * [Pruthvi Hegde](https://github.com/pruthvi11) 
@@ -144,6 +146,6 @@ Please refer to the <b>Help</b> page of the web application when you run it.
 * [Yongzhao Li](https://github.com/Pireirik) 
 
 
-##Credits
+## Credits
 * Madhavi Shankar Narayana
 * [ Business Process Management: 5th International Conference, BPM 2007, Brisbane, Australia, September 24-28, 2007. Proceedings](https://www.researchgate.net/publication/221586306_Fuzzy_Mining_-_Adaptive_Process_Simplification_Based_on_Multi-perspective_Metrics)
