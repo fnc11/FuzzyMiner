@@ -143,7 +143,7 @@ Built with ❤ by:
 * [Praveen Yadav](https://github.com/fnc11) 
 * [Pruthvi Hegde](https://github.com/pruthvi11) 
 * [Prantik Chatterjee](https://github.com/Prantikc22)
-* [Iftekhr Ahmed](https://github.com/iftekhar-ahmed)
+* [Iftekhar Ahmed](https://github.com/iftekhar-ahmed)
 * [Yongzhao Li](https://github.com/Pireirik) 
 
 
