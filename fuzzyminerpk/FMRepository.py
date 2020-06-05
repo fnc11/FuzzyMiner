@@ -137,10 +137,12 @@ class DataRepository:
         self.binary_simple_aggregate_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
         self.binary_multi_aggregate_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
 
-        self.unary_derivative_routing_values = [0 for x in range(sz)]
-        self.unary_derivative_routing_normalized_values = [0 for x in range(sz)]
-        self.binary_derivative_distance_values = [[0 for x in range(sz)] for y in range(sz)]
-        self.binary_derivative_distance_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
+        if self.metric_settings["routing_significance_unary"][0]:
+            self.unary_derivative_routing_values = [0 for x in range(sz)]
+            self.unary_derivative_routing_normalized_values = [0 for x in range(sz)]
+        if self.metric_settings["distance_significance_binary"][0]:
+            self.binary_derivative_distance_values = [[0 for x in range(sz)] for y in range(sz)]
+            self.binary_derivative_distance_normalized_values = [[0.0 for x in range(sz)] for y in range(sz)]
 
         self.unary_weighted_values = [0 for x in range(sz)]
         self.binary_sig_weighted_values = [[0 for x in range(sz)] for y in range(sz)]
@@ -217,21 +219,31 @@ class DataRepository:
         """
         Calls other methods to calculate aggregate values which then will be used in calculating
         derivative metrics
+
         :return: Nothing
         """
+        
+        if self.metric_settings["distance_significance_binary"][0]:
+            self.cal_unary_simple_aggregate()
+            self.cal_binary_simple_aggregate()
 
-        self.cal_unary_simple_aggregate()
-        self.cal_binary_simple_aggregate()
-        self.cal_binary_multi_aggregate()
+        if self.metric_settings["routing_significance_unary"][0]:
+            if self.metric_settings["distance_significance_binary"][0]:
+                self.cal_binary_multi_aggregate()
+            else:
+                self.cal_binary_simple_aggregate()
+                self.cal_binary_multi_aggregate()
 
     def extract_derivative_metrics(self):
         """
         Calls other methods to calculate derivative metrics values, routing and distance.
+
         :return: Nothing
         """
-
-        self.cal_unary_derivative()
-        self.cal_binary_derivative()
+        if self.metric_settings["routing_significance_unary"][0]:
+            self.cal_unary_derivative()
+        if self.metric_settings["distance_significance_binary"][0]:
+            self.cal_binary_derivative()
 
     def extract_weighted_metrics(self):
         """
@@ -436,16 +448,16 @@ class DataRepository:
         :return: Nothing
         """
 
-        self.unary_derivative_routing_normalized_values = weight_normalize1D(self.unary_derivative_routing_values,
-                                                                             self.metric_settings[
-                                                                                 "routing_significance_unary"][1],
-                                                                             self.metric_settings[
-                                                                                 "routing_significance_unary"][2])
-        self.binary_derivative_distance_normalized_values = weight_normalize2D(self.binary_derivative_distance_values,
-                                                                               self.metric_settings[
-                                                                                   "distance_significance_binary"][1],
-                                                                               self.metric_settings[
-                                                                                   "distance_significance_binary"][2])
+        if self.metric_settings["routing_significance_unary"][0]:
+            self.unary_derivative_routing_normalized_values = weight_normalize1D(
+                self.unary_derivative_routing_values,
+                self.metric_settings["routing_significance_unary"][1],
+                self.metric_settings["routing_significance_unary"][2])
+        if self.metric_settings["distance_significance_binary"][0]:
+            self.binary_derivative_distance_normalized_values = weight_normalize2D(
+                self.binary_derivative_distance_values,
+                self.metric_settings["distance_significance_binary"][1],
+                self.metric_settings["distance_significance_binary"][2])
 
     def cal_weighted_unary_values(self):
         """
