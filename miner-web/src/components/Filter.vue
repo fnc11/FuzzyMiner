@@ -525,12 +525,14 @@
                 if (resp.message_type === 0) {
                     this.images.push(resp.graph_path);
                 } else if (resp.message_type === 1) {
-                    this.$router.push({path: "/"});
-                    this.$message({
-                        message: resp.message_desc,
-                        type: 'error',
-                        showClose: true,
-                        duration: 5000
+                    this.$alert(resp.message_desc, 'Error', {
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        this.$router.push({path: "/"});
+                    });
+                } else if (resp.message_type === 2) {
+                    this.$alert(resp.message_desc, 'Warning', {
+                        confirmButtonText: 'OK'
                     });
                 }
             },
