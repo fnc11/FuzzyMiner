@@ -217,7 +217,7 @@
                 edge: 2,
                 sc: 0.75,
                 cutoff: 0.2,
-                preserve: 0.6,
+                preserve: 0.8801117368,
                 balance: 0.7,
                 loops: true,
                 absolute: false,
