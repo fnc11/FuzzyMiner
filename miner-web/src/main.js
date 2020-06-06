@@ -26,6 +26,7 @@ Viewer.setDefaults({
     "transition": true,
     "fullscreen": true,
     "keyboard": true,
+    "backdrop": true,
     "url": "data-source"
 });
 

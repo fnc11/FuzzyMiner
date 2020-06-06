@@ -1,12 +1,10 @@
 <template>
-    <div>
-        <h3>Save snapshot</h3>
-    </div>
+    <h2>Overview of the user interface</h2>
 </template>
 
 <script>
     export default {
-        name: "SnapShot"
+        name: "Overview"
     }
 </script>
 
