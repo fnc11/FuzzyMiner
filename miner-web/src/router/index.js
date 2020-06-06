@@ -72,9 +72,9 @@ export default new Router({
                 name: 'NRootAttenuation',
                 component: () => import('@/components/help/use/NRootAttenuation')
             }, {
-                path: 'snapshot',
-                name: 'SnapShot',
-                component: () => import('@/components/help/use/SnapShot')
+                path: 'example',
+                name: 'Example',
+                component: () => import('@/components/help/use/Example')
             }, {
                 path: 'video',
                 name: 'Video',
@@ -100,6 +100,11 @@ export default new Router({
                 path:'metrics',
                 name:'Metrics',
                 component:() => import('@/components/help/use/Metrics')
+
+                },{
+                path:'helpscreen',
+                name:'Helpscreen',
+                component:() => import('@/components/help/use/Helpscreen')
 
                 }
             ]

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Steps to generate a fuzzy model</h2>
+        <label class="header">Steps to generate a fuzzy model</label>
         <p>Follow below instructions in order to generate a fuzzy model.</p>
         <br>
         <ul>
@@ -48,6 +48,11 @@
 
     p, li {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+    .header {
+        color: black;
+        font-size: 30px;
+        font-weight: bold;
     }
 
 </style>

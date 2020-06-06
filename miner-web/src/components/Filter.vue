@@ -5,7 +5,7 @@
                 <div class="model-view">
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
-<!--                        <img :src="image" alt=""/>-->
+
                         <viewer id="viewer" :images="images" @inited="inited">
                             <img v-for="(item, index) in images" :src="item" :key="index">
                         </viewer>

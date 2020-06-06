@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="help_container">
         <el-container>
             <el-aside>
                 <el-menu
@@ -10,7 +10,7 @@
                         @close="handleClose">
                     <el-submenu index="1">
                         <template slot="title">
-                            <h4>1.Installation Guide</h4>
+                            <h4>1. Installation Guide</h4>
                         </template>
                         <el-menu-item index="/help/windows">1.1 Installations on Windows</el-menu-item>
                         <el-menu-item index="/help/mac">1.2 Installations on Mac</el-menu-item>
@@ -19,21 +19,23 @@
 
                     <el-submenu index="2">
                         <template slot="title">
-                            <h4>2.Get Started</h4>
+                            <h4>2. Get Started</h4>
                         </template>
                         <el-submenu>
                             <template slot="title">2.1 Overview of the user interface</template>
                             <el-menu-item index="/help/home">2.1.1 Home Screen</el-menu-item>
                             <el-menu-item index="/help/filter">2.1.2 Fuzzy Model Screen</el-menu-item>
-                            <el-menu-item index="/help/metrics">2.1.3 Metrics Configuration</el-menu-item>
+                            <el-menu-item index="/help/helpscreen">2.1.3 Help Screen</el-menu-item>
                         </el-submenu>
-                        <el-menu-item index="/help/home">2.2 How to generate example model</el-menu-item>
-                          <el-menu-item index="/help/snapshot">2.3 How to save model snapshot
-                        </el-menu-item>
+
+
                     </el-submenu>
-                        <el-menu-item index="/help/generate">
-                            <h4>3. Generate a fuzzy model</h4>
-                        </el-menu-item>
+                      <el-submenu>
+                          <template slot="title"><h4>3. Generate a fuzzy model</h4></template>
+                    <el-menu-item index="/help/generate">3.1 Generate a fuzzy model from the log
+                             </el-menu-item>
+                             <el-menu-item index="/help/example">3.2 Generate an example model</el-menu-item>
+                      </el-submenu>
                         <el-submenu index="3">
                             <template slot="title"><h4>4. Configure Filters</h4></template>
                             <el-menu-item index="/help/node">4.1 Node Filter</el-menu-item>
@@ -87,7 +89,7 @@
         color: #606266;
         font-family: "Sitka Subheading";
         font-weight: normal;
-        line-height: 16px;
+
         padding: 8px 0;
         overflow:hidden;
         word-wrap: break-word;
@@ -98,11 +100,18 @@
         border-right: groove;
         overflow-x: hidden;
         position: page;
+
     }
 
 
     .el-sub-menu {
         
+
+    }
+    .el-main{
+
+    }
+    .help_container{
 
     }
 </style>
