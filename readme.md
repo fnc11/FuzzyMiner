@@ -23,23 +23,29 @@
 </div>
 
 ## Table of Contents
-- [Features](#features)
-- [Technology used](#technology-used)
-- [Installation requirements](#installation-requirements)
+1. [Features](#features)
+2. [Technology used](#technology-used)
+3. [Installation requirements](#installation-requirements)
     - [Windows](#windows)
     - [MacOS](#macos)
     - [Linux](#linux)
-- [Creating a virtual environnment](#creating-a-virtual-environment)
-- [How to use](#how-to-use)
-- [Contributors](#contributors)
-- [Credits](#credits)
+4. [Creating a virtual environnment](#creating-a-virtual-environment)
+5. [How to use](#how-to-use)
+7. [Contributors](#contributors)
+8. [Credits](#credits)
 
 ## Features
+
+[(Back to top)](#table-of-contents)
+
 - __Easy to use:__ our package makes it easy for generating process models for unstructured data
-- __Isomorphic:__ renders seamlessly in both Node and browsers
+- __User friendly UI:__ clean and simple UI
 - __Fast:__ Can handle large log files. Well in case of too large, you need to wait a bit!
 
 ## Technology used
+
+[(Back to top)](#table-of-contents)
+
 <b>Built with</b>
 - [Python](https://www.python.org/)
 - [Django](https://www.djangoproject.com/)
@@ -51,22 +57,21 @@
 
 ## Installation requirements
 
-#### Windows
+[(Back to top)](#table-of-contents)
+
+### Windows
 1. Install Python from [here](https://www.python.org/). <br> <br>
-Four Python 3.6 installers are available for download - two each for the 32-bit and 64-bit versions of the interpreter. The web installer is a small initial download, and it will automatically download the required components as necessary. <br>
-<br>
+Four Python 3.6 installers are available for download - two each for the 32-bit and 64-bit versions of the interpreter. The web installer is a small initial download, and it will automatically download the required components as necessary.<br>
 After starting the installer, one of two options may be selected:
-<br><br>
+<br>
 <b>If you select “Install Now”:</b>
 - You will not need to be an administrator (unless a system update for the C Runtime Library is required or you install the [Python Launcher](https://docs.python.org/3.6/using/windows.html#launcher) for Windows for all users)
 - Python will be installed into your user directory
 - The [Python Launcher](https://docs.python.org/3.6/using/windows.html#launcher) for Windows will be installed according to the option at the bottom of the first page
 - The standard library, test suite, launcher and pip will be installed
 - If selected, the install directory will be added to your `PATH`
-- Shortcuts will only be visible for the current user
-<br><br>
-<b>Selecting “Customize installation” will allow you to select the features to install, the installation location and other options or post-install actions. To install debugging symbols or binaries, you will need to use this option.</b>
-<br><br>
+- Shortcuts will only be visible for the current user<br><br>
+<b>Selecting “Customize installation” will allow you to select the features to install, the installation location and other options or post-install actions. To install debugging symbols or binaries, you will need to use this option.</b><br><br>
 - To perform an all-users installation, you should select “Customize installation”. In this case:
 - You may be required to provide administrative credentials or approval
 - Python will be installed into the Program Files directory
@@ -75,7 +80,7 @@ After starting the installer, one of two options may be selected:
 - The standard library can be pre-compiled to bytecode
 - If selected, the install directory will be added to the system PATH
 - Shortcuts are available for all users
-
+<br>
 
 2. Install Node.js
 ```
@@ -86,11 +91,14 @@ pip install nodejs
 pip install npm
 ```
 
-#### MacOS
+### MacOS
 
-#### Linux
+### Linux
 
 ## Creating a Virtual Environment
+
+[(Back to top)](#table-of-contents)
+
 1. The virtualenv package is required to create virtual environments. You can install it with pip:
 ```
 pip install virtualenv
@@ -100,17 +108,20 @@ pip install virtualenv
 virtualenv mypython
 ```
 3.You can activate the python environment by running the following:
-##### Windows command
+#### Windows command
 ```
 mypthon\Scripts\activate
 ```
-##### MacOS/Linux command
+#### MacOS/Linux command
 ```
 source mypython/bin/activate
 ```
 You should see the name of your virtual environment in brackets on your terminal line e.g. (mypython). Any python commands you use will now work with your virtual environment
 
 ## Running the project
+
+[(Back to top)](#table-of-contents)
+
 1. Clone the repository:
 ```
 git clone URL
@@ -135,9 +146,15 @@ python3 secret.py
 python3 manage.py runserver
 ```
 ## How to use?
+
+[(Back to top)](#table-of-contents)
+
 Please refer to the <b>Help</b> page of the web application when you run it.
 
 ## Contributors
+
+[(Back to top)](#table-of-contents)
+
 Built with ❤ by:
 
 * [Praveen Yadav](https://github.com/fnc11) 
@@ -148,5 +165,14 @@ Built with ❤ by:
 
 
 ## Reference
-* Madhavi Shankar Narayana
-* [ Business Process Management: 5th International Conference, BPM 2007, Brisbane, Australia, September 24-28, 2007. Proceedings](https://www.researchgate.net/publication/221586306_Fuzzy_Mining_-_Adaptive_Process_Simplification_Based_on_Multi-perspective_Metrics)
+
+[(Back to top)](#table-of-contents)
+
+* [PADS Chair of RWTH Aachen University](https://www.pads.rwth-aachen.de/go/id/pnbx/?lidx=1)
+* This project is based on [ Business Process Management: 5th International Conference, BPM 2007, Brisbane, Australia, September 24-28, 2007. Proceedings](https://www.researchgate.net/publication/221586306_Fuzzy_Mining_-_Adaptive_Process_Simplification_Based_on_Multi-perspective_Metrics)
+
+## License
+
+[(Back to top)](#table-of-contents)
+
+The Fuzy Miner Web Aoolication is released under the under terms of the [Apache License V2.0](LICENSE).
