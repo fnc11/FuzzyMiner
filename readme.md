@@ -1,6 +1,6 @@
 <h1 align="center">Fuzzy Miner</h1>
 <div align="center">
-  <strong>A fuzzy miner web application by which you can generate process models as per your requirements. Import a <a href="http://xes-standard.org/" target="_blank">XES</a> log file and just wait for the miner to generate the process model. The metrics and the filters are at your disposal and can be modified as per your requirements.</strong>
+  <strong>A fuzzy miner web application by which you can generate process models as per your requirements. Import a <a href="http://xes-standard.org/" target="_blank">XES</a> log file and just wait for the miner to generate the process model. The metrics and the filters are at your disposal and can be modified as per your requirements. The project is based on this <a href="https://www.researchgate.net/publication/221586306_Fuzzy_Mining_-_Adaptive_Process_Simplification_Based_on_Multi-perspective_Metrics" target="_blank">paper</a>. </strong>
 </div>
 <div align="center">
   
@@ -29,10 +29,11 @@
     - [Windows](#windows)
     - [MacOS](#macos)
     - [Linux](#linux)
-4. [Creating a virtual environnment](#creating-a-virtual-environment)
-5. [How to use](#how-to-use)
-7. [Contributors](#contributors)
-8. [Credits](#credits)
+4. [How to use](#how-to-use)
+5. [Contributors](#contributors)
+6. [Credits](#credits)
+7. [Reference](#reference)
+8. [License](#license)
 
 ## Features
 
@@ -62,8 +63,7 @@
 ### Windows
 1. Install Python from [here](https://www.python.org/). <br> <br>
 Four Python 3.6 installers are available for download - two each for the 32-bit and 64-bit versions of the interpreter. The web installer is a small initial download, and it will automatically download the required components as necessary.<br>
-After starting the installer, one of two options may be selected:
-<br>
+After starting the installer, one of two options may be selected:<br>
 <b>If you select “Install Now”:</b>
 - You will not need to be an administrator (unless a system update for the C Runtime Library is required or you install the [Python Launcher](https://docs.python.org/3.6/using/windows.html#launcher) for Windows for all users)
 - Python will be installed into your user directory
@@ -90,33 +90,14 @@ pip install nodejs
 ```
 pip install npm
 ```
+4. Install virtualenv
+```
+pip install virtualenv
+``` 
 
 ### MacOS
 
 ### Linux
-
-## Creating a Virtual Environment
-
-[(Back to top)](#table-of-contents)
-
-1. The virtualenv package is required to create virtual environments. You can install it with pip:
-```
-pip install virtualenv
-``` 
-2. To create a virtual environment, you must specify a path. For example to create one in the local directory called ‘mypython’, type the following:
-```
-virtualenv mypython
-```
-3.You can activate the python environment by running the following:
-#### Windows command
-```
-mypthon\Scripts\activate
-```
-#### MacOS/Linux command
-```
-source mypython/bin/activate
-```
-You should see the name of your virtual environment in brackets on your terminal line e.g. (mypython). Any python commands you use will now work with your virtual environment
 
 ## Running the project
 
@@ -126,22 +107,35 @@ You should see the name of your virtual environment in brackets on your terminal
 ```
 git clone URL
 ```
-2. Assuming you have virtual environment somewhere inside or outside the project(it doesn't matter as that will not be stored on github), activate it and install necessary softwares by running following command.
+2. Create a virtual environment inside the package FuzzyMiner
+```
+virtualenv mypython
+```
+3. Activate the virtual environment
+#### Windows command
+```
+mypthon\Scripts\activate
+```
+#### MacOS/Linux command
+```
+source mypython/bin/activate
+````
+4. Assuming you have virtual environment somewhere inside or outside the project(it doesn't matter as that will not be stored on github), activate it and install necessary softwares by running following command.
 ```
 pip install -r requirements.txt 
 ```
-3. Go to `/miner-web` folder and run the following
+5. Go to `/miner-web` folder and run the following
 ```
 npm install
 npm run build
 ```
-4. Change `FuzzyMiner/FuzzyMiner/settings.py.example` to `settings.py`
-5. Run the script `secret.py`
+6. Change `FuzzyMiner/FuzzyMiner/settings.py.example` to `settings.py`
+7. Run the script `secret.py`
 ```
 python3 secret.py
 ```
-6. Copy the displayed key in previous step and paste it in as value for `SECRET_KEY` variable in the `settings.py` file
-7. Run the following command after navigating to `FuzzyMiner/FuzzyMiner`
+8. Copy the displayed key in previous step and paste it in as value for `SECRET_KEY` variable in the `settings.py` file
+9. Run the following command after navigating to `FuzzyMiner/FuzzyMiner`
 ```
 python3 manage.py runserver
 ```
@@ -169,10 +163,10 @@ Built with ❤ by:
 [(Back to top)](#table-of-contents)
 
 * [PADS Chair of RWTH Aachen University](https://www.pads.rwth-aachen.de/go/id/pnbx/?lidx=1)
-* This project is based on [ Business Process Management: 5th International Conference, BPM 2007, Brisbane, Australia, September 24-28, 2007. Proceedings](https://www.researchgate.net/publication/221586306_Fuzzy_Mining_-_Adaptive_Process_Simplification_Based_on_Multi-perspective_Metrics)
+* This project is based on [Business Process Management: 5th International Conference, BPM 2007, Brisbane, Australia, September 24-28, 2007. Proceedings](https://www.researchgate.net/publication/221586306_Fuzzy_Mining_-_Adaptive_Process_Simplification_Based_on_Multi-perspective_Metrics)
 
 ## License
 
 [(Back to top)](#table-of-contents)
 
-The Fuzy Miner Web Aoolication is released under the under terms of the [Apache License V2.0](LICENSE).
+The Fuzy Miner Web Application is released under the under terms of the [Apache License V2.0](LICENSE).
