@@ -4,7 +4,9 @@
         <p>Follow below steps to generate an example model.</p>
         <br>
         <ul>
-            <li><b>Step1 : </b>Click on 'Generate Example Model' on the home page.You will be navigated to the </li>
+            <li><b>Step1 : </b>Click on 'Generate Example Model' on the home page.You will be navigated to the filter page where you can see the
+            fuzzy model generated for the example log.</li>
+
         </ul>
     </div>
 </template>
