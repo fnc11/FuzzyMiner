@@ -527,7 +527,7 @@
                 if (resp.message_type === 0) {
                     this.images.push(resp.graph_path);
                 } else if (resp.message_type === 1) {
-                    this.$alert(resp.message_desc, 'Error', {
+                    this.$alert(resp.message_desc + ' Click ok to redirect to the home page.', 'Error', {
                         confirmButtonText: 'OK',
                         type: 'error'
                     }).then(() => {
