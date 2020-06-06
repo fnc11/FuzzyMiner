@@ -9,24 +9,17 @@
             <li><b>Step2 : </b>Click on upload logs button to upload a log from your files.
             </li>
             <br>
-
             <el-image src="/static/img/upload3.PNG" alt=""/>
-
             <br>
-
             <el-image src="/static/img/uploadlog1.PNG" alt=""/>
             <br><br><br>
-
             <li><b>Step3 : </b>Generate button gets activated on successful log upload. Click on it.</li>
             <br>
-
             <el-image src="/static/img/uploadlog2.PNG" alt=""/>
-
             <br><br><br>
             <li><b>Step4 : </b>You will be navigated to the filter screen where you can see the generated fuzzy model.
             </li>
             <br>
-
             <el-image src="/static/img/filter.PNG" alt=""/>
 
         </ul>

@@ -17,24 +17,20 @@
                         <el-menu-item index="/help/linux">1.3 Installations on Linux</el-menu-item>
                     </el-submenu>
 
-                    <el-submenu index="2">
-                        <template slot="title">
-                            <h4>2. Get Started</h4>
-                        </template>
                         <el-submenu>
-                            <template slot="title">2.1 Overview of the user interface</template>
+                            <template slot="title"><h4>2.1 Overview of the user interface</h4></template>
                             <el-menu-item index="/help/home">2.1.1 Home Screen</el-menu-item>
                             <el-menu-item index="/help/filter">2.1.2 Fuzzy Model Screen</el-menu-item>
                             <el-menu-item index="/help/helpscreen">2.1.3 Help Screen</el-menu-item>
                         </el-submenu>
 
-
-                    </el-submenu>
                       <el-submenu>
-                          <template slot="title"><h4>3. Generate a fuzzy model</h4></template>
+                          <template slot="title"><h4>3. Get Started</h4></template>
                     <el-menu-item index="/help/generate">3.1 Generate a fuzzy model from the log
                              </el-menu-item>
-                             <el-menu-item index="/help/example">3.2 Generate an example model</el-menu-item>
+                          <el-menu-item index="/help/graph">3.2 Understanding the graph view
+                             </el-menu-item>
+                             <el-menu-item index="/help/example">3.3 Generate an example model</el-menu-item>
                       </el-submenu>
                         <el-submenu index="3">
                             <template slot="title"><h4>4. Configure Filters</h4></template>
@@ -63,7 +59,7 @@
                         </el-menu-item>
                 </el-menu>
             </el-aside>
-            <el-main>
+            <el-main class="main-view">
                 <router-view />
             </el-main>
         </el-container>
@@ -83,6 +79,7 @@
     }
 </script>
 
+
 <style scoped>
     .el-menu {
         letter-spacing: normal;
@@ -99,19 +96,19 @@
     .el-aside {
         border-right: groove;
         overflow-x: hidden;
-        position: page;
+        position: relative;
+        height: content-box;
 
     }
+  .el-main{
+
+  }
 
 
-    .el-sub-menu {
-        
-
-    }
-    .el-main{
-
-    }
     .help_container{
+    position: relative;
+
+
 
     }
 </style>
