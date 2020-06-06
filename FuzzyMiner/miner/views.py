@@ -51,8 +51,8 @@ def get_default_configuration(num=0):
         edge_filter = EdgeFilter(1, 0.75, 1.0)
         concurrency_filter = ConcurrencyFilter(True, 1.0, 0.7)
     filter_config = FilterConfig(node_filter, edge_filter, concurrency_filter)
-    metric_config1 = MetricConfig("frequency_significance_unary", "unary")
-    metric_config2 = MetricConfig("routing_significance_unary", "unary")
+    metric_config1 = MetricConfig("frequency_significance_unary", "unary", False)
+    metric_config2 = MetricConfig("routing_significance_unary", "unary", False)
     metric_config3 = MetricConfig("frequency_significance_binary", "binary")
     metric_config4 = MetricConfig("distance_significance_binary", "binary")
     metric_config5 = MetricConfig("proximity_correlation_binary", "binary_correlation")
@@ -75,7 +75,7 @@ def launch_filter(log_file_path, ip, port):
     except:
         return JsonResponse({
             "message_type": 1,
-            "message_desc": "A wrong log file"
+            "message_desc": "Uploaded log file is corrupted or not a log file actually."
         })
     finish = time.perf_counter()
     print(f'XES import factory took {round(finish - start, 3)} seconds')
