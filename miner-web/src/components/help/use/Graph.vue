@@ -27,8 +27,7 @@
             Higher the color intensity of the cluster, higher the mean significance. Cluster in the image A has higher mean significance than the cluster in the image B.
         </li>
         <br>
-        <li><b>Edges : </b>Arcs drawn between the nodes are decorated with the significance and correlation. Arcs are called Edges.
-        and are colored in a dark orange color. Darker the color, higher is the significance of the relation.</li>
+        <li><b>Edges : </b>Arcs drawn between the nodes are decorated with the significance and correlation. Arcs are called Edges and are colored in a dark orange color. Darker the color, higher is the significance of the relation.</li>
     </div>
 </template>
 
