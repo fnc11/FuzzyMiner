@@ -1,13 +1,23 @@
 <template>
     <div>
-        <h3>Nth Root Attenuation</h3>
+        <label class="header">Steps to generate an example model</label>
+        <p>Follow below steps to generate an example model.</p>
+        <br>
+        <ul>
+            <li><b>Step1 : </b>Click on 'Generate Example Model' on the home page.You will be navigated to the filter page where you can see the
+            fuzzy model generated for the example log.</li>
 
+        </ul>
     </div>
 </template>
 
 <script>
     export default {
-        name: "NRootAttenuation"
+        name: "Example",
+        data() {
+            return {
+            }
+        }
     }
 </script>
 
