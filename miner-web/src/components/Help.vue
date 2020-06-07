@@ -44,11 +44,10 @@
                             <el-menu-item index="/help/binary">5.2 Binary Significance Metrics</el-menu-item>
                             <el-menu-item index="/help/correlation">5.3 Binary Correlation Metrics</el-menu-item>
                         </el-submenu>
-                        <el-submenu index="5">
-                            <template slot="title"><h4>6. Modify Attenuation</h4></template>
-                            <el-menu-item index="/help/linear">6.1 Linear Attenuation</el-menu-item>
-                            <el-menu-item index="/help/nroot">6.2 N(th) Root Attenuation</el-menu-item>
-                        </el-submenu>
+
+
+                           <el-menu-item index="/help/attenuation"><h4>6. Modify Attenuation</h4></el-menu-item>
+
 
 
                         <el-menu-item index="/help/video">
@@ -96,8 +95,9 @@
     .el-aside {
         border-right: groove;
         overflow-x: hidden;
+        overflow-y: fragments;
         position: relative;
-        height: content-box;
+        height: 100vh;
 
     }
   .el-main{

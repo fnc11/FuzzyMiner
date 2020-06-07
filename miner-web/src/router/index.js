@@ -64,9 +64,9 @@ export default new Router({
                 name: 'BinaryCorrelation',
                 component: () => import('@/components/help/use/BinaryCorrelation')
             }, {
-                path: 'linear',
-                name: 'LinearAttenuation',
-                component: () => import('@/components/help/use/LinearAttenuation')
+                path: 'attenuation',
+                name: 'Attenuation',
+                component: () => import('@/components/help/use/Attenuation')
             }, {
                 path: 'nroot',
                 name: 'NRootAttenuation',

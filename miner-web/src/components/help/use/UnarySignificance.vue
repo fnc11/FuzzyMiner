@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Unary Significance</h3>
+        <label class="header">Unary Significance</label>
     </div>
 </template>
 
