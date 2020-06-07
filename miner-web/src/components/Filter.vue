@@ -656,6 +656,11 @@
     }
 </script>
 
+<style>
+    .viewer-canvas {
+        background-color: #303133 !important;
+    }
+</style>
 
 <style scoped>
     .model-view {
@@ -777,6 +782,5 @@
     .el-radio__label{
         font-size: 16px;
     }
-
 
 </style>
