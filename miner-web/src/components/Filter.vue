@@ -5,7 +5,7 @@
                 <div class="model-view">
                     <h3 class="text-center-align">Fuzzy Model</h3>
                     <div class="el-tabs--border-card grid-content process-graph-view">
-<!--                        <img :src="image" alt=""/>-->
+
                         <viewer id="viewer" :images="images" @inited="inited">
                             <img v-for="(item, index) in images" :src="item" :key="index">
                         </viewer>
@@ -35,11 +35,15 @@
                                 class="grid-content-configuration el-table--border">
                             <h4 class="text-center-align">Edge</h4>
                             <el-divider class="hidden-sm-and-down"></el-divider>
-                            <label style="font-size: 14px">Edge Transformer</label>
-                            <el-radio-group v-model="edge" style="position: relative; top:10px;">
-                                <el-radio :label="1">Best Edges</el-radio>
-                                <el-radio :label="2">Fuzzy Edges</el-radio>
+                            <el-radio-group v-model="edge">
+                                <el-radio :label="1" style="color: black;">Best Edges</el-radio>
+                                <el-radio :label="2" style="color: black;">Fuzzy Edges</el-radio>
                             </el-radio-group>
+                            <div align="center" style="position: relative;top:6px;">
+                                <el-checkbox class="el-checkbox__label1" v-model="absolute" :disabled="edge === 1"
+                                             style="font-size: 8px;">Interpret Absolute
+                                </el-checkbox>
+                            </div>
                             <div class="slider-adjustment2">
                                 <div align="center">
                                     <h5>Preserve</h5>
@@ -53,9 +57,6 @@
                                                @change="scChanged" :min="0.0" :max="1.0" :step="0.001"/>
                                     <label>{{ sc }}</label>
                                 </div>
-                            </div>
-                            <div align="center">
-                                <el-checkbox class="el-checkbox__label" style="zoom: 80%" v-model="absolute" :disabled="edge === 1">Interpret Absolute</el-checkbox>
                             </div>
                             <div style="position:relative;top:2vh;">
                                 <el-checkbox class="el-checkbox__label" v-model="loops">Ignore Self-Loops</el-checkbox>
@@ -233,7 +234,7 @@
                     metrics: {
                         unary: {
                             frequency: {
-                                label: 'Frequency Significance Metric',
+                                label: 'Frequency Significance',
                                 inc: true,
                                 invert: false,
                                 weight: 0.5
@@ -247,7 +248,7 @@
                         },
                         binarySignificance: {
                             frequency: {
-                                label: 'Frequency Significance Metric',
+                                label: 'Frequency Significance',
                                 inc: true,
                                 invert: false,
                                 weight: 0.5
@@ -403,27 +404,33 @@
                     this.cancelConfig();
                     return;
                 }
+                let errors = []
                 if (!this.metricsConfig.metrics.unary.frequency.inc && !this.metricsConfig.metrics.unary.frequency.invert
                     && !this.metricsConfig.metrics.unary.routing.inc && !this.metricsConfig.metrics.unary.routing.invert) {
-                    this.$alert('At least one choise for unary significance.', 'Error', {
-                        confirmButtonText: 'Confirm',
-                        type: 'error'
-                    });
-                    return;
-                } else if (!this.metricsConfig.metrics.binarySignificance.frequency.inc && !this.metricsConfig.metrics.binarySignificance.frequency.invert
+                    errors.push('unary significance');
+                }
+                if (!this.metricsConfig.metrics.binarySignificance.frequency.inc && !this.metricsConfig.metrics.binarySignificance.frequency.invert
                     && !this.metricsConfig.metrics.binarySignificance.distance.inc && !this.metricsConfig.metrics.binarySignificance.distance.invert) {
-                    this.$alert('At least one choise for binary significance.', 'Error', {
-                        confirmButtonText: 'Confirm',
-                        type: 'error'
-                    });
-                    return;
-                } else if (!this.metricsConfig.metrics.binaryCorrelation.proximity.inc && !this.metricsConfig.metrics.binaryCorrelation.proximity.invert
+                    errors.push('binary significance');
+                }
+                if (!this.metricsConfig.metrics.binaryCorrelation.proximity.inc && !this.metricsConfig.metrics.binaryCorrelation.proximity.invert
                     && !this.metricsConfig.metrics.binaryCorrelation.originator.inc && !this.metricsConfig.metrics.binaryCorrelation.originator.invert
                     && !this.metricsConfig.metrics.binaryCorrelation.endpoint.inc && !this.metricsConfig.metrics.binaryCorrelation.endpoint.invert
                     && !this.metricsConfig.metrics.binaryCorrelation.dataType.inc && !this.metricsConfig.metrics.binaryCorrelation.dataType.invert
                     && !this.metricsConfig.metrics.binaryCorrelation.dataValue.inc && !this.metricsConfig.metrics.binaryCorrelation.dataValue.invert) {
-                    this.$alert('At least one choise for binary correlation.', 'Error', {
-                        confirmButtonText: 'Confirm',
+                    errors.push('binary correlation');
+                }
+                if (errors.length >= 1) {
+                    let msg = 'Choose at least one metric for ';
+                    for (let i = 0; i < errors.length; i++) {
+                        if (i)
+                            msg += ', ' + errors[i];
+                        else
+                            msg += errors[i];
+                    }
+                    msg += '.';
+                    this.$alert(msg, 'Error', {
+                        confirmButtonText: 'OK',
                         type: 'error'
                     });
                     return;
@@ -520,12 +527,16 @@
                 if (resp.message_type === 0) {
                     this.images.push(resp.graph_path);
                 } else if (resp.message_type === 1) {
-                    this.$router.push({path: "/"});
-                    this.$message({
-                        message: resp.message_desc,
-                        type: 'error',
-                        showClose: true,
-                        duration: 5000
+                    this.$alert(resp.message_desc + ' Click ok to redirect to the home page.', 'Error', {
+                        confirmButtonText: 'OK',
+                        type: 'error'
+                    }).then(() => {
+                        this.$router.push({path: "/"});
+                    });
+                } else if (resp.message_type === 2) {
+                    this.$alert(resp.message_desc, 'Warning', {
+                        confirmButtonText: 'OK',
+                        type: 'warning'
                     });
                 }
             },
@@ -645,6 +656,11 @@
     }
 </script>
 
+<style>
+    .viewer-canvas {
+        background-color: #303133 !important;
+    }
+</style>
 
 <style scoped>
     .model-view {
@@ -690,7 +706,7 @@
     .process-graph-view {
         height: 70vh;
         border-color: #dcdfe6;
-        overflow: scroll;
+        overflow: hidden;
     }
 
     .button-position {
@@ -704,7 +720,7 @@
 
     .slider-adjustment1 {
         position: relative;
-        top: 13%;
+        top: 12.5%;
     }
 
     .slider-adjustment2 {
@@ -759,8 +775,12 @@
         padding-left: 0;
 
     }
-    h3{
+
+    h3 {
         color: darkorange;
+    }
+    .el-radio__label{
+        font-size: 16px;
     }
 
 </style>

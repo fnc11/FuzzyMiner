@@ -25,9 +25,7 @@
             <el-main>
                 <router-view/>
             </el-main>
-            <el-footer class="text-center-align">
 
-            </el-footer>
         </el-container>
     </div>
 </template>

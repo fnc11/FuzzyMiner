@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>FAQs</h3>
+        <h3><u>Frequently Asked Questions</u></h3>
     </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="help_container">
         <el-container>
             <el-aside>
                 <el-menu
@@ -10,48 +10,56 @@
                         @close="handleClose">
                     <el-submenu index="1">
                         <template slot="title">
-                            <h4>Set up guide</h4>
+                            <h4>1. Installation Guide</h4>
                         </template>
-                        <el-menu-item index="/help/windows">Installations on Windows</el-menu-item>
-                        <el-menu-item index="/help/mac">Installations on Mac</el-menu-item>
-                        <el-menu-item index="/help/linux">Installations on Linux</el-menu-item>
-                        <el-menu-item index="/help/pycharm">Set up pycharm project</el-menu-item>
+                        <el-menu-item index="/help/windows">1.1 Installations on Windows</el-menu-item>
+                        <el-menu-item index="/help/mac">1.2 Installations on Mac</el-menu-item>
+                        <el-menu-item index="/help/linux">1.3 Installations on Linux</el-menu-item>
                     </el-submenu>
 
-                    <el-submenu index="2">
-                        <template slot="title">
-                            <h4>How to use Fuzzy Web</h4>
-                        </template>
-                        <el-menu-item index="/help/generate">To generate fuzzy model</el-menu-item>
-                        <el-submenu index="2-2">
-                            <template slot="title">To apply filter configurations</template>
-                            <el-menu-item index="/help/node">Node Filter</el-menu-item>
-                            <el-menu-item index="/help/edge">Edge Filter</el-menu-item>
-                            <el-menu-item index="/help/concurrency">Concurrency Filter</el-menu-item>
+                        <el-submenu>
+                            <template slot="title"><h4>2.1 Overview of the user interface</h4></template>
+                            <el-menu-item index="/help/home">2.1.1 Home Screen</el-menu-item>
+                            <el-menu-item index="/help/filter">2.1.2 Fuzzy Model Screen</el-menu-item>
+                            <el-menu-item index="/help/helpscreen">2.1.3 Help Screen</el-menu-item>
                         </el-submenu>
-                        <el-submenu index="2-3">
-                            <template slot="title">To apply Metrics configurations</template>
-                            <el-menu-item index="/help/unary">Unary Significance Metrics</el-menu-item>
-                            <el-menu-item index="/help/binary">Binary Significance Metrics</el-menu-item>
-                            <el-menu-item index="/help/correlation">Binary Correlation Metrics</el-menu-item>
+
+                      <el-submenu>
+                          <template slot="title"><h4>3. Get Started</h4></template>
+                    <el-menu-item index="/help/generate">3.1 Generate a fuzzy model from the log
+                             </el-menu-item>
+                          <el-menu-item index="/help/graph">3.2 Understanding the graph view
+                             </el-menu-item>
+                             <el-menu-item index="/help/example">3.3 Generate an example model</el-menu-item>
+                      </el-submenu>
+                        <el-submenu index="3">
+                            <template slot="title"><h4>4. Configure Filters</h4></template>
+                            <el-menu-item index="/help/node">4.1 Node Filter</el-menu-item>
+                            <el-menu-item index="/help/edge">4.2 Edge Filter</el-menu-item>
+                            <el-menu-item index="/help/concurrency">4.3 Concurrency Filter</el-menu-item>
                         </el-submenu>
-                        <el-submenu index="2-4">
-                            <template slot="title">To Modify Attenuation</template>
-                            <el-menu-item index="/help/linear">Linear Attenuation</el-menu-item>
-                            <el-menu-item index="/help/nroot">N(th) Root Attenuation</el-menu-item>
+                        <el-submenu index="4">
+                            <template slot="title"><h4>5. Configure Metrics</h4></template>
+                            <el-menu-item index="/help/unary">5.1 Unary Significance Metrics</el-menu-item>
+                            <el-menu-item index="/help/binary">5.2 Binary Significance Metrics</el-menu-item>
+                            <el-menu-item index="/help/correlation">5.3 Binary Correlation Metrics</el-menu-item>
                         </el-submenu>
-                        <el-menu-item index="/help/snapshot">To save model snapshot
+                        <el-submenu index="5">
+                            <template slot="title"><h4>6. Modify Attenuation</h4></template>
+                            <el-menu-item index="/help/linear">6.1 Linear Attenuation</el-menu-item>
+                            <el-menu-item index="/help/nroot">6.2 N(th) Root Attenuation</el-menu-item>
+                        </el-submenu>
+
+
+                        <el-menu-item index="/help/video">
+                            <h4>7. Demo Video</h4>
                         </el-menu-item>
-                    </el-submenu>
-                    <el-menu-item index="/help/video">
-                        <h4>Demo Video</h4>
-                    </el-menu-item>
-                    <el-menu-item index="/help/faqs">
-                        <h4>FAQs</h4>
-                    </el-menu-item>
+                        <el-menu-item index="/help/faqs">
+                            <h4>8. FAQs</h4>
+                        </el-menu-item>
                 </el-menu>
             </el-aside>
-            <el-main>
+            <el-main class="main-view">
                 <router-view />
             </el-main>
         </el-container>
@@ -71,28 +79,36 @@
     }
 </script>
 
+
 <style scoped>
     .el-menu {
         letter-spacing: normal;
         color: #606266;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
-        font-size: 12px;
+        font-family: "Sitka Subheading";
         font-weight: normal;
-        line-height: 16px;
-        padding: 8px 0;
 
-    display: inline-block;
+        padding: 8px 0;
         overflow:hidden;
         word-wrap: break-word;
 
     }
 
-    .el-col-6 {
+    .el-aside {
+        border-right: groove;
+        overflow-x: hidden;
+        position: relative;
+        height: content-box;
 
     }
+  .el-main{
 
-    .el-sub-menu {
-        
+  }
+
+
+    .help_container{
+    position: relative;
+
+
 
     }
 </style>
