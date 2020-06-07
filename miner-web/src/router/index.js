@@ -18,6 +18,7 @@ export default new Router({
         {
             path: '/help',
             name: 'Help',
+            redirect: '/help/home',
             component: () => import('@/components/Help'),
             children: [{
                 path: 'windows',
@@ -64,9 +65,9 @@ export default new Router({
                 name: 'BinaryCorrelation',
                 component: () => import('@/components/help/use/BinaryCorrelation')
             }, {
-                path: 'linear',
-                name: 'LinearAttenuation',
-                component: () => import('@/components/help/use/LinearAttenuation')
+                path: 'attenuation',
+                name: 'Attenuation',
+                component: () => import('@/components/help/use/Attenuation')
             }, {
                 path: 'nroot',
                 name: 'NRootAttenuation',
@@ -87,27 +88,23 @@ export default new Router({
                 path:'graph',
                 name:'Graph',
                 component:() => import('@/components/help/use/Graph')
-                },
-                {
+            }, {
                 path:'home',
                 name:'Homescreen',
                 component:() => import('@/components/help/use/Homescreen')
-                },{
+            }, {
                 path:'filter',
                 name:'Filterscreen',
                 component:() => import('@/components/help/use/Filterscreen')
-                },{
+            }, {
                 path:'metrics',
                 name:'Metrics',
                 component:() => import('@/components/help/use/Metrics')
-
-                },{
+            }, {
                 path:'helpscreen',
                 name:'Helpscreen',
                 component:() => import('@/components/help/use/Helpscreen')
-
-                }
-            ]
+            }]
         },
 
     ]

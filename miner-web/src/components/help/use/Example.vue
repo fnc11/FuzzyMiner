@@ -4,8 +4,30 @@
         <p>Follow below steps to generate an example model.</p>
         <br>
         <ul>
-            <li><b>Step1 : </b>Click on 'Generate Example Model' on the home page.You will be navigated to the filter page where you can see the
-            fuzzy model generated for the example log.</li>
+            <li><b>Step1 : </b>Click on 'Generate Example Model' on the home page.You will be navigated to the filter
+                page where you can see the
+                fuzzy model generated for the example log.
+            </li>
+            <br>
+            <div class="block">
+                <el-image src="/static/img/example.PNG" alt=""/>
+
+            </div>
+            <br>
+            <li><b>Step2 : </b> Graph view of the example log.</li>
+            <br>
+            <div class="block">
+                <el-image src="/static/img/example1.PNG" alt=""/>
+
+            </div>
+            <br>
+            <p>Example log is about road traffic fine management. It consists of 8 event classes.
+            Which are represented in blue color square nodes in the above graph. Edges which are in dark orange color represent the relation between the event classes.
+            Higher the color intensity, higher is the significance. </p>
+            <br>
+
+            <br>
+
 
         </ul>
     </div>
@@ -24,8 +46,8 @@
 <style scoped>
     .el-image {
         border-color: black;
-        width: 80%;
-        height: 80%;
+        width: 40%;
+        height: 40%;
         border: ridge;
     }
 
