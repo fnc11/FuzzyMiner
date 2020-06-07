@@ -96,6 +96,30 @@ pip install virtualenv
 ``` 
 
 ### MacOS
+1. Install homebrew
+```
+ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+```
+2. Install python
+```
+brew install python
+```
+3. Install pip
+```
+curl -O http://python-distribute.org/distribute_setup.py
+python distribute_setup.py
+curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+python get-pip.py
+```
+4. Install virtualenv
+```
+pip install virtualenv
+```
+5. Install nodejs and npm
+```
+brew update
+brew install node
+```
 
 ### Linux
 1. Python3 comes preinstalled in Ubuntu 18.04 and 20.04 so no need to separately do anything, however you may need to update it, for that follow below commands:
