@@ -15,5 +15,10 @@
 </script>
 
 <style scoped>
+.header-text {
+    color: black;
+    font-size: 30px;
+    font-weight: bold;
+}
 
 </style>

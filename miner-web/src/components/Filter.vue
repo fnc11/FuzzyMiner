@@ -305,7 +305,7 @@
                     label: 'Unary Metrics'
                 }, {
                     value: 'binarySignificance',
-                    label: 'Binary Metrics'
+                    label: 'Binary Significance'
                 }, {
                     value: 'binaryCorrelation',
                     label: 'Binary Correlation'
