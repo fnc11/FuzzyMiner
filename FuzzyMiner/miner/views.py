@@ -75,7 +75,7 @@ def launch_filter(log_file_path, ip, port):
     except:
         return JsonResponse({
             "message_type": 1,
-            "message_desc": "A wrong log file"
+            "message_desc": "Uploaded log file is corrupted or not a log file actually."
         })
     finish = time.perf_counter()
     print(f'XES import factory took {round(finish - start, 3)} seconds')

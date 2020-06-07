@@ -527,16 +527,16 @@
                 if (resp.message_type === 0) {
                     this.images.push(resp.graph_path);
                 } else if (resp.message_type === 1) {
-                    this.$alert(resp.message_desc + ' Click ok to redirect to the home page.', 'Error', {
+                    this.$alert(resp.message_desc + " You'll be redirected to home page to upload a new log file.", 'Error', {
                         confirmButtonText: 'OK',
                         type: 'error'
                     }).then(() => {
                         this.$router.push({path: "/"});
                     });
                 } else if (resp.message_type === 2) {
-                    this.$alert(resp.message_desc, 'Warning', {
+                    this.$alert(resp.message_desc, 'Error', {
                         confirmButtonText: 'OK',
-                        type: 'warning'
+                        type: 'error'
                     });
                 }
             },
