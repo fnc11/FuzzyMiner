@@ -706,7 +706,7 @@
     .process-graph-view {
         height: 70vh;
         border-color: #dcdfe6;
-        overflow: scroll;
+        overflow: hidden;
     }
 
     .button-position {
