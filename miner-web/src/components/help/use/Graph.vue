@@ -2,7 +2,7 @@
     <div>
         <label class="header">Graph View</label>
         <br>
-        <p>The main idea of the fuzzy miner is to create an appropriate process of the mined log.
+        <p>The main idea of the fuzzy miner is to create an appropriate process model of the mined log.
             The graph view let's you explore this graph. You can fine tune the graph using the filter configurations.
             Also default metrics configuration can be changed in the metrics configuration dialog.</p>
         <p>The graph can be easily interpreted. Nodes represent event classes. Nodes and arcs which have less

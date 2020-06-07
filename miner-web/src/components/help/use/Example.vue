@@ -14,6 +14,14 @@
 
             </div>
             <br>
+            <li><b>Step2 : </b> Interpret the example log.</li>
+            <div class="block">
+                <el-image src="/static/img/example1.PNG" alt=""/>
+
+            </div>
+            <br>
+            <p></p>
+            <br>
 
 
         </ul>

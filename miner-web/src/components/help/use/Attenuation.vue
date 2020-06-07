@@ -31,7 +31,7 @@
 
             </div>
             <br>
-            <p>Steps to modify :</p>
+            <p><u>Steps to modify :</u></p>
             <ul>
                 <li>Click on A to select attenuation from the Metrics configuration dialog.
                 </li>
