@@ -98,6 +98,21 @@ pip install virtualenv
 ### MacOS
 
 ### Linux
+1. Python3 comes preinstalled in Ubuntu 18.04 and 20.04 so no need to separately do anything, however you may need to update it, for that follow below commands:
+```
+sudo apt update
+sudo apt -y upgrade
+```
+2. To install virtualenv pacakge do the following:
+```
+sudo apt-get install python3-venv
+```
+3. Install nodejs related packages.
+```
+sudo apt-get install nodejs
+sudo apt-get install npm
+```
+(If there are errors install this first ```sudo apt-get install nodejs-dev node-gyp libssl1.0-dev``` and then retry installing npm.)
 
 ## Running the project
 
@@ -110,6 +125,10 @@ git clone URL
 2. Create a virtual environment inside the package FuzzyMiner
 ```
 virtualenv mypython
+```
+In case of Ubuntu/Linux use the following command to create virtual environment:
+```
+python3 -m venv mypython
 ```
 3. Activate the virtual environment
 #### Windows command
