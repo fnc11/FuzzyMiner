@@ -3,13 +3,13 @@
         <el-container class="el-container">
             <el-header class="header-bg" height="6.5%">
                 <el-row type="flex" justify="end">
-                    <el-col :span="20">
+                    <el-col :xs="16" :sm="16" :md="20" :lg="20" :xl="20">
                         <div class="grid-content" align="left">
                             <label @click="$router.push({path: '/'})">FuzzyMinerWeb</label>
                         </div>
                     </el-col>
 
-                    <el-col :span="5">
+                    <el-col :xs="8" :sm="8" :md="5" :lg="5" :xl="5">
                         <div class="button-group">
                             <el-button-group>
                                 <el-button :disabled="$route.name === 'Home'" @click="$router.push({path: '/'})">Home
