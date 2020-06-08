@@ -7,8 +7,8 @@
         <div class="block">
             <el-image  src="/static/img/Home.PNG" alt="" />
         </div>
-        <p><b>Upload :</b>To upload the log file which is in .xes format.</p>
-        <p><b>Generate :</b>To generate the process graph after the successful upload of the logs.</p>
+        <p><b>Upload :</b> To upload the log file which is in .xes format.</p>
+        <p><b>Generate :</b> To generate the process graph after the successful upload of the logs.</p>
         <p><b>Generate Exaple Model :</b> To Generate a model based on the example log.</p>
         <p><b>Home/Help </b>: To navigate between home and help page.</p>
     </div>

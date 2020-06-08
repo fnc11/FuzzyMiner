@@ -14,13 +14,18 @@
 
             </div>
             <br>
-            <li><b>Step2 : </b> Interpret the example log.</li>
+            <li><b>Step2 : </b> Graph view of the example log.</li>
+            <br>
             <div class="block">
                 <el-image src="/static/img/example1.PNG" alt=""/>
 
             </div>
             <br>
-            <p></p>
+            <p>Example log is about road traffic fine management. It consists of 8 event classes.
+            Which are represented in blue color square nodes in the above graph. Edges which are in dark orange color represent the relation between the event classes.
+            Higher the color intensity, higher is the significance. </p>
+            <br>
+
             <br>
 
 
