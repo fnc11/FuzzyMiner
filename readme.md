@@ -82,18 +82,13 @@ After starting the installer, one of two options may be selected:<br>
 - Shortcuts are available for all users
 <br>
 
-2. Install Node.js
-```
-pip install nodejs
-```
-3. Install npm
-```
-pip install npm
-```
-4. Install virtualenv
+2. Install Node.js from [here](https://nodejs.org/en/download/). <br> <br>
+The node package manager (npm) will also be installed with NodeJS and is required for project.<br>
+
+3. Install virtualenv
 ```
 pip install virtualenv
-``` 
+```
 
 ### MacOS
 1. Install homebrew
