@@ -82,7 +82,7 @@ After starting the installer, one of two options may be selected:<br>
 - Shortcuts are available for all users
 <br>
 
-2. Install Node.js from [here](https://www.python.org/). <br> <br>
+2. Install Node.js from [here](https://nodejs.org/en/download/). <br> <br>
 The node package manager (npm) will also be installed with NodeJS and is required for project.<br>
 
 3. Install virtualenv
