@@ -3,7 +3,7 @@
         <div class="text-center-align header-text">Do you want to know how to use our product?</div>
         <br>
         <iframe width="540" height="400"
-                src="https://www.youtube.com/embed/ZeGeQUQTEc0">
+                src="https://www.youtube.com/embed/jm6kpO20028?controls=1c">
         </iframe>
     </div>
 </template>

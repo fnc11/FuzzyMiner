@@ -35,9 +35,11 @@
         </ul>
         <br>
         <ol start="2">
-            <li>Install Node.js</li>
-            <pre><code>pip install nodejs
-</code></pre>
+            <li>
+                <p>Install Node.js from <a href="https://www.python.org/" rel="nofollow">here</a>. <br> <br>
+                    The node package manager (npm) will also be installed with NodeJS and is required for project.<br>
+                </p>
+            </li>
         </ol>
 
         <ol start="3">
