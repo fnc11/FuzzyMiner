@@ -121,15 +121,13 @@
                     type: 'success',
                     duration: 3000,
                     showClose: true
-
-
                 });
                 this.fileList.splice(0, this.fileList.length);
                 this.fileList.push(file.name);
             },
             uploadError(error) {
                 console.log(error.message);
-                this.message({
+                this.$message({
                     message: error.message,
                     type: 'error',
                     duration: 3000,
