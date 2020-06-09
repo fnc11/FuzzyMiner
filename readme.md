@@ -158,7 +158,7 @@ mypthon\Scripts\activate
 ```
 source mypython/bin/activate
 ````
-4. Assuming you have virtual environment somewhere inside or outside the project(it doesn't matter as that will not be stored on github), activate it and install necessary softwares by running following command.
+4. Assuming you have virtual environment inside the project, activate it and install necessary softwares by running following command.
 ```
 pip install -r requirements.txt 
 ```
