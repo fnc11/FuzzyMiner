@@ -89,6 +89,7 @@ The node package manager (npm) will also be installed with NodeJS and is require
 ```
 pip install virtualenv
 ```
+4. If you come across any error while installing a library, you need to install or upgrade Microsoft C++ Build Tools. To do that please head over to [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/). <br>
 
 ### MacOS
 1. Install homebrew
