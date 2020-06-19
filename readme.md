@@ -209,4 +209,4 @@ Built with ❤ by:
 
 [(Back to top)](#table-of-contents)
 
-The Fuzy Miner Web Application is released under the under terms of the [Apache License V2.0](LICENSE).
+The Fuzzy Miner Web Application is released under the under terms of the [Apache License V2.0](LICENSE).
