@@ -1,5 +1,5 @@
 import unittest
-from fuzzyminerpk import FMUtility
+from FuzzyMiner.fuzzyminerpk import FMUtility
 
 
 class TestFuzzyMethods(unittest.TestCase):
