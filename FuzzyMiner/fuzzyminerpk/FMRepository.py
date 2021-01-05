@@ -1,8 +1,8 @@
 import copy
 import sys
 
-from fuzzyminerpk.ClusterUtil import ClusterUtil
-from fuzzyminerpk.FMUtility import FMLogUtils, is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, \
+from ClusterUtil import ClusterUtil
+from FMUtility import is_valid_matrix2D, is_valid_matrix1D, normalize_matrix1D, \
     normalize_matrix2D, cal_endpoint_correlation, cal_originator_correlation, cal_datatype_correlation, \
     cal_datavalue_correlation, cal_proximity_correlation, weight_normalize1D, \
     special_weight_normalize2D, weight_normalize2D

@@ -8,10 +8,10 @@ from django.views.decorators.csrf import csrf_exempt
 from pm4py.objects.log.importer.xes import factory as xes_import_factory
 from .graphpool import GraphPool
 
-from fuzzyminerpk.Attenuation import LinearAttenuation, NRootAttenuation
-from fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
-from fuzzyminerpk.Filter import NodeFilter, EdgeFilter, ConcurrencyFilter
-from fuzzyminerpk.FuzzyMiner import Graph
+from FuzzyMiner.fuzzyminerpk.Attenuation import LinearAttenuation, NRootAttenuation
+from FuzzyMiner.fuzzyminerpk.Configuration import Configuration, FilterConfig, MetricConfig
+from FuzzyMiner.fuzzyminerpk.Filter import NodeFilter, EdgeFilter, ConcurrencyFilter
+from FuzzyMiner.fuzzyminerpk.FuzzyMiner import Graph
 
 import time
 # Create your views here.

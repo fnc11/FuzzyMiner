@@ -1,4 +1,4 @@
-from fuzzyminerpk.FMStructure import FMCluster, FMEdge, FMNode
+from FMStructure import FMCluster, FMEdge, FMNode
 
 
 class ClusterUtil:

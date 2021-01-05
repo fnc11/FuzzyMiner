@@ -1,8 +1,8 @@
-from fuzzyminerpk.ClusterUtil import ClusterUtil
-from fuzzyminerpk.FMRepository import DataRepository, FilteredDataRepository
-from fuzzyminerpk.FMStructure import FMMessage
-from fuzzyminerpk.FMUtility import FMLogUtils
-from fuzzyminerpk.VizUtil import VizUtil
+from ClusterUtil import ClusterUtil
+from FMRepository import DataRepository, FilteredDataRepository
+from FMStructure import FMMessage
+from FMUtility import FMLogUtils
+from VizUtil import VizUtil
 
 import time
 
