@@ -22,6 +22,14 @@
   
 </div>
 
+<div align="center">
+
+![Home Page](resources/sample_home.png)
+<br><br>
+![Mined Model](resources/sample_miner.png)
+
+</div>
+
 ## Table of Contents
 1. [Features](#features)
 2. [Technology used](#technology-used)
