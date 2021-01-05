@@ -149,11 +149,11 @@ sudo apt-get install npm
 ```
 git clone URL
 ```
-2. Create a virtual environment inside the package FuzzyMiner
+2. Create a virtual environment inside this package. For windows use the below command:
 ```
 virtualenv mypython
 ```
-In case of Ubuntu/Linux use the following command to create virtual environment:
+In case of MacOS/Linux use the following command to create virtual environment:
 ```
 python3 -m venv mypython
 ```
@@ -170,7 +170,7 @@ source mypython/bin/activate
 ```
 pip install -r requirements.txt 
 ```
-If you come across any error while installing a library, you need to install or upgrade Microsoft C++ Build Tools. To do that please head over to [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/). <br>
+Note: (For Windows only) There can be some errors while installing Levenstein library, either you can change the code to calculate Edit Distance otherwise you need to install or upgrade Microsoft C++ Build Tools. To do that please head over to [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/). <br>
 
 5. Go to `/miner-web` folder and run the following
 ```
