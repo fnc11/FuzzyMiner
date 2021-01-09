@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0f005e"],{"9b32":function(e,n,t){"use strict";t.r(n);var s=function(){var e=this,n=e.$createElement;e._self._c;return e._m(0)},u=[function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("div",[t("h3",[t("u",[e._v("Frequently Asked Questions")])])])}],r={name:"Faqs"},c=r,a=t("2877"),i=Object(a["a"])(c,s,u,!1,null,"84791644",null);n["default"]=i.exports}}]);
-//# sourceMappingURL=chunk-2d0f005e.7dbe5b27.js.map
