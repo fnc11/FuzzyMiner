@@ -1,0 +1,12 @@
+FROM node
+
+MAINTAINER Eric eric.pireirik@gmail.com
+
+WORKDIR /dist
+
+COPY dist /dist
+
+RUN npm install -g http-server
+
+CMD [ "http-server" ]
+

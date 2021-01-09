@@ -1,0 +1,30 @@
+version: "3"
+services:
+  web:
+    image: miner-web
+    context: ./miner-web
+    build: .
+    - dockerfile: ./Dockfile
+    expose:
+      - 8080
+      - 8080
+
+  request:
+    image: fuzzyminer
+    context: ./FuzzyMiner
+    build: .
+      dockerfile: ./Dockfile
+    expose:
+      - 8000
+      - 8000
+
+  nginx:
+    image: nginx:stable
+    expose:
+      - 80
+      - 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+      - request

@@ -3,5 +3,5 @@
 module.exports = {
     lintOnSave: false,
     assetsDir: 'static',
-    outputDir: './../FuzzyMiner/templates'
+    // outputDir: './../FuzzyMiner/templates'
 }
