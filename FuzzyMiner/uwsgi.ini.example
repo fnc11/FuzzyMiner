@@ -4,6 +4,7 @@ user=<USER>
 ip=<YOUR_IP>
 base=<YOUR_PATH>
 project=FuzzyMiner
+env_folder=venv
 
 # Process id File
 pidfile=%(base)/%(project)/%(project)/uwsgi.pid
@@ -19,7 +20,7 @@ gid=%(user)
 # Whether Removing Unix Socket and PID File automatically When UWSGI Service Stops
 vacuum=true
 # Virtual Environment
-virtualenv=%(base)/%(project)/venv
+virtualenv=%(base)/%(project)/%(env_folder)
 # Base Directory of Prject
 chdir=%(base)/%(project)/%(project)
 # Django's WSGI File

@@ -197,6 +197,42 @@ Please refer to the <b>Help</b> page of the web application when you run it.
 
 [(Back to top)](#table-of-contents)
 
+## Deployment
+First checkout to the *production* branch
+Build an virtual environment here, better to name it *venv*, if not, you need to change the *env_folder* variable name for virtual environment in the *FuzzyMiner/uwsgi.ini* file.
+
+```
+cd FuzzyMiner
+chmod u+x *.sh
+./preparation.sh
+```
+
+After running the *preparation* script, it is better to have a check the self-defined variables in the *FuzzyMiner/uwsgi.ini* file
+
+Then run the *autostart.sh* script
+
+```
+./autostart.sh
+```
+
+The output would be like this.
+
+```
+[uWSGI] getting INI configuration from ./uwsgi.ini
+[uwsgi-static] added mapping for /static => <YOUR_PATH>/FuzzyMiner/FuzzyMiner/templates/static
+```
+It means success to deploy django and uwsgi.
+
+Then you need to install nginx for the web and run the *prepare_for_nginx.sh* script in the root of the project.
+
+```
+chmod u+x ./prepare_for_nginx.sh
+```
+
+After that, have a double check for user and the path in the server.
+Then copy *nginx.conf* file to the */etc/nginx* path and replace the original configuration.
+Then run nginx and enjoy.
+
 Built with ❤ by:
 
 * [Praveen Yadav](https://github.com/fnc11) 
