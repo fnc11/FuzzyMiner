@@ -199,6 +199,7 @@ Please refer to the <b>Help</b> page of the web application when you run it.
 
 ## Deployment
 First checkout to the *production* branch
+Before starting to deploy, make sure there is a *templates* folder in *FuzzyMiner* folder.
 Build an virtual environment here, better to name it *venv*, if not, you need to change the *env_folder* variable name for virtual environment in the *FuzzyMiner/uwsgi.ini* file.
 
 ```
