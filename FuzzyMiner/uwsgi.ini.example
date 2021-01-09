@@ -1,30 +1,35 @@
 [uwsgi]
+# Self-defined Variables
+user=<USER>
+ip=<YOUR_IP>
+base=<YOUR_PATH>
+project=FuzzyMiner
+
 # Process id File
-pidfile=<YOUR_PATH>/FuzzyMiner/scripts/uwsgi.pid
+pidfile=%(base)/%(project)/%(project)/uwsgi.pid
 # Listening IP Address and Port for UWSGI, directly Access by Socket with Nginx
-socket=<YOUR_PATH>/FuzzyMiner/scripts/uwsgi.sock
-chmod-socket=644
+socket=%(base)/%(project)/%(project)/uwsgi.sock
+chmod-socket=664
 # Access by http without Nginx
-# http=<YOUR_IP>:8000
+# http=%(ip):8000
 # User id for Whom Start UWSGI
-uid=<USER>
+uid=%(user)
 # Group id for Whom Start UWSGI
-gid=<USER>
+gid=%(user)
 # Whether Removing Unix Socket and PID File automatically When UWSGI Service Stops
 vacuum=true
 # Virtual Environment
-virtualenv=<YOUR_PATH>/FuzzyMiner/venv
+virtualenv=%(base)/%(project)/venv
 # Base Directory of Prject
-chdir=<YOUR_PATH>/FuzzyMiner/FuzzyMiner
+chdir=%(base)/%(project)/%(project)
 # Django's WSGI File
-wsgi-file=FuzzyMiner/wsgi.py
+wsgi-file=%(project)/wsgi.py
 # Project Application
-module=FuzzyMiner.wsgi:miner
+module=%(project).wsgi:miner
 # File Name for Index
 static-index=index.html
 # Root of Static Folder
-static-map=/static=<YOUR_PATH>/FuzzyMiner/FuzzyMiner/templates/static
-static-map=/media=<YOUR_PATH>/FuzzyMiner/FuzzyMiner/media
+static-map=/static=%(base)/%(project)/%(project)/templates/static
 # Set Cheaper Algorithm to Use, If not Set Default will be Used
 cheaper-algo=spare
 # Minimum Number of Workers to Keep at all Times
@@ -38,7 +43,7 @@ cheaper-step=1
 # Enable Threads
 enable-threads=true
 # Number of Threads
-threads=5
+threads=5ec
 # Workers wil be Destoryed after the number of seconds of unactive
 idle=360
 # Buffer Size (Bytes)
@@ -48,8 +53,8 @@ no-threads-wait=true
 # Only ERROR LOG
 # disable-logging=true
 # Write Log to Location
-# logto=<YOUR_PATH>/FuzzyMiner/scripts/%n.log
+# logto=%(base)/%(project)/%(project)/%n.log
 # Write Log to syslog
 log-syslog=true
 # Enable Status Statistics
-# stats=<YOUR_IP>:9091
+# stats=%(ip):9091

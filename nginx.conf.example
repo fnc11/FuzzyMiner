@@ -48,21 +48,16 @@ http {
 
         location / {
 	        include uwsgi_params;
-	        uwsgi_pass	unix:<YOUR_PATH>/FuzzyMiner/scripts/uwsgi.sock;
+	        uwsgi_pass	unix:<YOUR_PATH>/FuzzyMiner/FuzzyMiner/uwsgi.sock;
 	        proxy_set_header	Upgrade	$http_upgrade;
 	        proxy_set_header	Connection	"upgrade";
 	        proxy_set_header	X-Real-IP	$remote_addr;
 	        client_max_body_size	1024m;
         }
 
-        // static directory, ABSOLUTE PATH
+        # static directory, ABSOLUTE PATH
 	    location ^~ /static/ {
 	        alias <YOUR_PATH>/FuzzyMiner/FuzzyMiner/templates/static/;
-	    }
-
-        // media directory, ABSOLUTE PATH
-	    location ^~ /media/ {
-	        alias <YOUR_PATH>/FuzzyMiner/FuzzyMiner/media/;
 	    }
 
         # error_page 404 /404.html;
