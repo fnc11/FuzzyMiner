@@ -130,3 +130,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+**/templates
+**/.DS_Store
+
+**/uwsgi.ini
+**/uwsgi.sock
+**/uwsgi.pid
+**/nginx.conf
