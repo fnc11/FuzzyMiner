@@ -137,4 +137,3 @@ dmypy.json
 **/uwsgi.ini
 **/uwsgi.sock
 **/uwsgi.pid
-**/nginx.conf

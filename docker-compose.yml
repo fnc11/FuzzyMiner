@@ -15,8 +15,6 @@ services:
       context: ./FuzzyMiner
     ports:
       - "8000:8000"
-    volumes:
-      - ./FuzzyMiner/media:/var/www/html/FuzzyMiner/media:rw
     restart: always
     networks:
       net-miner:
