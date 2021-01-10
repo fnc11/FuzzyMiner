@@ -1,0 +1,50 @@
+[uwsgi]
+# Self-defined Variables
+user=root
+ip=10.172.17.3
+port=8000
+base=/var/www/html
+project=FuzzyMiner
+
+# Process id File
+pidfile=%(base)/%(project)/uwsgi.pid
+# Listening IP Address and Port for UWSGI, directly Access by Socket with Nginx
+http=%(ip):%(port)
+# User id for Whom Start UWSGI
+uid=%(user)
+# Group id for Whom Start UWSGI
+gid=%(user)
+# Whether Removing Unix Socket and PID File automatically When UWSGI Service Stops
+vacuum=true
+# Base Directory of Prject
+chdir=%(base)/%(project)
+# Django's WSGI File
+wsgi-file=%(project)/wsgi.py
+# Project Application
+module=%(project).wsgi:miner
+# Set Cheaper Algorithm to Use, If not Set Default will be Used
+cheaper-algo=spare
+# Minimum Number of Workers to Keep at all Times
+cheaper=2
+# Number of Workers to Spawn at Startup
+cheaper-initial=3
+# Maximun Number of Workers that can be Spawned
+workers=10
+# How many Workers should be Spawned at a Time
+cheaper-step=1
+# Enable Threads
+enable-threads=true
+# Number of Threads
+threads=5ec
+# Workers wil be Destoryed after the number of seconds of unactive
+idle=360
+# Buffer Size (Bytes)
+post-buffering=8192
+# Do not Wait for Threads Quitting When Rebooting or Quitting
+no-threads-wait=true
+# Only ERROR LOG
+# disable-logging=true
+# Write Log to syslog
+log-syslog=true
+# Enable Status Statistics
+# stats=%(ip):9091

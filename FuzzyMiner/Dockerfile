@@ -8,9 +8,14 @@ WORKDIR /var/www/html/FuzzyMiner
 
 ADD . /var/www/html/FuzzyMiner
 
-RUN mkdir -p /var/www/html/FuzzyMiner
-    && /usr/local/bin/python -m pip install --upgrade pip
-    && pip install -r requirements.txt
-    && uwsgi --ini /var/www/html/FuzzyMiner/uwsgi.ini
+RUN mkdir -p /var/www/html/FuzzyMiner \
+    && python -m pip install --upgrade pip \
+    && pip install -r requirements.txt \
+    && cd /var/www/html/FuzzyMiner \
+    && chmod +x ./preparation.sh \
+    && ./preparation.sh \
+    && chmod +x ./start.sh
+
+ENTRYPOINT /var/www/html/FuzzyMiner/start.sh
 
 EXPOSE 8000

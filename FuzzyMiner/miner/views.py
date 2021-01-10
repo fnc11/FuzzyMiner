@@ -29,6 +29,7 @@ def get_ip_port(request):
 
 @csrf_exempt
 def upload(request):
+    print('upload')
     if request.method == 'POST':
         # get file from form data
         uploaded_file = request.FILES.get('file')
@@ -115,6 +116,7 @@ def handle_file(request):
 
 @csrf_exempt
 def show_result(request):
+    print('show result')
     data = json.loads(request.body)
     log_file_path = data["path"]
     ip, port = get_ip_port(request)

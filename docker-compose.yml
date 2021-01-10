@@ -1,30 +1,43 @@
 version: "3"
 services:
   web:
-    image: miner-web
-    context: ./miner-web
-    build: .
-    - dockerfile: ./Dockfile
-    expose:
-      - 8080
-      - 8080
+    build:
+      context: ./miner-web
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      net-miner:
+        ipv4_address: 10.172.17.2
 
   request:
-    image: fuzzyminer
-    context: ./FuzzyMiner
-    build: .
-      dockerfile: ./Dockfile
-    expose:
-      - 8000
-      - 8000
+    build:
+      context: ./FuzzyMiner
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./FuzzyMiner/media:/var/www/html/FuzzyMiner/media:rw
+    restart: always
+    networks:
+      net-miner:
+        ipv4_address: 10.172.17.3
 
   nginx:
     image: nginx:stable
-    expose:
-      - 80
-      - 80
+    ports:
+      - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - web
       - request
+    restart: always
+    networks:
+      net-miner:
+        ipv4_address: 10.172.17.4
+
+networks:
+  net-miner:
+    ipam:
+      config:
+        - subnet: 10.172.17.0/24

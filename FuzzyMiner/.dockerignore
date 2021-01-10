@@ -1,5 +1,4 @@
 static
 test
-**/*.example
-secrect.py
 *.md
+media
