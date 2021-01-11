@@ -60,6 +60,11 @@ http {
 	        alias <YOUR_PATH>/FuzzyMiner/FuzzyMiner/templates/static/;
 	    }
 
+        # media directory, ABSOLUTE PATH
+        location ^~ /media/ {
+	        alias <YOUR_PATH>/FuzzyMiner/FuzzyMiner/media/;
+        }
+
         # error_page 404 /404.html;
         # location = /404.html {
         # }
