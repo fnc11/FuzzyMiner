@@ -1,6 +1,6 @@
 #!/bin/sh
-uwsgi --ini /var/www/html/FuzzyMiner/uwsgi.ini
-uwsgi --pidfile /var/www/html/FuzzyMiner/uwsgi.pid \
+# uwsgi --ini /usr/share/nginx/FuzzyMiner/uwsgi.ini
+uwsgi --pidfile /usr/share/nginx/FuzzyMiner/uwsgi.pid \
       --http 10.172.17.3:8000 \
       --uid root \
       --gid root \

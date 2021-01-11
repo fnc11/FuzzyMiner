@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /var/www/html/FuzzyMiner
+cd /usr/share/nginx/FuzzyMiner
 secret=`python3.7 ./secret.py`
 
 # mv -v ./uwsgi.ini{.example,}
