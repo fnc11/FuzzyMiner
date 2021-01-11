@@ -5,7 +5,7 @@ uwsgi --pidfile /usr/share/nginx/FuzzyMiner/uwsgi.pid \
       --uid root \
       --gid root \
       --vacuum \
-      --chdir /var/www/html/FuzzyMiner \
+      --chdir /usr/share/nginx/FuzzyMiner \
       --wsgi-file FuzzyMiner/wsgi.py \
       --module FuzzyMiner.wsgi:miner \
       --cheaper-algo spare \
