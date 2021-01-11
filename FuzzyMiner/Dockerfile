@@ -15,12 +15,10 @@ RUN apt update -y \
     && cd /root/Python-3.7.9 \
     && ./configure \
     && make && make install \
-    && cd /root && wget https://bootstrap.pypa.io/get-pip.py \
-    && python3.7 ./get-pip.py \
     && mkdir -p /var/www/html/FuzzyMiner \
-    && cd /var/www/html/FuzzyMiner \ && rm -rf /root/Python-3.7.9 && rm /root/git-pip.py \
-    && python3.7 -m pip install --upgrade pip \
-    && pip install -r requirements.txt \
+    && cd /var/www/html/FuzzyMiner \ && rm -rf /root/Python-3.7.9 \
+    && pip3.7 install --upgrade pip \
+    && pip3.7 install -r requirements.txt \
     && chmod +x ./preparation.sh \
     && ./preparation.sh \
     && chmod +x ./start.sh

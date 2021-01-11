@@ -35,7 +35,7 @@ cheaper-step=1
 # Enable Threads
 enable-threads=true
 # Number of Threads
-threads=5ec
+threads=5
 # Workers wil be Destoryed after the number of seconds of unactive
 idle=360
 # Buffer Size (Bytes)
