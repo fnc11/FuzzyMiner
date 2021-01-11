@@ -193,14 +193,21 @@ python3 manage.py runserver
 
 Please refer to the <b>Help</b> page of the web application when you run it.
 
-## Contributors
-
-[(Back to top)](#table-of-contents)
 
 ## Deployment
-First checkout to the *production* branch
+First checkout to the *production* branch.
 Before starting to deploy, make sure there is a *templates* folder in *FuzzyMiner* folder.
 Build an virtual environment here, better to name it *venv*, if not, you need to change the *env_folder* variable name for virtual environment in the *FuzzyMiner/uwsgi.ini* file.
+
+Before, you should install the **graphviz* library in your system.
+If your system is *ubuntu*, type this command in your terminal.
+```
+apt-get install graphviz
+```
+if it is centos, type this command in your terminal.
+```
+yum install graphviz
+```
 
 ```
 cd FuzzyMiner
@@ -233,6 +240,10 @@ chmod u+x ./prepare_for_nginx.sh
 After that, have a double check for user and the path in the server.
 Then copy *nginx.conf* file to the */etc/nginx* path and replace the original configuration.
 Then run nginx and enjoy.
+
+## Contributors
+
+[(Back to top)](#table-of-contents)
 
 Built with ❤ by:
 
