@@ -35,7 +35,7 @@
 2. [Technology used](#technology-used)
 3. [Installation](#installation)
    - [Docker Way](#docker-way)
-     - [Requirements](#docker-requirments)
+     - [Requirements](#docker-requirements)
      - [Running the project](#docker-running)
    - [Traditional Way](#traditional-way)
       - [Requirements](#traditional-requirements)
