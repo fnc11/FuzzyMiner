@@ -33,10 +33,16 @@
 ## Table of Contents
 1. [Features](#features)
 2. [Technology used](#technology-used)
-3. [Installation requirements](#installation-requirements)
-    - [Windows](#windows)
-    - [MacOS](#macos)
-    - [Linux](#linux)
+3. [Installation](#installation)
+   - [Docker Way](#docker-way)
+     - [Requirements](#docker-requirments)
+     - [Running the project](#docker-running)
+   - [Traditional Way](#traditional-way)
+      - [Requirements](#traditional-requirements)
+        - [Windows](#windows)
+        - [MacOS](#macos)
+        - [Linux](#linux)
+     - [Running the project](#traditional-running)
 4. [How to use](#how-to-use)
 5. [Contributors](#contributors)
 6. [Credits](#credits)
@@ -64,11 +70,36 @@
 <b>Tested with</b>
 - [PyUnit](https://docs.python.org/2/library/unittest.html)
 
-## Installation requirements
+## Installation
+### Docker Way
+[(Back to top)](#table-of-contents)<br>
+Note: First change the branch to docker branch, if you want to checkout the project the docker way.
+#### Docker Requirements
+ Only requirements is to install Docker on your system from here [Docker](https://www.docker.com/).
+#### Docker Running
+1. For first time you need the below command. It will take around 10-15 mins to build the image and start the container.
+```
+docker-compose up
+```
+2. If there was some error and you need to run the command again, then use the below one. As it will proceed from the last successful point.
+```
+docker-compose up --build
+```
+3. Now the server inside the container is configured to run on your IP address. So if you have wired network connection then find the value of eth0 or if you are connected via WiFi then find the value of wlo1. These could be different for your system, the goal is to find the IP address. Use the below command, this is one way of knowing IP address on Linux/MacOS. For Windows you need to check network setting of your connection.
+```
+ifconfig
+```
+4. Once you have that IP address, type it in the browser and you should see the home page of the application.
+5. If you already ran the application successfully once and you want to just use it, then use the below two commands to start and stop the container.
+```
+docker-compose start
+docker-compose stop
+```
 
+### Traditional Way
 [(Back to top)](#table-of-contents)
-
-### Windows
+#### Traditional Requirements
+###### Windows
 1. Install Python from [here](https://www.python.org/). <br> <br>
 Four Python 3.6 installers are available for download - two each for the 32-bit and 64-bit versions of the interpreter. The web installer is a small initial download, and it will automatically download the required components as necessary.<br>
 After starting the installer, one of two options may be selected:<br>
@@ -98,7 +129,7 @@ The node package manager (npm) will also be installed with NodeJS and is require
 pip install virtualenv
 ```
 
-### MacOS
+###### MacOS
 1. Install homebrew
 ```
 ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
@@ -124,7 +155,7 @@ brew update
 brew install node
 ```
 
-### Linux
+###### Linux
 1. Python3 comes preinstalled in Ubuntu 18.04 and 20.04 so no need to separately do anything, however you may need to update it, for that follow below commands:
 ```
 sudo apt update
@@ -141,10 +172,7 @@ sudo apt-get install npm
 ```
 (If there are errors install this first ```sudo apt-get install nodejs-dev node-gyp libssl1.0-dev``` and then retry installing npm.)
 
-## Running the project
-
-[(Back to top)](#table-of-contents)
-
+#### Traditional Running
 1. Clone the repository:
 ```
 git clone URL
