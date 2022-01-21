@@ -7,7 +7,7 @@ Django==2.2.13
 django-cors-headers==3.2.1
 graphviz==0.14
 intervaltree==3.0.2
-ipython==7.14.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 jedi==0.17.0
 Jinja2==2.11.2
