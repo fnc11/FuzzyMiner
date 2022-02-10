@@ -3,7 +3,7 @@ backcall==0.1.0
 cycler==0.10.0
 decorator==4.4.2
 deprecation==2.1.0
-Django==2.2.13
+Django==2.2.27
 django-cors-headers==3.2.1
 graphviz==0.14
 intervaltree==3.0.2
